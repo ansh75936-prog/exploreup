@@ -33,5 +33,12 @@ try{
     s3.dataset.exploreupHotelsMountFix='1';
     (document.head||document.documentElement).appendChild(s3);
   }
+  if(!document.querySelector('script[data-exploreup-arya-knowledge]')){
+    const s4=document.createElement('script');
+    s4.src='./arya-ai-knowledge.js?v=1';
+    s4.async=false;
+    s4.dataset.exploreupAryaKnowledge='1';
+    (document.head||document.documentElement).appendChild(s4);
+  }
 }catch(e){}
 })();
