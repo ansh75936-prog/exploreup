@@ -1,16 +1,23 @@
 (function(){
   'use strict';
-  const AYODHYA_IMAGE = './images (3).jpeg';
+  const MAP = {
+    prayagraj: './images (2).jpeg',
+    jhansi: './images (1).jpeg',
+    gorakhpur: './images.jpeg',
+    ayodhya: './images (3).jpeg'
+  };
   function norm(v){ return String(v||'').toLowerCase().replace(/\s+/g,' ').trim(); }
   function fix(){
-    document.querySelectorAll('img').forEach(function(img){
-      const parent = img.closest('article, .card, .city, .place-card, .hidden-gem, .gem-card, .destination-card, .feature-card, div');
-      const text = norm((parent && parent.innerText) || '');
-      if(text.includes('hidden gems') && text.includes('ayodhya')) img.src = AYODHYA_IMAGE;
-      const alt = norm(img.alt);
-      if(alt.includes('ayodhya') && (text.includes('hidden') || text.includes('gem'))) img.src = AYODHYA_IMAGE;
+    document.querySelectorAll('.city, .city-card, [data-city]').forEach(function(card){
+      const text = norm(card.innerText || card.textContent || card.getAttribute('data-city'));
+      const img = card.querySelector('img');
+      if(!img) return;
+      Object.keys(MAP).forEach(function(city){
+        const re = new RegExp('(^|[^a-z])'+city+'([^a-z]|$)','i');
+        if(re.test(text)) img.src = MAP[city];
+      });
     });
   }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded',fix); else fix();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded',fix,{once:true}); else fix();
   new MutationObserver(fix).observe(document.documentElement,{childList:true,subtree:true});
 })();
