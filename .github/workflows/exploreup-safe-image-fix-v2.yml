@@ -1,0 +1,33 @@
+name: ExploreUP safe image fix v2
+on:
+  push:
+    paths:
+      - "safe-image-fix-v2-trigger.txt"
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace only unsafe remote image references
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index-1.html')
+          s = p.read_text(encoding='utf-8')
+          old = 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=80'
+          s = s.replace(old, './images/agra-photo.svg')
+          old = 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=85'
+          s = s.replace(old, './images/agra-photo.svg')
+          old = 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=85'
+          s = s.replace(old, './images/agra-photo.svg')
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm -f safe-image-fix-v2-trigger.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html safe-image-fix-v2-trigger.txt
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Fix ExploreUP remote hero image safely"
+          git push
