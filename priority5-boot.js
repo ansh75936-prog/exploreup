@@ -40,5 +40,12 @@ try{
     s4.dataset.exploreupAryaKnowledge='1';
     (document.head||document.documentElement).appendChild(s4);
   }
+  if(!document.querySelector('script[data-exploreup-arya-bridge]')){
+    const s5=document.createElement('script');
+    s5.src='./arya-ai-bridge.js?v=1';
+    s5.async=false;
+    s5.dataset.exploreupAryaBridge='1';
+    (document.head||document.documentElement).appendChild(s5);
+  }
 }catch(e){}
 })();
