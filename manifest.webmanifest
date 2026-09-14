@@ -1,0 +1,11 @@
+{
+  "name": "ExploreUP — Explore Uttar Pradesh",
+  "short_name": "ExploreUP",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8fc",
+  "theme_color": "#071b35",
+  "description": "Explore Uttar Pradesh with city guides, places, food, stays, services and trip planning.",
+  "lang": "en-IN"
+}
