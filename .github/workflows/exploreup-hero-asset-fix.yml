@@ -1,0 +1,28 @@
+name: ExploreUP hero asset fix
+on:
+  push:
+    paths:
+      - "hero-asset-fix-trigger.txt"
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix missing local hero asset reference
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('./taj-mahal-mausoleum-in-agra.jpg','./images/agra-photo.svg')
+          p.write_text(s,encoding='utf-8')
+          PY
+          rm -f hero-asset-fix-trigger.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html hero-asset-fix-trigger.txt
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Fix missing local Agra hero asset"
+          git push
