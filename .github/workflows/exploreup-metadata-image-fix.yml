@@ -1,0 +1,37 @@
+name: ExploreUP metadata image fix
+on:
+  push:
+    paths:
+      - "metadata-image-fix-trigger.txt"
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace only remote social preview image
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index-1.html')
+          s = p.read_text(encoding='utf-8')
+          replacements = [
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&amp;fit=crop&amp;w=1600&amp;q=85', './images/agra-photo.svg'),
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=85', './images/agra-photo.svg'),
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&amp;fit=crop&amp;w=1800&amp;q=80', './images/agra-photo.svg'),
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=80', './images/agra-photo.svg'),
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&amp;fit=crop&amp;w=1200&amp;q=85', './images/agra-photo.svg'),
+            ('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=85', './images/agra-photo.svg'),
+          ]
+          for old, new in replacements:
+              s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm -f metadata-image-fix-trigger.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html metadata-image-fix-trigger.txt
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Use local image for ExploreUP social previews"
+          git push
