@@ -2,50 +2,18 @@
 (function(){
 'use strict';
 try{
-  if(!Array.isArray(window.cities) && Array.isArray(window.__exploreUpDistrictCities)){
-    window.cities=window.__exploreUpDistrictCities;
-  }
-  if(!document.querySelector('script[data-exploreup-district-services]')){
-    const s0=document.createElement('script');
-    s0.src='./district-services-framework.js';
-    s0.async=false;
-    s0.dataset.exploreupDistrictServices='1';
-    (document.head||document.documentElement).appendChild(s0);
-  }
-  if(!document.querySelector('script[data-exploreup-hotels]')){
-    const s=document.createElement('script');
-    s.src='./district-hotels.js';
-    s.async=false;
-    s.dataset.exploreupHotels='1';
+  if(!Array.isArray(window.cities) && Array.isArray(window.__exploreUpDistrictCities)) window.cities=window.__exploreUpDistrictCities;
+  const load=(src,attr)=>{
+    if(document.querySelector('script['+attr+']')) return;
+    const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(attr,'1');
     (document.head||document.documentElement).appendChild(s);
-  }
-  if(!document.querySelector('script[data-exploreup-city-image-fix]')){
-    const s2=document.createElement('script');
-    s2.src='./fix-ayodhya-hidden-gems-image.js';
-    s2.async=false;
-    s2.dataset.exploreupCityImageFix='1';
-    (document.head||document.documentElement).appendChild(s2);
-  }
-  if(!document.querySelector('script[data-exploreup-hotels-mount-fix]')){
-    const s3=document.createElement('script');
-    s3.src='./fix-hotels-modal-mount.js?v=2';
-    s3.async=false;
-    s3.dataset.exploreupHotelsMountFix='1';
-    (document.head||document.documentElement).appendChild(s3);
-  }
-  if(!document.querySelector('script[data-exploreup-arya-knowledge]')){
-    const s4=document.createElement('script');
-    s4.src='./arya-ai-knowledge.js?v=1';
-    s4.async=false;
-    s4.dataset.exploreupAryaKnowledge='1';
-    (document.head||document.documentElement).appendChild(s4);
-  }
-  if(!document.querySelector('script[data-exploreup-arya-bridge]')){
-    const s5=document.createElement('script');
-    s5.src='./arya-ai-bridge.js?v=1';
-    s5.async=false;
-    s5.dataset.exploreupAryaBridge='1';
-    (document.head||document.documentElement).appendChild(s5);
-  }
-}catch(e){}
+  };
+  load('./district-services-framework.js','data-exploreup-district-services');
+  load('./district-hotels.js','data-exploreup-hotels');
+  load('./fix-ayodhya-hidden-gems-image.js','data-exploreup-city-image-fix');
+  load('./fix-hotels-modal-mount.js?v=2','data-exploreup-hotels-mount-fix');
+  load('./arya-ai-knowledge.js?v=1','data-exploreup-arya-knowledge');
+  load('./arya-ai-bridge.js?v=2','data-exploreup-arya-bridge');
+  load('./arya-ai-stability.js?v=1','data-exploreup-arya-stability');
+}catch(e){try{console.warn('ExploreUP boot warning:',e)}catch(_){}}
 })();
