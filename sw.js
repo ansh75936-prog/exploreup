@@ -1,4 +1,4 @@
-const CACHE = 'exploreup-shell-v4';
+const CACHE = 'exploreup-shell-v5';
 const APP_SHELL = [
   './',
   './index.html',
@@ -44,10 +44,14 @@ async function patchAgraPage(response) {
 })();
 </script>`;
       const updated = html.replace(/<\/body>/i, patch + '</body>');
+      const headers = new Headers(response.headers);
+      headers.delete('content-length');
+      headers.delete('content-encoding');
+      headers.delete('content-range');
       return new Response(updated, {
         status: response.status,
         statusText: response.statusText,
-        headers: response.headers
+        headers
       });
     }
   } catch (_) {}
