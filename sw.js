@@ -1,4 +1,4 @@
-const CACHE = 'exploreup-shell-v2';
+const CACHE = 'exploreup-shell-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -32,21 +32,36 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Always try the network first for HTML so published updates are not
+  // trapped behind an old cached index. Fall back to the cached app offline.
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(CACHE).then(cache => cache.put(request, copy)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || caches.match('./index-1.html')))
+    );
+    return;
+  }
+
+  // For supporting assets, use cache first and refresh the cache in the
+  // background when the network has a newer copy.
   event.respondWith(
     caches.match(request).then(cached => {
-      if (cached) return cached;
-
-      return fetch(request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+      const network = fetch(request).then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(request, copy)).catch(() => {});
         }
-        const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put(request, copy)).catch(() => {});
         return response;
-      }).catch(() => {
-        if (request.mode === 'navigate') return caches.match('./index-1.html');
-        return caches.match('./index.html');
-      });
+      }).catch(() => null);
+
+      return cached || network.then(response => response || caches.match('./index.html'));
     })
   );
 });
