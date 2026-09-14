@@ -1,0 +1,29 @@
+name: Fix Agra hero asset
+on:
+  push:
+    paths:
+      - 'agra-hero-fix-trigger.txt'
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace missing Agra hero asset
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=85','./images/agra-photo.svg')
+          s=s.replace('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=85','./images/agra-photo.svg')
+          s=s.replace('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=75','./images/agra-photo.svg')
+          p.write_text(s,encoding='utf-8')
+          PY
+          rm -f agra-hero-fix-trigger.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index-1.html agra-hero-fix-trigger.txt
+          git diff --cached --quiet || git commit -m 'Fix Agra hero to local asset'
+          git push
