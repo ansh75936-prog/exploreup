@@ -1287,7 +1287,7 @@ Tell me which destination you want to explore.`;
 }
 document.getElementById('aryaInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')askArya()});
 
-const favs=JSON.parse(exploreStorage.get('exploreup_favs')||'[]');
+let favs=[];try{const v=JSON.parse(exploreStorage.get('exploreup_favs')||'[]');favs=Array.isArray(v)?v:[]}catch(e){favs=[];try{exploreStorage.set('exploreup_favs','[]')}catch(_e){}}
 function updateFavs(){
  document.getElementById('favCount').textContent=favs.length;
  document.getElementById('favList').innerHTML=favs.length?favs.map((x,i)=>`<div class="favitem">${x} <button onclick="removeFav(${i})" style="float:right;border:0;background:none;cursor:pointer">×</button></div>`).join(''):'<div class="empty">No favourite places saved yet.</div>';
