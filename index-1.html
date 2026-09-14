@@ -838,7 +838,7 @@ function suggestionKey(city){return 'exploreup_suggestions_'+city.toLowerCase().
 function districtSlug(city){return String(city).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 function renderSuggestions(city){
  const box=document.getElementById('suggestionsList'); if(!box)return;
- const local=JSON.parse(exploreStorage.get(suggestionKey(city))||'[]');
+ const local=typeof window.__exploreUpReadSuggestionLocal==='function'?window.__exploreUpReadSuggestionLocal(city):[];
  box.innerHTML=local.length?local.slice().reverse().map(x=>`<div class="suggestion-item"><b>${escapeHtml(x.category)}</b><div>${escapeHtml(x.text)}</div><small>${escapeHtml(x.name||'Visitor')} · ${new Date(x.time).toLocaleDateString()}</small></div>`).join(''):'<div class="suggestion-item"><small>No approved suggestions yet. Be the first to help improve this district page.</small></div>';
  loadOnlineSuggestions(city);
 }
@@ -852,17 +852,21 @@ async function submitSuggestion(e){
  const st=document.getElementById('suggestionStatus');
  try{
    if(exploreSupabase){const {error}=await exploreSupabase.from('suggestions').insert({district_slug:districtSlug(city),name:name||null,category,message:text});if(error)throw error;recordOnlineEvent('suggestion_submit',districtSlug(city),{category});}
-   const key=suggestionKey(city),items=JSON.parse(exploreStorage.get(key)||'[]');items.push({name,category,text,time:new Date().toISOString()});exploreStorage.set(key,JSON.stringify(items.slice(-30)));trackSuggestion();
+   if(typeof window.__exploreUpLocalSuggestionFallback==='function')window.__exploreUpLocalSuggestionFallback(city,name,category,text);trackSuggestion();
    document.getElementById('suggestionForm').reset();st.textContent='✓ Thank you! Your suggestion has been submitted for review.';st.style.color='green';
    renderSuggestions(city);setTimeout(()=>{st.textContent=''},4000);
- }catch(err){st.textContent='Could not submit online right now. Your suggestion is saved on this device.';st.style.color='#b45309';const key=suggestionKey(city),items=JSON.parse(exploreStorage.get(key)||'[]');items.push({name,category,text,time:new Date().toISOString()});exploreStorage.set(key,JSON.stringify(items.slice(-30)));trackSuggestion();renderSuggestions(city);}
+ }catch(err){st.textContent='Could not submit online right now. Your suggestion is saved on this device.';st.style.color='#b45309';if(typeof window.__exploreUpLocalSuggestionFallback==='function')window.__exploreUpLocalSuggestionFallback(city,name,category,text);trackSuggestion();renderSuggestions(city);}
 }
 async function loadOnlineReviews(city){
  const box=document.getElementById('reviewsList');if(!box)return;
  try{if(!exploreSupabase)return;const {data,error}=await exploreSupabase.from('reviews').select('name,rating,review_text,created_at').eq('district_slug',districtSlug(city)).eq('status','approved').order('created_at',{ascending:false}).limit(30);if(error)throw error;box.innerHTML=data?.length?data.map(x=>`<div class="suggestion-item"><b>${'★'.repeat(x.rating)}${'☆'.repeat(5-x.rating)}</b><div>${escapeHtml(x.review_text)}</div><small>${escapeHtml(x.name||'Visitor')} · ${new Date(x.created_at).toLocaleDateString()}</small></div>`).join(''):'<div class="suggestion-item"><small>No approved reviews yet.</small></div>';}catch(e){box.innerHTML='<div class="suggestion-item"><small>Reviews will appear here after moderation.</small></div>';}}
 async function submitReview(e){
  e.preventDefault();const city=currentExploreCity||'';const name=document.getElementById('reviewName').value.trim();const rating=Number(document.getElementById('reviewRating').value);const review_text=document.getElementById('reviewText').value.trim();const st=document.getElementById('reviewStatus');
- try{if(!exploreSupabase)throw new Error('offline');const {error}=await exploreSupabase.from('reviews').insert({district_slug:districtSlug(city),name:name||null,rating,review_text});if(error)throw error;recordOnlineEvent('review_submit',districtSlug(city),{rating});document.getElementById('reviewForm').reset();st.textContent='✓ Thanks! Your review has been submitted for moderation.';st.style.color='green';loadOnlineReviews(city);setTimeout(()=>{st.textContent=''},4000);}catch(err){st.textContent='Review submission needs an online connection. Please try again.';st.style.color='#b45309';}
+ if(!city){st.textContent='Please open a destination before submitting a review.';st.style.color='#b45309';return;}
+ if(!Number.isInteger(rating)||rating<1||rating>5){st.textContent='Please select a rating from 1 to 5.';st.style.color='#b45309';return;}
+ if(review_text.length<3||review_text.length>1000){st.textContent='Review must be between 3 and 1000 characters.';st.style.color='#b45309';return;}
+ if(name.length>100){st.textContent='Name must be 100 characters or fewer.';st.style.color='#b45309';return;}
+ try{if(!exploreSupabase)throw new Error('offline');const {error}=await exploreSupabase.from('reviews').insert({district_slug:districtSlug(city),name:name||null,rating,review_text});if(error)throw error;recordOnlineEvent('review_submit',districtSlug(city),{rating});document.getElementById('reviewForm').reset();st.textContent='✓ Thanks! Your review has been submitted for moderation.';st.style.color='green';loadOnlineReviews(city);setTimeout(()=>{st.textContent=''},4000);}catch(err){st.textContent='Review could not be submitted online right now. Please try again.';st.style.color='#b45309';}
 }
 function openBlogsPage(e){
  if(e)e.preventDefault();
@@ -1399,4 +1403,28 @@ loadSupabaseBackend().then(client=>{
 window.addEventListener('online',()=>{const s=document.getElementById('planStatus');if(s&&document.getElementById('planMakerModal')?.classList.contains('show'))s.textContent='🌐 Internet connected. Smart Plan is available.'});
 window.addEventListener('offline',()=>{const s=document.getElementById('planStatus');if(s&&document.getElementById('planMakerModal')?.classList.contains('show'))s.textContent='📴 You are offline. Use Quick Plan, or reconnect for Smart Plan.'});
 </script>
+<script>
+/* ExploreUP stability batch v1: feedback/suggestion storage + form safety. */
+(function(){
+  'use strict';
+  function readSuggestionLocal(city){
+    try{
+      const v=JSON.parse(exploreStorage.get(suggestionKey(city))||'[]');
+      return Array.isArray(v)?v:[];
+    }catch(e){return []}
+  }
+  function writeSuggestionLocal(city,items){
+    try{exploreStorage.set(suggestionKey(city),JSON.stringify(Array.isArray(items)?items.slice(-30):[]));return true}catch(e){return false}
+  }
+  function localSuggestionFallback(city,name,category,text){
+    const items=readSuggestionLocal(city);
+    items.push({name,category,text,time:new Date().toISOString()});
+    return writeSuggestionLocal(city,items);
+  }
+  window.__exploreUpLocalSuggestionFallback=localSuggestionFallback;
+  window.__exploreUpReadSuggestionLocal=readSuggestionLocal;
+  window.__exploreUpWriteSuggestionLocal=writeSuggestionLocal;
+})();
+</script>
+<!-- ExploreUP stability batch v1 -->
 </body></html>
