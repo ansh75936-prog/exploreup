@@ -1,6 +1,51 @@
-const CACHE = 'exploreup-shell-v12';
-const APP_SHELL = ['./','./index.html','./index-1.html','./manifest.webmanifest','./icons/icon.svg','./images/agra-photo.svg','./priority5-boot.js','./priority5.js','./priority5-fix.js','./priority5-arya.js','./priority5-wishlist.js','./priority5-wishlist-fix.js','./priority5-plan-fix.js'];
-async function patchAgraPage(response){if(!response||!response.ok)return response;try{const html=await response.text();if(!/data-exploreup-agra-test/.test(html)){const patch=`<script data-exploreup-agra-test>(function(){const photo='images/agra-photo.svg';function patchAgra(){document.querySelectorAll('.city').forEach(card=>{const title=card.querySelector('.citytext h3');if(title&&title.textContent.trim().toLowerCase()==='agra'){const img=card.querySelector('img');if(img){img.src=photo;img.removeAttribute('srcset')}}});document.querySelectorAll('.modalhero').forEach(hero=>{const title=hero.querySelector('h1,h2,h3');if(title&&title.textContent.trim().toLowerCase().includes('agra'))hero.style.backgroundImage="linear-gradient(90deg,rgba(3,20,41,.72),rgba(3,20,41,.18)),url('"+photo+"')"})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',patchAgra);else patchAgra();new MutationObserver(patchAgra).observe(document.documentElement,{subtree:true,childList:true})})();</script><script src="priority5-boot.js"></script><script src="priority5.js"></script><script src="priority5-fix.js"></script><script src="priority5-arya.js"></script><script src="priority5-wishlist.js"></script><script src="priority5-wishlist-fix.js"></script><script src="priority5-plan-fix.js"></script>`;const updated=html.replace(/<\/body>/i,patch+'</body>');const headers=new Headers(response.headers);headers.delete('content-length');headers.delete('content-encoding');headers.delete('content-range');return new Response(updated,{status:response.status,statusText:response.statusText,headers})}}catch(_){}return response}
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',event=>{const request=event.request;if(request.method!=='GET')return;const url=new URL(request.url);if(url.origin!==self.location.origin)return;if(request.mode==='navigate'||request.destination==='document'){event.respondWith(fetch(request).then(response=>patchAgraPage(response)).then(response=>{if(response&&response.status===200&&response.type==='basic'){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{})}return response}).catch(()=>caches.match(request).then(cached=>cached||caches.match('./index-1.html'))));return}event.respondWith(caches.match(request).then(cached=>{const network=fetch(request).then(response=>{if(response&&response.status===200&&response.type==='basic'){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{})}return response}).catch(()=>null);return cached||network.then(response=>response||caches.match('./index.html'))}))});
+const CACHE = 'exploreup-shell-v13';
+const APP_SHELL = ['./','./index.html','./index-1.html','./manifest.webmanifest','./icons/icon.svg'];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(CACHE).then(cache => cache.put(request, copy)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || caches.match('./index-1.html')))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request)
+      .then(cached => cached || fetch(request).then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(request, copy)).catch(() => {});
+        }
+        return response;
+      }).catch(() => caches.match('./index.html')))
+  );
+});
