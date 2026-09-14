@@ -2,10 +2,10 @@
 (function(){
   'use strict';
   const imageMap = {
-    'jhansi': './images.jpeg',
-    'prayagraj': './images (1).jpeg',
-    'ayodhya': './images (2).jpeg',
-    'gorakhpur': './images (3).jpeg'
+    'jhansi': './images (1).jpeg',
+    'prayagraj': './images (2).jpeg',
+    'ayodhya': './images (3).jpeg',
+    'gorakhpur': './images.jpeg'
   };
 
   function applyCityImages(){
