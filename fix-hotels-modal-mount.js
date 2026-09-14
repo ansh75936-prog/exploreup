@@ -1,4 +1,4 @@
-/* ExploreUP Hotels & Stays — reliable district-modal mount + hotel-only placement fix. */
+/* ExploreUP Hotels & Stays — district hotel block placement fix. */
 (function(){
   'use strict';
 
@@ -12,33 +12,15 @@
       if(!isOpen()) return;
       var modal=document.getElementById('modal');
       var stay=document.getElementById('districtStay');
-      if(!modal || !stay) return;
+      var block=document.getElementById('exploreup-hotels-stays');
+      if(!modal || !stay || !block) return;
 
-      var candidates=Array.from(modal.querySelectorAll('[id*="hotel" i],[class*="hotel" i],[data-exploreup-hotels]'));
-      candidates=candidates.filter(function(el){
-        if(el===stay || stay.contains(el)) return false;
-        var text=(el.innerText||el.textContent||'').trim();
-        return text.length>0;
-      });
-      if(!candidates.length) return;
-
-      candidates.sort(function(a,b){
-        var da=0,db=0,x=a;
-        while(x&&x.parentElement){da++;x=x.parentElement;}
-        x=b;
-        while(x&&x.parentElement){db++;x=x.parentElement;}
-        return da-db;
-      });
-
-      var block=candidates[0];
-      while(block.parentElement && block.parentElement!==modal && block.parentElement!==stay.parentElement){
-        if(block.parentElement.id && /hotel/i.test(block.parentElement.id)) block=block.parentElement;
-        else break;
-      }
-
-      /* Hotels belong only to the Hotels/Stay area — never to Health. */
-      if(block.parentElement!==stay) stay.appendChild(block);
+      /* Move the actual hotel list itself — never a generic hotel-looking
+         nav/chip/parent element. Keep it inside the district Stay section. */
+      if(block.parentElement !== stay) stay.appendChild(block);
       block.setAttribute('data-exploreup-hotel-placement','districtStay');
+      block.style.display='block';
+      block.style.visibility='visible';
     }catch(e){}
   }
 
@@ -48,7 +30,7 @@
         window.ExploreUPHotels.mount();
       }
     }catch(e){}
-    [0,60,180,400,800].forEach(function(ms){ setTimeout(placeHotelBlock,ms); });
+    [0,60,180,400,800,1400].forEach(function(ms){ setTimeout(placeHotelBlock,ms); });
   }
 
   function remountAfterInteraction(){
