@@ -2,7 +2,7 @@ name: ExploreUP Stability Step 3
 on:
   push:
     paths:
-      - 'index-1.html'
+      - 'stability-trigger.txt'
     branches: [main]
 jobs:
   fix-favs:
