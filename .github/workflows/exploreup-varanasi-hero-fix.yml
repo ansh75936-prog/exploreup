@@ -1,0 +1,32 @@
+name: ExploreUP Varanasi hero image fix
+on:
+  push:
+    paths:
+      - "exploreup-varanasi-trigger.txt"
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Varanasi feature banner
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          marker='/* ExploreUP Varanasi hero image stability fix v1 */'
+          if marker not in s:
+              script='''\n<script>\n/* ExploreUP Varanasi hero image stability fix v1 */\n(function(){\n  'use strict';\n  function apply(){\n    try{\n      const el=document.querySelector('.featurebanner');\n      if(!el)return;\n      el.style.backgroundImage='linear-gradient(180deg,rgba(3,20,41,.08),rgba(3,20,41,.86)),url("./images/varanasi.jpg")';\n      el.style.backgroundSize='cover';\n      el.style.backgroundPosition='center';\n    }catch(e){console.warn('ExploreUP Varanasi hero image warning:',e)}\n  }\n  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();\n})();\n</script>\n'''
+              s=s.replace('</body>',script+'\n</body>',1)
+              p.write_text(s,encoding='utf-8')
+          Path('exploreup-varanasi-trigger.txt').unlink(missing_ok=True)
+          PY
+      - name: Commit Varanasi hero fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html exploreup-varanasi-trigger.txt
+          git diff --cached --quiet || git commit -m "Use local Varanasi image for featured hero"
+          git push
