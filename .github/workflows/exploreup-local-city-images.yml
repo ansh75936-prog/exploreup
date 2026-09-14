@@ -1,0 +1,34 @@
+name: ExploreUP local city image stability patch
+
+on:
+  push:
+    paths:
+      - "exploreup-image-trigger.txt"
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch local Lucknow and Varanasi images
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          marker='/* ExploreUP local city image stability patch v1 */'
+          if marker not in s:
+              script='''\n<script>\n/* ExploreUP local city image stability patch v1 */\n(function(){\n  'use strict';\n  const localImages={Lucknow:'./images/lucknow.jpg',Varanasi:'./images/varanasi.jpg'};\n  function applyCards(){\n    document.querySelectorAll('#cityGrid .city').forEach(card=>{\n      const name=card.querySelector('.citytext h3')?.textContent?.trim();\n      const src=localImages[name];\n      const img=card.querySelector('img');\n      if(src&&img&&img.getAttribute('src')!==src){\n        img.setAttribute('src',src);\n        img.setAttribute('loading','lazy');\n        img.setAttribute('decoding','async');\n        img.setAttribute('onerror','exploreUpImageFallback(this)');\n      }\n    });\n  }\n  function applyProfile(){\n    const title=document.getElementById('modalTitle');\n    const hero=document.getElementById('modalHero');\n    if(!title||!hero)return;\n    const name=title.textContent.trim();\n    const src=localImages[name];\n    if(src)hero.style.backgroundImage='linear-gradient(transparent,#06162dcc),url("'+src+'")';\n  }\n  function applyAll(){try{applyCards();applyProfile();}catch(e){console.warn('ExploreUP local image patch warning:',e)}}\n  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();\n  new MutationObserver(applyAll).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','src']});\n})();\n</script>\n'''
+              s=s.replace('</body>',script+'\n</body>',1)
+              p.write_text(s,encoding='utf-8')
+          Path('exploreup-image-trigger.txt').unlink(missing_ok=True)
+          PY
+      - name: Commit patched website
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html exploreup-image-trigger.txt
+          git diff --cached --quiet || git commit -m "Use local Lucknow and Varanasi images"
+          git push
