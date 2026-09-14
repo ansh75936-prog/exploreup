@@ -19,5 +19,12 @@ try{
     s2.dataset.exploreupCityImageFix='1';
     (document.head||document.documentElement).appendChild(s2);
   }
+  if(!document.querySelector('script[data-exploreup-hotels-mount-fix]')){
+    const s3=document.createElement('script');
+    s3.src='./fix-hotels-modal-mount.js';
+    s3.async=false;
+    s3.dataset.exploreupHotelsMountFix='1';
+    (document.head||document.documentElement).appendChild(s3);
+  }
 }catch(e){}
 })();
