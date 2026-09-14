@@ -1,11 +1,58 @@
-const CACHE = 'exploreup-shell-v3';
+const CACHE = 'exploreup-shell-v4';
 const APP_SHELL = [
   './',
   './index.html',
   './index-1.html',
   './manifest.webmanifest',
-  './icons/icon.svg'
+  './icons/icon.svg',
+  './images/agra-photo.svg'
 ];
+
+async function patchAgraPage(response) {
+  if (!response || !response.ok) return response;
+  try {
+    const html = await response.text();
+    if (!/data-exploreup-agra-test/.test(html)) {
+      const patch = `<script data-exploreup-agra-test>
+(function(){
+  const photo = 'images/agra-photo.svg';
+  function patchAgra(){
+    document.querySelectorAll('.city').forEach(card => {
+      const title = card.querySelector('.citytext h3');
+      if (title && title.textContent.trim().toLowerCase() === 'agra') {
+        const img = card.querySelector('img');
+        if (img) {
+          img.src = photo;
+          img.removeAttribute('srcset');
+        }
+      }
+    });
+    document.querySelectorAll('.modalhero').forEach(hero => {
+      const title = hero.querySelector('h1,h2,h3');
+      if (title && title.textContent.trim().toLowerCase().includes('agra')) {
+        hero.style.backgroundImage =
+          "linear-gradient(90deg,rgba(3,20,41,.72),rgba(3,20,41,.18)),url('" + photo + "')";
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', patchAgra);
+  } else {
+    patchAgra();
+  }
+  new MutationObserver(patchAgra).observe(document.documentElement, {subtree:true, childList:true});
+})();
+</script>`;
+      const updated = html.replace(/<\/body>/i, patch + '</body>');
+      return new Response(updated, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers
+      });
+    }
+  } catch (_) {}
+  return response;
+}
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -32,11 +79,10 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Always try the network first for HTML so published updates are not
-  // trapped behind an old cached index. Fall back to the cached app offline.
   if (request.mode === 'navigate' || request.destination === 'document') {
     event.respondWith(
       fetch(request)
+        .then(response => patchAgraPage(response))
         .then(response => {
           if (response && response.status === 200 && response.type === 'basic') {
             const copy = response.clone();
@@ -49,8 +95,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // For supporting assets, use cache first and refresh the cache in the
-  // background when the network has a newer copy.
   event.respondWith(
     caches.match(request).then(cached => {
       const network = fetch(request).then(response => {
