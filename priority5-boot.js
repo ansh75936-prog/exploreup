@@ -5,6 +5,13 @@ try{
   if(!Array.isArray(window.cities) && Array.isArray(window.__exploreUpDistrictCities)){
     window.cities=window.__exploreUpDistrictCities;
   }
+  if(!document.querySelector('script[data-exploreup-district-services]')){
+    const s0=document.createElement('script');
+    s0.src='./district-services-framework.js';
+    s0.async=false;
+    s0.dataset.exploreupDistrictServices='1';
+    (document.head||document.documentElement).appendChild(s0);
+  }
   if(!document.querySelector('script[data-exploreup-hotels]')){
     const s=document.createElement('script');
     s.src='./district-hotels.js';
