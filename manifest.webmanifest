@@ -1,7 +1,7 @@
 {
   "name": "ExploreUP — Explore Uttar Pradesh",
   "short_name": "ExploreUP",
-  "start_url": "./index-1.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f8fc",
