@@ -10,6 +10,7 @@ try{
   };
   load('./district-services-framework.js','data-exploreup-district-services');
   load('./district-hotels.js','data-exploreup-hotels');
+  load('./district-hotels-verified-overrides.js','data-exploreup-verified-hotel-overrides');
   load('./fix-ayodhya-hidden-gems-image.js','data-exploreup-city-image-fix');
   load('./fix-hotels-modal-mount.js?v=2','data-exploreup-hotels-mount-fix');
   load('./arya-ai-knowledge.js?v=1','data-exploreup-arya-knowledge');
