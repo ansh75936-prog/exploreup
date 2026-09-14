@@ -1,0 +1,45 @@
+name: ExploreUP Stability Step 2
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  stability-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply targeted stability fix
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index-1.html')
+          s = p.read_text(encoding='utf-8')
+          old = "if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}"
+          new = "/* Service Worker intentionally disabled for stability. The app runs directly from index-1.html. */"
+          if old in s:
+              s = s.replace(old, new, 1)
+              p.write_text(s, encoding='utf-8')
+              print('Removed automatic Service Worker registration.')
+          else:
+              print('Service Worker registration already absent; no HTML change needed.')
+          PY
+
+      - name: Commit targeted fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Stability: disable automatic service worker registration"
+          git push
