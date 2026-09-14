@@ -12,5 +12,12 @@ try{
     s.dataset.exploreupHotels='1';
     (document.head||document.documentElement).appendChild(s);
   }
+  if(!document.querySelector('script[data-exploreup-city-image-fix]')){
+    const s2=document.createElement('script');
+    s2.src='./fix-ayodhya-hidden-gems-image.js';
+    s2.async=false;
+    s2.dataset.exploreupCityImageFix='1';
+    (document.head||document.documentElement).appendChild(s2);
+  }
 }catch(e){}
 })();
