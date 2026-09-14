@@ -1427,4 +1427,37 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 })();
 </script>
 <!-- ExploreUP stability batch v1 -->
+
+<script>
+/* ExploreUP local city image stability patch v1 */
+(function(){
+  'use strict';
+  const localImages={Lucknow:'./images/lucknow.jpg',Varanasi:'./images/varanasi.jpg'};
+  function applyCards(){
+    document.querySelectorAll('#cityGrid .city').forEach(card=>{
+      const name=card.querySelector('.citytext h3')?.textContent?.trim();
+      const src=localImages[name];
+      const img=card.querySelector('img');
+      if(src&&img&&img.getAttribute('src')!==src){
+        img.setAttribute('src',src);
+        img.setAttribute('loading','lazy');
+        img.setAttribute('decoding','async');
+        img.setAttribute('onerror','exploreUpImageFallback(this)');
+      }
+    });
+  }
+  function applyProfile(){
+    const title=document.getElementById('modalTitle');
+    const hero=document.getElementById('modalHero');
+    if(!title||!hero)return;
+    const name=title.textContent.trim();
+    const src=localImages[name];
+    if(src)hero.style.backgroundImage='linear-gradient(transparent,#06162dcc),url("'+src+'")';
+  }
+  function applyAll(){try{applyCards();applyProfile();}catch(e){console.warn('ExploreUP local image patch warning:',e)}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();
+  new MutationObserver(applyAll).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','src']});
+})();
+</script>
+
 </body></html>
