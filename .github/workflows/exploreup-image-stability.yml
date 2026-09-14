@@ -1,0 +1,36 @@
+name: ExploreUP image stability patch
+on:
+  push:
+    paths:
+      - "image-stability-trigger.txt"
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace fragile remote image fallbacks with local assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=85":"./taj-mahal-mausoleum-in-agra.jpg",
+            "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=85":"./taj-mahal-mausoleum-in-agra.jpg",
+            "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=75":"./taj-mahal-mausoleum-in-agra.jpg",
+            "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=85":"./images/varanasi.jpg",
+            "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=70":"./images/india-3578009_1280.jpg",
+          }
+          for a,b in replacements.items():
+              s=s.replace(a,b)
+          p.write_text(s,encoding='utf-8')
+          PY
+          rm -f image-stability-trigger.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html image-stability-trigger.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Stabilize ExploreUP image fallbacks"
+          git push
