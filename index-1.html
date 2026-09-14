@@ -1357,7 +1357,7 @@ async function loadDistrictContent(slug){try{if(!exploreSupabase||!slug)return n
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;document.getElementById('installBtn')?.classList.add('show')});async function installExploreUP(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();try{await deferredInstallPrompt.userChoice}catch(e){}deferredInstallPrompt=null;document.getElementById('installBtn')?.classList.remove('show')}
 function setupOfflineState(){const bar=document.getElementById('offlineBar');const sync=()=>{if(!bar)return;bar.style.display=navigator.onLine?'none':'block';bar.classList.toggle('show',!navigator.onLine)};window.addEventListener('online',sync);window.addEventListener('offline',sync);sync()}
 setupOfflineState();
-if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+/* Service Worker intentionally disabled for stability. The app runs directly from index-1.html. */
 
 // Current government profile — update this small object when the office-holder changes.
 const governmentProfile={
