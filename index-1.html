@@ -1460,4 +1460,22 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 })();
 </script>
 
+
+<script>
+/* ExploreUP Varanasi hero image stability fix v1 */
+(function(){
+  'use strict';
+  function apply(){
+    try{
+      const el=document.querySelector('.featurebanner');
+      if(!el)return;
+      el.style.backgroundImage='linear-gradient(180deg,rgba(3,20,41,.08),rgba(3,20,41,.86)),url("./images/varanasi.jpg")';
+      el.style.backgroundSize='cover';
+      el.style.backgroundPosition='center';
+    }catch(e){console.warn('ExploreUP Varanasi hero image warning:',e)}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
+})();
+</script>
+
 </body></html>
