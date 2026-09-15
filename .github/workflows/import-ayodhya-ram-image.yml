@@ -1,0 +1,21 @@
+name: Import Ayodhya Ram Mandir card image
+on:
+  push:
+    paths:
+      - "images/ayodhya-ram-mandir-card.b64"
+permissions:
+  contents: write
+jobs:
+  import-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode image and remove temporary base64 file
+        run: |
+          base64 -d images/ayodhya-ram-mandir-card.b64 > images/ayodhya-ram-mandir-card.jpg
+          rm images/ayodhya-ram-mandir-card.b64
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/ayodhya-ram-mandir-card.jpg images/ayodhya-ram-mandir-card.b64
+          git commit -m "Add Ayodhya Ram Mandir Travel Ideas image"
+          git push

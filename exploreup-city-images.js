@@ -10,7 +10,7 @@
   };
 
   const travelImageMap = {
-    'Ayodhya Spiritual Trip': './images (2).jpeg?v=20260915',
+    'Ayodhya Spiritual Trip': './images/ayodhya-ram-mandir-card.jpg?v=20260915',
     'Lucknow Heritage Day': './images/lucknow.jpg?v=20260915'
   };
 
