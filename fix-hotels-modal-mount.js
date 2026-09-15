@@ -52,6 +52,9 @@
     if(!isOpen()) return;
     clearTimeout(observerTimer);
     observerTimer=setTimeout(function(){
+      /* The modal may become visible after the click handler has already run.
+         Mount again here so the hotel block is created after districtStay exists. */
+      scheduleMount();
       placeHotelBlock();
     },120);
   }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
