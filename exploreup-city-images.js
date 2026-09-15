@@ -1,8 +1,4 @@
-/* ExploreUP — targeted district image restoration + Travel Ideas slider.
- * District fix: only the four requested district cards are changed.
- * Travel Ideas is converted from vertical scrolling to a horizontal slider.
- * All other district cards remain untouched.
- */
+/* ExploreUP — targeted district image restoration + Travel Ideas slider. */
 (function(){
   'use strict';
 
@@ -27,18 +23,12 @@
   }
 
   function setupTravelIdeasSlider(){
-    const headings = Array.from(document.querySelectorAll('h2,h3,h4,.section-title'));
-    const title = headings.find(el => el.textContent.trim().toLowerCase() === 'travel ideas');
-    if (!title) return;
-
-    const section = title.closest('section') || title.parentElement;
+    const section = document.querySelector('#travel');
     if (!section || section.dataset.exploreupTravelSlider === '1') return;
 
-    const cards = Array.from(section.querySelectorAll('.gem'));
-    if (cards.length < 2) return;
-
-    let track = cards[0].parentElement;
-    if (!track) return;
+    const track = section.querySelector('.trails');
+    const cards = track ? Array.from(track.querySelectorAll('.trail')) : [];
+    if (!track || cards.length < 2) return;
 
     section.dataset.exploreupTravelSlider = '1';
     track.classList.add('exploreup-travel-track');
@@ -49,13 +39,15 @@
     track.style.scrollSnapType = 'x mandatory';
     track.style.scrollbarWidth = 'none';
     track.style.gap = '16px';
-    track.style.paddingBottom = '8px';
+    track.style.padding = '2px 2px 10px';
     track.style.overscrollBehaviorX = 'contain';
+
     cards.forEach(card => {
-      card.style.flex = '0 0 min(82vw, 360px)';
+      card.style.flex = '0 0 min(82vw, 420px)';
       card.style.scrollSnapAlign = 'start';
     });
 
+    const heading = section.querySelector('.sectionhead');
     const controls = document.createElement('div');
     controls.className = 'exploreup-travel-controls';
     controls.style.display = 'flex';
@@ -63,30 +55,38 @@
     controls.style.gap = '8px';
     controls.style.margin = '0 0 12px';
 
-    const makeButton = (label, direction) => {
+    function makeButton(label, direction){
       const b = document.createElement('button');
       b.type = 'button';
       b.textContent = label;
       b.setAttribute('aria-label', direction < 0 ? 'Previous travel idea' : 'Next travel idea');
-      b.style.width = '40px';
-      b.style.height = '40px';
+      b.style.width = '42px';
+      b.style.height = '42px';
       b.style.borderRadius = '50%';
       b.style.border = '1px solid #cbd5e1';
       b.style.background = '#fff';
       b.style.cursor = 'pointer';
-      b.style.fontSize = '20px';
+      b.style.fontSize = '22px';
+      b.style.fontWeight = '800';
       b.addEventListener('click', () => {
-        track.scrollBy({left: direction * Math.max(track.clientWidth * 0.82, 280), behavior:'smooth'});
+        track.scrollBy({
+          left: direction * Math.max(track.clientWidth * 0.82, 300),
+          behavior: 'smooth'
+        });
       });
       return b;
-    };
+    }
 
     controls.appendChild(makeButton('‹', -1));
     controls.appendChild(makeButton('›', 1));
-    title.parentNode.insertBefore(controls, title.nextSibling);
+    if (heading) heading.appendChild(controls);
 
     const style = document.createElement('style');
-    style.textContent = '.exploreup-travel-track::-webkit-scrollbar{display:none}.exploreup-travel-track>.gem{min-width:0}@media(min-width:900px){.exploreup-travel-track>.gem{flex-basis:320px}}';
+    style.textContent = `
+      .exploreup-travel-track::-webkit-scrollbar{display:none}
+      .exploreup-travel-track>.trail{min-width:0}
+      @media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}
+    `;
     document.head.appendChild(style);
   }
 
@@ -105,7 +105,10 @@
   new MutationObserver(() => {
     if (queued) return;
     queued = true;
-    setTimeout(() => { queued = false; applyAll(); }, 150);
+    setTimeout(() => {
+      queued = false;
+      applyAll();
+    }, 150);
   }).observe(document.documentElement, {
     childList: true,
     subtree: true,
