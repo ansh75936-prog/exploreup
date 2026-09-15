@@ -41,6 +41,7 @@ function apply(){
     d.Sitapur=[["Rahi Tourist Bungalow, Neemsar","Neemsar, Sitapur, Uttar Pradesh",""]];
     d.Unnao=[["Rahi Tourist Bungalow, Nawabganj","Pakshi Vihar, Lucknow-Kanpur Road, Nawabganj, Unnao, Uttar Pradesh-209859","9149099890"]];
     d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Varanasi, Uttar Pradesh-221007",""]];
+    d.Jaunpur=[["Raghuwanshi Hotel","Jaunpur, Uttar Pradesh",""],["Siddharth Hotel","Jaunpur, Uttar Pradesh",""],["Hotel Riverview","Jaunpur, Uttar Pradesh",""]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
