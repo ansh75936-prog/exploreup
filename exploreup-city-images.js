@@ -26,6 +26,10 @@
     return null;
   }
 
+  function setBackground(el, value){
+    if (el.style.backgroundImage !== value) el.style.backgroundImage = value;
+  }
+
   function applyCards(){
     document.querySelectorAll('.city, .trail').forEach(card => {
       const key = getKey(card.innerText || card.textContent || card.getAttribute('data-city'));
@@ -35,12 +39,17 @@
       if (!src) return;
 
       if (img && img.getAttribute('src') !== src) img.src = src;
-      if (img) img.setAttribute('data-exploreup-local-city-image', key);
+      if (img && img.getAttribute('data-exploreup-local-city-image') !== key) {
+        img.setAttribute('data-exploreup-local-city-image', key);
+      }
 
       // Travel Idea cards use CSS backgrounds rather than <img> tags.
       if (card.classList.contains('trail')) {
-        card.style.backgroundImage = 'linear-gradient(transparent,#06162ddd),url("' + src.replace(/"/g, '\\"') + '")';
-        card.setAttribute('data-exploreup-local-city-image', key);
+        const background = 'linear-gradient(transparent,#06162ddd),url("' + src.replace(/"/g, '\\"') + '")';
+        setBackground(card, background);
+        if (card.getAttribute('data-exploreup-local-city-image') !== key) {
+          card.setAttribute('data-exploreup-local-city-image', key);
+        }
       }
     });
   }
@@ -52,7 +61,10 @@
     if (!key) return;
     const src = imageMap[key];
     const hero = modal.querySelector('.modalhero');
-    if (hero) hero.style.backgroundImage = 'linear-gradient(90deg,rgba(3,20,41,.18),rgba(3,20,41,.18)),url("' + src.replace(/"/g, '\\"') + '")';
+    if (hero) {
+      const background = 'linear-gradient(90deg,rgba(3,20,41,.18),rgba(3,20,41,.18)),url("' + src.replace(/"/g, '\\"') + '")';
+      setBackground(hero, background);
+    }
   }
 
   function applyAll(){
@@ -68,5 +80,10 @@
     if (queued) return;
     queued = true;
     setTimeout(() => { queued = false; applyAll(); }, 100);
-  }).observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['style','src','class']});
+  }).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src','class']
+  });
 })();
