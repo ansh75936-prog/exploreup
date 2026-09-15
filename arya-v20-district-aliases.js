@@ -23,7 +23,7 @@ const C={
 'khane':'khane','khaane':'khane','khaana':'khana','khaun':'khaun','khaye':'khaye','khae':'khaye','milega':'milega','milenge':'milenge'
 };
 const I=[
-[/\b(ghoomne|ghumne|ghoomna|ghumna|ghoom|ghum|dekhne|dekhna|dekho|dekhe|visit|visiting|tourist|tourism|must visit|best places|places? to visit|kya ghoome|kya ghume|kahan ghoome|kaha ghoome|kahan ghume|kaha ghume|ghoomne ki jagah|ghumne ki jagah|ghoomne wali jagah|ghumne wali jagah|dekhne layak|dekhne ki jagah|kya dekh sakte|kya dekhe|kya dekhu|kya dekhen|darshan)\b/i,'places'],
+[/\b(ghoomne|ghumne|ghoomna|ghumna|ghoom|ghum|dekhne|dekhna|dekho|dekhe|visit|visiting|tourist|tourism|must visit|best places|places? to visit|places?|kya ghoome|kya ghume|kahan ghoome|kaha ghoome|kahan ghume|kaha ghume|ghoomne ki jagah|ghumne ki jagah|ghoomne wali jagah|ghumne wali jagah|dekhne layak|dekhne ki jagah|kya dekh sakte|kya dekhe|kya dekhu|kya dekhen|darshan)\b/i,'places'],
 [/\b(khana|khane|khana hai|khane ko|khaane|khaana|kya khaye|kya khana|kya khaun|kahan khaye|kaha khaye|food|foods|eat|eating|famous food|local food|street food|food places|khaane ki jagah|khane ki jagah|khaane ke liye|kya kha sakte|kya khana milega)\b/i,'food'],
 [/\b(hotel|hotels|rehne|rehna|rahna|rukna|ruke|stay|stays|room|rooms|accommodation|lodge|lodging|kahan ruke|kaha ruke|kahan rahu|kaha rahu|rehne ki jagah|rehne ke liye|rukne ki jagah|stay karna|stay chahiye|hotel chahiye|room chahiye|rukne ke liye)\b/i,'hotel'],
 [/\b(hospital|hospitals|doctor|doctors|clinic|clinics|emergency|medical|ilaaj|ilaj|treatment|dawai|dava|health|healthcare|doctor chahiye|hospital chahiye|medical help)\b/i,'hospital'],
@@ -39,8 +39,13 @@ const norm=s=>String(s||'').toLowerCase().normalize('NFKC').replace(/[’']/g,"'
 function alias(s){let n=norm(s);for(const k of Object.keys(A).sort((a,b)=>b.length-a.length)){const r=new RegExp('(^|[^a-z0-9])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^a-z0-9])','i');if(r.test(n))return s.replace(r,(_,p)=>p+A[k]);}return s;}
 function common(s){return norm(s).split(' ').map(w=>C[w]||w).join(' ');}
 function normalize(q){let s=common(alias(q));for(const [r,t] of I){if(r.test(s)){s=s.replace(r,t);break;}}return s;}
-const H=/\b(bhai|yaar|yr|yrr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kitna|kitne|kitni|chahiye|chaiye|btao|bta|krna|krdo|ghoom|ghum|ghumna|ghumne|dekhne|khana|khane|khaane|rehna|rehne|rahna|rukna|ruke|hotel|stay|room|food|hospital|doctor|shopping|market|train|bus|flight|trip|travel|mandir|temple|history|culture|budget|compare|jila|jile)\b/i;
-function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}input.value=n;window.aryaAnswer(n,(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');return true;}
+const H=/\b(bhai|yaar|yr|yrr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kitna|kitne|kitni|chahiye|chaiye|btao|bta|krna|krdo|ghoom|ghum|ghumna|ghumne|dekhne|places?|khana|khane|khaane|rehna|rehne|rahna|rukna|ruke|hotel|stay|room|food|hospital|doctor|shopping|market|train|bus|flight|trip|travel|mandir|temple|history|culture|budget|compare|jila|jile)\b/i;
+
+// Guard against substring collisions in the original V20 city matcher (e.g. Prayagraj contains "Agra").
+// The engine accepts a shorter unique token because it checks cityName.includes(queryText).
+const SAFE_CITY={Prayagraj:'pray'};
+function safeEngineQuery(s){let out=s;for(const [city,token] of Object.entries(SAFE_CITY)){const r=new RegExp('(^|[^a-z0-9])'+city.toLowerCase()+'(?=$|[^a-z0-9])','i');out=out.replace(r,(_,p)=>p+token);}return out;}
+function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}const engineQuery=safeEngineQuery(n);input.value=n;window.aryaAnswer(engineQuery,(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');return true;}
 function handle(e){if(e.type==='keydown'&&e.key!=='Enter')return;const input=document.getElementById('aryaInput')||document.getElementById('userInput');if(input)route(input,e);}
 document.addEventListener('keydown',handle,true);
 document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('button');if(b&&/send|ask|poocho|पूछ/i.test(norm(b.textContent)))handle(e);},true);
