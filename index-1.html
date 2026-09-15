@@ -1192,7 +1192,7 @@ You can use Admin for authorised moderation, Suggest an Update to send informati
    if(/plan|planner|itinerary|trip|budget|cost|expense|recommend|recommendation|smart plan|quick plan|offline|online|internet|people|interest/.test(x)) return plannerKnowledge+`\n\nOpen Arya Trip Plan Maker from the Plan/Trip Planner controls to generate a destination plan.`;
    if(/search|find|navigation|menu|use|kaise|kahan|where|how/.test(x)) return `ExploreUP website help:
 Use the main search to find destinations, open a city/district for its full guide, then use its sections for Food, Stay & Health, Knowledge, Trip Planner, Transport and Shopping. You can also use the district search inside each destination page.`;
-   return `${L.welcome} ${L.ask}\n\nI only answer questions about information and features available inside ExploreUP. Arya knows the 75-district guides, district-wise Hotels/Stays and Hospitals, Trip Plan Maker, Budget Calculator, Smart Recommendations, and Quick/Smart planning modes.`;
+   return `${L.welcome} ${L.ask}\n\nI can help with Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features.`;
  };
  if(c){
    const k=aryaKnowledge[c.name]||{};
@@ -1478,5 +1478,5 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 })();
 </script>
 
-  <script src="./exploreup-city-images.js?v=20260922"></script>
+  <script src="./exploreup-city-images.js?v=20260923"></script>
 </body></html>
