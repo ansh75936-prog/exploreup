@@ -7,6 +7,7 @@ permissions:
   contents: write
 jobs:
   integrate:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +18,7 @@ jobs:
           import re
           p = Path('index-1.html')
           s = p.read_text(encoding='utf-8')
-          tag = '<script src="./exploreup-city-images.js?v=20260918"></script>'
+          tag = '<script src="./exploreup-city-images.js?v=20260921"></script>'
           pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
           if re.search(pattern, s):
               s = re.sub(pattern, tag, s, count=1)
