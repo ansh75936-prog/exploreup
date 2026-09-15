@@ -10,7 +10,7 @@
   };
 
   const travelImageMap = {
-    'Ayodhya Spiritual Trip': './images/ayodhya-ram-mandir-card.jpg?v=20260917',
+    'Ayodhya Spiritual Trip': './images/ayodhya-ram-mandir-card.jpg?v=20260918',
     'Lucknow Heritage Day': './images/lucknow.jpg?v=20260915'
   };
 
@@ -50,25 +50,28 @@
           img = document.createElement('img');
           img.className = 'exploreup-ayodhya-travel-image';
           img.alt = 'Ram Mandir, Ayodhya';
-          img.loading = 'lazy';
+          img.loading = 'eager';
           img.decoding = 'async';
           img.setAttribute('aria-hidden', 'true');
           card.prepend(img);
         }
         if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+        img.loading = 'eager';
         img.style.setProperty('position','absolute','important');
         img.style.setProperty('inset','0','important');
         img.style.setProperty('width','100%','important');
         img.style.setProperty('height','100%','important');
         img.style.setProperty('object-fit','cover','important');
         img.style.setProperty('object-position','center','important');
-        img.style.setProperty('z-index','0','important');
+        img.style.setProperty('z-index','1','important');
         img.style.setProperty('display','block','important');
+        img.style.setProperty('visibility','visible','important');
+        img.style.setProperty('opacity','1','important');
         img.style.setProperty('pointer-events','none','important');
         Array.from(card.children).forEach(child => {
           if (child !== img) {
             child.style.position = 'relative';
-            child.style.zIndex = '2';
+            child.style.zIndex = '3';
           }
         });
       }
@@ -127,7 +130,7 @@
     controls.appendChild(makeButton('›', 1));
     if (heading) heading.appendChild(controls);
     const style = document.createElement('style');
-    style.textContent = `.exploreup-travel-track::-webkit-scrollbar{display:none}.exploreup-travel-track>.trail{min-width:0}@media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}`;
+    style.textContent = `.exploreup-travel-track::-webkit-scrollbar{display:none}.exploreup-travel-track>.trail{min-width:0}.exploreup-ayodhya-travel-image{z-index:1!important;display:block!important;visibility:visible!important;opacity:1!important}@media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}`;
     document.head.appendChild(style);
   }
 
