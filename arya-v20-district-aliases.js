@@ -1,19 +1,19 @@
-/* ExploreUP V20 — Arya Hinglish understanding layer. Data-preserving. Cache 20260926 */
+/* ExploreUP V20 — Arya Hinglish understanding layer. Data-preserving. Cache 20260927 */
 (function(){
 'use strict';
 if(window.__exploreUpAryaDistrictAliasV20)return;
 window.__exploreUpAryaDistrictAliasV20=true;
 
 const A={
-'allahabad':'Prayagraj','allahabad city':'Prayagraj','prayag':'Prayagraj','prayag raj':'Prayagraj','ilhabad':'Prayagraj',
-'banaras':'Varanasi','benaras':'Varanasi','banarasi':'Varanasi','benares':'Varanasi','varansi':'Varanasi','kashi':'Varanasi','kashi nagari':'Varanasi',
-'faizabad':'Ayodhya','faizabad city':'Ayodhya','ayodhya dham':'Ayodhya','ayodhya ji':'Ayodhya',
-'noida':'Gautam Buddh Nagar','new okhla':'Gautam Buddh Nagar','greater noida':'Gautam Buddh Nagar','gb nagar':'Gautam Buddh Nagar','gautam buddha nagar':'Gautam Buddh Nagar',
-'mughalsarai':'Chandauli','mughal sarai':'Chandauli','dd u nagar':'Chandauli','deen dayal upadhyaya nagar':'Chandauli',
-'khalilabad':'Sant Kabir Nagar','naugarh':'Siddharthnagar','siddharth nagar':'Siddharthnagar','robertsganj':'Sonbhadra','roberts ganj':'Sonbhadra',
-'orai':'Jalaun','urai':'Jalaun','barsana':'Mathura','vrindavan':'Mathura','vrindaban':'Mathura','govardhan':'Mathura','gokul':'Mathura','braj':'Mathura',
-'gorakhpur city':'Gorakhpur','jhansi city':'Jhansi','lucknow city':'Lucknow','agra city':'Agra','kanpur city':'Kanpur Nagar','meerut city':'Meerut','bareilly city':'Bareilly',
-'firozabad city':'Firozabad','moradabad city':'Moradabad','saharanpur city':'Saharanpur','kannauj city':'Kannauj','jaunpur city':'Jaunpur','mirzapur city':'Mirzapur','etawah city':'Etawah','aligarh city':'Aligarh','ghaziabad city':'Ghaziabad','hapur city':'Hapur','rampur city':'Rampur','pilibhit city':'Pilibhit','amroha city':'Amroha','budaun city':'Budaun','bulandshahr city':'Bulandshahr','muzaffarnagar city':'Muzaffarnagar','pratapgarh city':'Pratapgarh','sultanpur city':'Sultanpur','unnao city':'Unnao','chitrakoot city':'Chitrakoot','kushinagar city':'Kushinagar','lakhimpur city':'Lakhimpur Kheri','lakhimpur kheri city':'Lakhimpur Kheri'
+'allahabad':'Prayagraj','allahabad city':'Prayagraj','prayag':'Prayagraj','prayag raj':'Prayagraj','ilhabad':'Prayagraj','prayagraj':'Prayagraj',
+'banaras':'Varanasi','benaras':'Varanasi','banarasi':'Varanasi','benares':'Varanasi','varansi':'Varanasi','kashi':'Varanasi','kashi nagari':'Varanasi','varanasi':'Varanasi',
+'faizabad':'Ayodhya','faizabad city':'Ayodhya','ayodhya dham':'Ayodhya','ayodhya ji':'Ayodhya','ayodhya':'Ayodhya',
+'noida':'Gautam Buddh Nagar','new okhla':'Gautam Buddh Nagar','greater noida':'Gautam Buddh Nagar','gb nagar':'Gautam Buddh Nagar','gautam buddha nagar':'Gautam Buddh Nagar','gautam buddh nagar':'Gautam Buddh Nagar',
+'mughalsarai':'Chandauli','mughal sarai':'Chandauli','dd u nagar':'Chandauli','deen dayal upadhyaya nagar':'Chandauli','chandauli':'Chandauli',
+'khalilabad':'Sant Kabir Nagar','sant kabir nagar':'Sant Kabir Nagar','naugarh':'Siddharthnagar','siddharth nagar':'Siddharthnagar','siddharthnagar':'Siddharthnagar','robertsganj':'Sonbhadra','roberts ganj':'Sonbhadra','sonbhadra':'Sonbhadra',
+'orai':'Jalaun','urai':'Jalaun','jalaun':'Jalaun','barsana':'Mathura','vrindavan':'Mathura','vrindaban':'Mathura','govardhan':'Mathura','gokul':'Mathura','braj':'Mathura','mathura':'Mathura',
+'gorakhpur city':'Gorakhpur','gorakhpur':'Gorakhpur','jhansi city':'Jhansi','jhansi':'Jhansi','lucknow city':'Lucknow','lucknow':'Lucknow','agra city':'Agra','agra':'Agra','kanpur city':'Kanpur Nagar','kanpur nagar':'Kanpur Nagar','kanpur':'Kanpur Nagar','meerut city':'Meerut','meerut':'Meerut','bareilly city':'Bareilly','bareilly':'Bareilly',
+'firozabad city':'Firozabad','firozabad':'Firozabad','moradabad city':'Moradabad','moradabad':'Moradabad','saharanpur city':'Saharanpur','saharanpur':'Saharanpur','kannauj city':'Kannauj','kannauj':'Kannauj','jaunpur city':'Jaunpur','jaunpur':'Jaunpur','mirzapur city':'Mirzapur','mirzapur':'Mirzapur','etawah city':'Etawah','etawah':'Etawah','aligarh city':'Aligarh','aligarh':'Aligarh','ghaziabad city':'Ghaziabad','ghaziabad':'Ghaziabad','hapur city':'Hapur','hapur':'Hapur','rampur city':'Rampur','rampur':'Rampur','pilibhit city':'Pilibhit','pilibhit':'Pilibhit','amroha city':'Amroha','amroha':'Amroha','budaun city':'Budaun','budaun':'Budaun','bulandshahr city':'Bulandshahr','bulandshahr':'Bulandshahr','muzaffarnagar city':'Muzaffarnagar','muzaffarnagar':'Muzaffarnagar','pratapgarh city':'Pratapgarh','pratapgarh':'Pratapgarh','sultanpur city':'Sultanpur','sultanpur':'Sultanpur','unnao city':'Unnao','unnao':'Unnao','chitrakoot city':'Chitrakoot','chitrakoot':'Chitrakoot','kushinagar city':'Kushinagar','kushinagar':'Kushinagar','lakhimpur city':'Lakhimpur Kheri','lakhimpur kheri city':'Lakhimpur Kheri','lakhimpur kheri':'Lakhimpur Kheri'
 };
 const C={
 'kr':'kar','kro':'karo','krna':'karna','krni':'karni','krdo':'kardo','krwao':'karwao','bta':'batao','btao':'batao','btado':'bata do','btana':'batana','dikha':'dikhao','plz':'please','pls':'please',
@@ -39,12 +39,14 @@ const norm=s=>String(s||'').toLowerCase().normalize('NFKC').replace(/[’']/g,"'
 function alias(s){let n=norm(s);for(const k of Object.keys(A).sort((a,b)=>b.length-a.length)){const r=new RegExp('(^|[^a-z0-9])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^a-z0-9])','i');if(r.test(n))return s.replace(r,(_,p)=>p+A[k]);}return s;}
 function common(s){return norm(s).split(' ').map(w=>C[w]||w).join(' ');}
 function normalize(q){let s=common(alias(q));for(const [r,t]of I){if(r.test(s)){s=s.replace(r,t);break;}}return s;}
+function findCanonical(raw){const n=norm(raw);for(const k of Object.keys(A).sort((a,b)=>b.length-a.length)){const r=new RegExp('(^|[^a-z0-9])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^a-z0-9])','i');if(r.test(n))return A[k];}return ''}
 const H=/\b(bhai|yaar|yr|yrr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kitna|kitne|kitni|chahiye|chaiye|btao|bta|krna|krdo|ghoom|ghum|ghumna|ghumne|dekhne|places?|khana|khane|khaane|rehna|rehne|rahna|rukna|ruke|hotel|stay|room|food|hospital|doctor|shopping|market|train|bus|flight|trip|travel|mandir|temple|history|culture|budget|compare|jila|jile)\b/i;
-const SAFE_CITY={Prayagraj:'pray'};
-function safeEngineQuery(s){let out=s;for(const [city,token]of Object.entries(SAFE_CITY)){const r=new RegExp('(^|[^a-z0-9])'+city.toLowerCase()+'(?=$|[^a-z0-9])','i');out=out.replace(r,(_,p)=>p+token);}return out;}
-async function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}
+async function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw),canonical=findCanonical(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}
 const b=document.getElementById('aryaBody');if(typeof window.aryaAdd==='function')window.aryaAdd(raw,'user');input.value='';const temp=document.createElement('div');temp.className='arya-msg bot';temp.textContent='Checking ExploreUP information…';if(b){b.appendChild(temp);b.scrollTop=b.scrollHeight;}
-try{const answer=await window.aryaAnswer(safeEngineQuery(n),(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd(answer,'bot');}catch(err){if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd('I could not load ExploreUP information right now. Please try again.','bot');}return true;}
+let primed=false;try{if(canonical&&typeof window.openCity==='function'){window.openCity(canonical);primed=true;const modal=document.getElementById('modal');if(modal)modal.style.display='none';}
+const intent=I.reduce((found,[r,t])=>found|| (r.test(norm(raw))?t:''),'');
+const engineQuery=primed?(intent||'overview'):n;
+const answer=await window.aryaAnswer(engineQuery,(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd(answer,'bot');}catch(err){if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd('I could not load ExploreUP information right now. Please try again.','bot');}return true;}
 function handle(e){if(e.type==='keydown'&&e.key!=='Enter')return;const input=document.getElementById('aryaInput')||document.getElementById('userInput');if(input)route(input,e);}
 document.addEventListener('keydown',handle,true);document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('button');if(b&&/send|ask|poocho|पूछ/i.test(norm(b.textContent)))handle(e);},true);window.ExploreUPAryaAliases={aliases:A,normalize,intentOf:q=>{const n=norm(q);for(const[r,t]of I)if(r.test(n))return t;return '';},commonWords:C,intents:I.map(x=>x[1])};
 })();
