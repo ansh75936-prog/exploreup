@@ -17,7 +17,7 @@ jobs:
           import re
           p = Path('index-1.html')
           s = p.read_text(encoding='utf-8')
-          tag = '<script src="./exploreup-city-images.js?v=20260914"></script>'
+          tag = '<script src="./exploreup-city-images.js?v=20260915"></script>'
           pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
           if re.search(pattern, s):
               s = re.sub(pattern, tag, s, count=1)
@@ -31,7 +31,7 @@ jobs:
           Path('exploreup-city-images-trigger.txt').unlink(missing_ok=True)
           PY
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot].email"
           git add index-1.html exploreup-city-images-trigger.txt
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Fix ExploreUP city card image integration"
