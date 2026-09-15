@@ -24,6 +24,7 @@ function apply(){
     d.Farrukhabad=[["Rahi Tourist Bungalow, Sankisa","Sankisa Tiraha, Opp. Sri Lanka Temple, Basantpur, Sankisa, Uttar Pradesh-209652","9415013045"]];
     d.Ghazipur=[["Rahi Tourist Bungalow, Ghazipur","NH-29, Chhavani Line, Varanasi Road, Ghazipur, Uttar Pradesh-233002","9415013039"]];
     d.Hapur=[["Rahi Tourist Bungalow, Garhmukteshwar","NH-24, Garhmukteswar Chauraha, Garhmukteshwar, Hapur, Uttar Pradesh-245205","8859096644"]];
+    d.Hardoi=[["Treat Garden","Near DM Chauraha, Hardoi, Uttar Pradesh-241001",""],["Hotel Neelkanth, Hardoi","Canal Road, Hardoi, Uttar Pradesh-241001","9935772128"],["Hotel Utsav Hardoi","Circular Road, Hardoi, Uttar Pradesh-241001","9415006000"]];
     d.Jhansi=[["Rahi Veerangana Tourist Bungalow","Near Exhibition Ground (Atal Park), Civil Line, Jhansi, Uttar Pradesh-284003","9415609450"]];
     d.Kannauj=[["Rahi Tourist Bungalow","G.T. Road Makrand Nagar, Kannauj, Uttar Pradesh-209726","9415609450"]];
     d['Kanpur Dehat']=[["Rahi Tourist Bungalow, Rania","Etawah Road, Rania, Kanpur Dehat, Uttar Pradesh-209304","9415013040"]];
@@ -31,6 +32,7 @@ function apply(){
     d.Kushinagar=[["Rahi Pathik Niwas","Buddha Marg, Kushinagar, Uttar Pradesh-274403","9415090074"]];
     d.Lucknow=[["Hotel Gomti","6, Tej Bahadur Sapru Marg, Near Sahara Ganj Mall, Hazratganj, Lucknow, Uttar Pradesh-226001","9453671319"]];
     d.Maharajganj=[["Rahi Tourist Bungalow, Sonauli","Sonauli, Maharajganj, Uttar Pradesh",""]];
+    d.Mathura=[["Hotel Brijwasi Royal","State Bank Crossing, Station Road, Mathura, Uttar Pradesh-281001","0565-2401225"],["Hotel Wingston","Delhi Masani Bypass Road, Mathura, Uttar Pradesh-281003","9359530910"],["Hotel Madhuvan","Krishna Nagar, Mathura, Uttar Pradesh-201004","0565-2425256, 8859218769"]];
     d.Mau=[["Rahi Tourist Bungalow, DohriGhat","NH-29, Gontha Bazar, DohriGhat, Mau, Uttar Pradesh-275303","9415013039"]];
     d.Meerut=[["Hotel Crystal Palace","Jawahar Quarters, Jawahar Nagar, Meerut, Uttar Pradesh 250001","+91-9639111100"],["Hotel Samrat Heavens","Opposite Lokpriya Hospital, Garh Road, Meerut, Uttar Pradesh 250004","+91-9358827004"],["Hotel Bravura Resort","Delhi–Roorkee Bypass, Partapur, Meerut, Uttar Pradesh 250103","+91-8191900048"]];
     d.Mirzapur=[["Hotel Jahnavi","Near Shashtri Bridge, Mirzapur, Uttar Pradesh-231312","8004494476"],["Yatri Niwas, Vindhyachal","Partar Tiraha, Near Hanuman Mandir, Vindhyachal, Mirzapur, Uttar Pradesh-231307","8004494476"]];
@@ -42,7 +44,7 @@ function apply(){
     d.Sitapur=[["Rahi Tourist Bungalow, Neemsar","Neemsar, Sitapur, Uttar Pradesh",""]];
     d.Sonbhadra=[["New Hotel Savera","Civil Lines Road, Sonbhadra, Robertsganj, Uttar Pradesh 231216","05444 222 231"],["Hotel Shubh Shree Palace","Near Mission Hospital, 62, SH 5A, Tagore Nagar, Robertsganj, Uttar Pradesh 231216","094152 72411"],["Hotel Surya International","Near Mandi Samiti Pipri Road, Robertsganj, Uttar Pradesh 231216","086016 75655"]];
     d.Unnao=[["Rahi Tourist Bungalow, Nawabganj","Pakshi Vihar, Lucknow-Kanpur Road, Nawabganj, Unnao, Uttar Pradesh-209859","9149099890"]];
-    d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Varanasi, Uttar Pradesh-221007",""]];
+    d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Uttar Pradesh-221007",""]];
     d.Jaunpur=[["Raghuwanshi Hotel","Jaunpur, Uttar Pradesh",""],["Siddharth Hotel","Jaunpur, Uttar Pradesh",""],["Hotel Riverview","Jaunpur, Uttar Pradesh",""]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
