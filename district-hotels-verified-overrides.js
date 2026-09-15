@@ -17,7 +17,7 @@ function apply(){
     d.Balrampur=[["UPT Hotel","Bahraich Road, Balrampur",""],["Hotel Pathik","Veer Vinay Chauraha, Balrampur",""],["Hotel Maya","Near Stadium Ground, Balrampur",""]];
     d.Ballia=[["Hotel Park Inn","Ballia–Bansdih Rd, Mahavir Nagar, Parikhara, Uttar Pradesh 277001","+91-7499243000"],["Hotel Singhaal","In front of Bhrigu Mandir, Bhriguashram, Uttar Pradesh 277001","+91-05498-221099"],["Shankar Hotel","Chitbaragaon–Pipra Khurd, Near Indian Oil Petrol Pump, Chitbaragaon, Uttar Pradesh 221713","+91-8546000096, +91-9795610507"]];
     d.Bareilly=[["Rahi Hotel Rohila","2, Civil Lines, Near Gandhi Udyan, Bareilly, Uttar Pradesh-243001","9149099890"]];
-    d.Bhadohi=[["Rahi Tourist Bungalow, Bhadohi","Gopiganj, Bhadohi, Uttar Pradesh","" ]];
+    d.Bhadohi=[["Rahi Tourist Bungalow, Bhadohi","Gopiganj, Bhadohi, Uttar Pradesh",""]];
     d.Budaun=[["Rahi Tourist Bungalow, Budaun","Civil Lines, Budaun, Uttar Pradesh-243601","9415608122"]];
     d.Chitrakoot=[["Rahi Tourist Bungalow","Near Poddar Inter College, Chitrakoot, Uttar Pradesh-210204","9415233445"]];
     d.Etawah=[["Rahi Tourist Bungalow, Sumer Singh Qila","Sumer Singh Qila, Etawah, Uttar Pradesh-206001","9415609450"]];
@@ -40,7 +40,12 @@ function apply(){
     d.Shravasti=[["Rahi Tourist Bungalow","Katra Shrawasti Marg, Shravasti, Uttar Pradesh-271805","9415013781"]];
     d.Sitapur=[["Rahi Tourist Bungalow, Neemsar","Neemsar, Sitapur, Uttar Pradesh",""]];
     d.Unnao=[["Rahi Tourist Bungalow, Nawabganj","Pakshi Vihar, Lucknow-Kanpur Road, Nawabganj, Unnao, Uttar Pradesh-209859","9149099890"]];
-    d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Varanasi, Uttar Pradesh-221007",""]];
+    d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Uttar Pradesh-221007",""]];
+    d.Basti=[["Hotel Prakash","Tiwari Tola, Basti, Uttar Pradesh-272002","05542288301"],["Hotel Shivay","Roadways Tiraha, Jaipuriya, Basti, Uttar Pradesh-272001","05542288999"],["Hotel Maharaja","Pikura Shiv Gulam, Malviya Road, Basti, Uttar Pradesh-272001","09825156150"]];
+    d.Sultanpur=[["Hotel Vijay Delux","Lal Diggi Road, Civil Lines, Sultanpur, Uttar Pradesh-228001",""],["Hotel Vrindavan","Near Convent School, Civil Lines, Sultanpur, Uttar Pradesh-228001",""],["Garden View Hotel","Sirwara Road, Sultanpur, Uttar Pradesh-228001",""]];
+    d.Fatehpur=[["Hotel A INN","371, Banda-Sagar Road, Harihar Ganj, Fatehpur, Uttar Pradesh-212601","05180-653200"],["Hotel Diplomat","State Highway 13, Near Roadways Bus Stand Jawalaganj, Fatehpur, Uttar Pradesh-212601","05180-222786"],["Hotel Maya Shyam","Bada Sagar Road, Plot No. 400, Near Mission Hospital, Harihar Ganj, Fatehpur, Uttar Pradesh-212601","05180-221466"]];
+    d.Pilibhit=[["Hotel Solitaire","Pakadiya Naugwa, Near Over-bridge, Pilibhit, Uttar Pradesh-262001","9045954782"],["Hotel Kumar","Moh. Nayi Basti, Charti Chauraha, Pilibhit, Uttar Pradesh-262001","9411827549"],["Hotel Silver Leaf","Moh. Baag Gulsher Khan, In Front of Degree College, Pilibhit, Uttar Pradesh-262001","9149400001"]];
+    d.Gonda=[["J.P Palace","Awas Vikas Colony, Infront of LIC Office, Gonda, Uttar Pradesh-271002","05262-225551"],["Sharma HOTELS","Gonda–Bahraich Road, Civil Line, Azad Nagar, Gonda, Uttar Pradesh-271003","09555800800"],["Pathik Inn","Station Road, Gonda, Uttar Pradesh-271002","05262-222241"]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
