@@ -24,6 +24,8 @@
       if (!src) return;
       if (img.getAttribute('src') !== src) img.setAttribute('src', src);
       img.setAttribute('data-exploreup-restored-district-image', cityName);
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
     });
   }
 
@@ -34,8 +36,11 @@
       const title = heading.textContent.trim();
       const src = travelImageMap[title];
       if (!src) return;
-      card.style.backgroundImage = `url("${src}")`;
-      card.setAttribute('data-exploreup-travel-image', title);
+      const desired = `url("${src}")`;
+      if (card.style.backgroundImage !== desired) card.style.backgroundImage = desired;
+      if (card.getAttribute('data-exploreup-travel-image') !== title) {
+        card.setAttribute('data-exploreup-travel-image', title);
+      }
     });
   }
 
@@ -129,8 +134,6 @@
     }, 150);
   }).observe(document.documentElement, {
     childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['src','class','style']
+    subtree: true
   });
 })();
