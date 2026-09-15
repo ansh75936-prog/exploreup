@@ -10,7 +10,7 @@
   };
 
   const travelImageMap = {
-    'Ayodhya Spiritual Trip': './images/ayodhya-ram-mandir-card.jpg?v=20260916',
+    'Ayodhya Spiritual Trip': './images/ayodhya-ram-mandir-card.jpg?v=20260917',
     'Lucknow Heritage Day': './images/lucknow.jpg?v=20260915'
   };
 
@@ -36,8 +36,43 @@
       const title = heading.textContent.trim();
       const src = travelImageMap[title];
       if (!src) return;
-      const desired = `url("${src}")`;
-      if (card.style.backgroundImage !== desired) card.style.backgroundImage = desired;
+
+      card.style.setProperty('background-image', `url("${src}")`, 'important');
+      card.style.setProperty('background-size', 'cover', 'important');
+      card.style.setProperty('background-position', 'center', 'important');
+      card.style.setProperty('background-repeat', 'no-repeat', 'important');
+      card.style.position = 'relative';
+      card.style.overflow = 'hidden';
+
+      if (title === 'Ayodhya Spiritual Trip') {
+        let img = card.querySelector('.exploreup-ayodhya-travel-image');
+        if (!img) {
+          img = document.createElement('img');
+          img.className = 'exploreup-ayodhya-travel-image';
+          img.alt = 'Ram Mandir, Ayodhya';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.setAttribute('aria-hidden', 'true');
+          card.prepend(img);
+        }
+        if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+        img.style.setProperty('position','absolute','important');
+        img.style.setProperty('inset','0','important');
+        img.style.setProperty('width','100%','important');
+        img.style.setProperty('height','100%','important');
+        img.style.setProperty('object-fit','cover','important');
+        img.style.setProperty('object-position','center','important');
+        img.style.setProperty('z-index','0','important');
+        img.style.setProperty('display','block','important');
+        img.style.setProperty('pointer-events','none','important');
+        Array.from(card.children).forEach(child => {
+          if (child !== img) {
+            child.style.position = 'relative';
+            child.style.zIndex = '2';
+          }
+        });
+      }
+
       if (card.getAttribute('data-exploreup-travel-image') !== title) {
         card.setAttribute('data-exploreup-travel-image', title);
       }
@@ -47,11 +82,9 @@
   function setupTravelIdeasSlider(){
     const section = document.querySelector('#travel');
     if (!section || section.dataset.exploreupTravelSlider === '1') return;
-
     const track = section.querySelector('.trails');
     const cards = track ? Array.from(track.querySelectorAll('.trail')) : [];
     if (!track || cards.length < 2) return;
-
     section.dataset.exploreupTravelSlider = '1';
     track.classList.add('exploreup-travel-track');
     track.style.display = 'flex';
@@ -63,12 +96,10 @@
     track.style.gap = '16px';
     track.style.padding = '2px 2px 10px';
     track.style.overscrollBehaviorX = 'contain';
-
     cards.forEach(card => {
       card.style.flex = '0 0 min(82vw, 420px)';
       card.style.scrollSnapAlign = 'start';
     });
-
     const heading = section.querySelector('.sectionhead');
     const controls = document.createElement('div');
     controls.className = 'exploreup-travel-controls';
@@ -76,7 +107,6 @@
     controls.style.justifyContent = 'flex-end';
     controls.style.gap = '8px';
     controls.style.margin = '0 0 12px';
-
     function makeButton(label, direction){
       const b = document.createElement('button');
       b.type = 'button';
@@ -90,50 +120,25 @@
       b.style.cursor = 'pointer';
       b.style.fontSize = '22px';
       b.style.fontWeight = '800';
-      b.addEventListener('click', () => {
-        track.scrollBy({
-          left: direction * Math.max(track.clientWidth * 0.82, 300),
-          behavior: 'smooth'
-        });
-      });
+      b.addEventListener('click', () => track.scrollBy({left: direction * Math.max(track.clientWidth * 0.82, 300), behavior: 'smooth'}));
       return b;
     }
-
     controls.appendChild(makeButton('‹', -1));
     controls.appendChild(makeButton('›', 1));
     if (heading) heading.appendChild(controls);
-
     const style = document.createElement('style');
-    style.textContent = `
-      .exploreup-travel-track::-webkit-scrollbar{display:none}
-      .exploreup-travel-track>.trail{min-width:0}
-      @media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}
-    `;
+    style.textContent = `.exploreup-travel-track::-webkit-scrollbar{display:none}.exploreup-travel-track>.trail{min-width:0}@media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}`;
     document.head.appendChild(style);
   }
 
-  function applyAll(){
-    applyDistrictImages();
-    applyTravelImages();
-    setupTravelIdeasSlider();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyAll, {once:true});
-  } else {
-    applyAll();
-  }
+  function applyAll(){ applyDistrictImages(); applyTravelImages(); setupTravelIdeasSlider(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyAll, {once:true});
+  else applyAll();
 
   let queued = false;
   new MutationObserver(() => {
     if (queued) return;
     queued = true;
-    setTimeout(() => {
-      queued = false;
-      applyAll();
-    }, 150);
-  }).observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
+    setTimeout(() => { queued = false; applyAll(); }, 150);
+  }).observe(document.documentElement, {childList:true, subtree:true});
 })();
