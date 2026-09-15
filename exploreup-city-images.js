@@ -123,3 +123,72 @@
   observer=new MutationObserver(()=>{if(queued)return;queued=true;setTimeout(()=>{queued=false;run()},150)});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
+
+/* Arya V20.1 compatibility fix — normalize common Banaras/Varanasi aliases before the existing Arya engine runs. */
+(function(){
+  'use strict';
+  if(window.__exploreUpAryaAliasFixV201)return;
+  window.__exploreUpAryaAliasFixV201=true;
+
+  function normalizeAryaQuery(q){
+    return String(q||'').replace(/\bbanaras\b/gi,'Varanasi').replace(/\bkashi\b/gi,'Varanasi').replace(/\bbenaras\b/gi,'Varanasi');
+  }
+  function languageOf(q){
+    try{return typeof aryaDetectLanguage==='function'?aryaDetectLanguage(q):'en'}catch(e){return 'en'}
+  }
+  async function runFixedAsk(){
+    const input=document.getElementById('aryaInput');
+    const q=input?.value?.trim();
+    if(!q)return;
+    const normalized=normalizeAryaQuery(q);
+    if(normalized===q)return false;
+    if(typeof aryaAdd!=='function')return false;
+    aryaAdd(q,'user');
+    if(input)input.value='';
+    const body=document.getElementById('aryaBody');
+    const temp=document.createElement('div');
+    temp.className='arya-msg bot';
+    temp.textContent='Checking ExploreUP information…';
+    body?.appendChild(temp);
+    if(body)body.scrollTop=body.scrollHeight;
+    try{
+      const answer=await (typeof window.aryaAnswer==='function'?window.aryaAnswer(normalized,languageOf(q)):Promise.reject(new Error('Arya unavailable')));
+      temp.remove();
+      aryaAdd(answer,'bot');
+    }catch(e){
+      temp.remove();
+      aryaAdd('I could not load live ExploreUP data right now. Please try again in a moment.','bot');
+    }
+    return true;
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter')return;
+    const target=e.target;
+    if(!target||target.id!=='aryaInput')return;
+    const q=target.value?.trim()||'';
+    if(!/\b(banaras|kashi|benaras)\b/i.test(q))return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation?.();
+    runFixedAsk();
+  },true);
+  document.addEventListener('click',function(e){
+    const target=e.target;
+    if(!target||target.id!=='aryaInput' && !(target.closest&&target.closest('.arya-input button')))return;
+    const input=document.getElementById('aryaInput');
+    const q=input?.value?.trim()||'';
+    if(!/\b(banaras|kashi|benaras)\b/i.test(q))return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation?.();
+    runFixedAsk();
+  },true);
+
+  function fixInitialMessage(){
+    const msg=document.querySelector('#aryaBody .arya-msg.bot');
+    if(msg && /only answer questions about ExploreUP/i.test(msg.textContent||'')){
+      msg.textContent='Namaste! I’m Arya. Ask me about Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans or ExploreUP features.';
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fixInitialMessage,{once:true});else fixInitialMessage();
+})();
