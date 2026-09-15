@@ -1,8 +1,57 @@
-/* ExploreUP — targeted district image restoration + Travel Ideas slider. */
+/* ExploreUP — district images + detailed Travel Ideas slider. */
 (function(){
   'use strict';
-  const districtImageMap = {'Jhansi':'./images.jpeg?v=20260915','Prayagraj':'./images (1).jpeg?v=20260915','Ayodhya':'./images/ayodhya-gallery-2.jpg?v=20260920','Gorakhpur':'./images (3).jpeg?v=20260915'};
-  const travelImageMap = {'Ayodhya Spiritual Trip':'./images/ayodhya-gallery-2.jpg?v=20260920','Lucknow Heritage Day':'./images/lucknow.jpg?v=20260915'};
+
+  const districtImageMap = {
+    'Jhansi':'./images.jpeg?v=20260915',
+    'Prayagraj':'./images (1).jpeg?v=20260915',
+    'Ayodhya':'./images/ayodhya-gallery-2.jpg?v=20260920',
+    'Gorakhpur':'./images (3).jpeg?v=20260915'
+  };
+
+  const travelImageMap = {
+    'Ayodhya Spiritual Trip':'./images/ayodhya-gallery-2.jpg?v=20260920',
+    'Lucknow Heritage Day':'./images/lucknow.jpg?v=20260915'
+  };
+
+  const travelDetails = {
+    'Agra Weekend Escape': {
+      duration:'2 Days / 1 Night',
+      route:'Taj Mahal → Agra Fort → Mehtab Bagh → Fatehpur Sikri',
+      highlights:'Taj Mahal, Agra Fort, Mehtab Bagh, Fatehpur Sikri',
+      best:'February–April & September–November',
+      food:'Petha, Mughlai dishes and local Agra snacks',
+      tip:'Start the Taj Mahal visit early and keep a separate half-day for Fatehpur Sikri.',
+      source:'https://www.incredibleindia.gov.in/en/uttar-pradesh/agra'
+    },
+    'Banaras 2-Day Journey': {
+      duration:'2 Days / 1 Night',
+      route:'Kashi Vishwanath → Dashashwamedh Ghat → Assi Ghat → Sarnath',
+      highlights:'Ganga Aarti, ghats, Kashi Vishwanath, Sarnath',
+      best:'October–March',
+      food:'Kachori-sabzi, Banarasi sweets and local street food',
+      tip:'Keep an evening free for the Ganga Aarti and a morning for the quieter riverfront experience.',
+      source:'https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi'
+    },
+    'Ayodhya Spiritual Trip': {
+      duration:'2 Days / 1 Night',
+      route:'Ram Mandir → Hanuman Garhi → Kanak Bhawan → Ram Ki Paidi → Saryu',
+      highlights:'Ram Mandir, Hanuman Garhi, Kanak Bhawan, Ram Ki Paidi, Saryu ghats',
+      best:'October–March; festive periods can be especially busy',
+      food:'Local vegetarian meals and Ayodhya sweets',
+      tip:'Check current temple entry and darshan arrangements before travelling.',
+      source:'https://www.incredibleindia.gov.in/en/uttar-pradesh/ayodhya'
+    },
+    'Lucknow Heritage Day': {
+      duration:'1 Full Day',
+      route:'Bara Imambara → Rumi Darwaza → Chota Imambara → Old Lucknow markets',
+      highlights:'Bara Imambara, Bhul Bhulaiya, Rumi Darwaza, Chota Imambara',
+      best:'October–March',
+      food:'Awadhi kebabs, biryani, chaat and traditional sweets',
+      tip:'Visit the major monuments in the daytime and explore the heritage area and food scene afterward.',
+      source:'https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow'
+    }
+  };
 
   function applyDistrictImages(){
     document.querySelectorAll('#cityGrid .city').forEach(card=>{
@@ -34,6 +83,47 @@
     });
   }
 
+  function applyTravelDetails(){
+    document.querySelectorAll('#travel .trail').forEach(card=>{
+      const heading=card.querySelector('h3');
+      if(!heading)return;
+      const title=heading.textContent.trim(),data=travelDetails[title];
+      if(!data)return;
+      card.setAttribute('data-exploreup-travel-details',title);
+      if(card.querySelector('.exploreup-travel-details'))return;
+
+      const details=document.createElement('div');
+      details.className='exploreup-travel-details';
+      details.innerHTML=`
+        <div class="exploreup-travel-badges">
+          <span>⏱️ ${data.duration}</span>
+          <span>📅 ${data.best}</span>
+        </div>
+        <p><b>📍 Route:</b> ${data.route}</p>
+        <p><b>⭐ Highlights:</b> ${data.highlights}</p>
+        <p><b>🍽️ Food:</b> ${data.food}</p>
+        <p><b>💡 Tip:</b> ${data.tip}</p>
+        <a href="${data.source}" target="_blank" rel="noopener noreferrer" class="exploreup-travel-source">Official travel guide ↗</a>`;
+      card.appendChild(details);
+    });
+
+    if(!document.getElementById('exploreup-travel-details-style')){
+      const style=document.createElement('style');
+      style.id='exploreup-travel-details-style';
+      style.textContent=`
+        #travel .trail{min-height:360px!important}
+        .exploreup-travel-details{position:relative;z-index:3;margin-top:10px;font-size:12px;line-height:1.45;color:#fff}
+        .exploreup-travel-details p{margin:5px 0;color:#eef5ff}
+        .exploreup-travel-details b{color:#fff}
+        .exploreup-travel-badges{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 8px}
+        .exploreup-travel-badges span{background:#ffffff20;border:1px solid #ffffff40;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:700}
+        .exploreup-travel-source{display:inline-block;margin-top:7px;background:#fff;color:#071b35;border-radius:999px;padding:7px 11px;font-weight:800;font-size:11px}
+        @media(max-width:620px){#travel .trail{min-height:420px!important}.exploreup-travel-details{font-size:11.5px}}
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
   function connectAyodhyaTravelPage(){
     document.querySelectorAll('#travel .trail').forEach(card=>{
       const heading=card.querySelector('h3');
@@ -42,9 +132,12 @@
       card.setAttribute('role','link');
       card.setAttribute('tabindex','0');
       card.setAttribute('aria-label','Open Ayodhya Ram Mandir travel guide');
-      const open=()=>{window.location.href='./ayodhya.html';};
+      const open=e=>{
+        if(e&&e.target&&e.target.closest('.exploreup-travel-source'))return;
+        window.location.href='./ayodhya.html';
+      };
       card.addEventListener('click',open);
-      card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+      card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(e);}});
       card.style.cursor='pointer';
     });
   }
@@ -81,7 +174,14 @@
     document.head.appendChild(style);
   }
 
-  function applyAll(){applyDistrictImages();applyTravelImages();connectAyodhyaTravelPage();setupTravelIdeasSlider();}
+  function applyAll(){
+    applyDistrictImages();
+    applyTravelImages();
+    applyTravelDetails();
+    connectAyodhyaTravelPage();
+    setupTravelIdeasSlider();
+  }
+
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();
   let queued=false;
   new MutationObserver(()=>{if(queued)return;queued=true;setTimeout(()=>{queued=false;applyAll();},150);}).observe(document.documentElement,{childList:true,subtree:true});
