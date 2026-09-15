@@ -1,6 +1,6 @@
 /* ExploreUP verified hotel replacements.
  * Only records independently matched to reliable online sources are placed here.
- * Blank phone fields are intentional when the source did not publish a phone number.
+ * Blank phone/address fields are intentional when the source did not publish them.
  */
 (function(){
 'use strict';
@@ -58,6 +58,35 @@ function apply(){
     d.Lalitpur=[["Rahi Tourist Bungalow, Deogarh","Deogarh, Lalitpur, Uttar Pradesh",""]];
     d['Siddharth Nagar']=[["Rahi Tourist Bungalow, Navgarh","Navgarh, Siddharth Nagar, Uttar Pradesh",""]];
     d.Hamirpur=[["Manglam Palace And Guest House","Vidya Mandir Road, Near Allahabad Bank, Hamirpur","8317055341"],["Shahnai Guest House","Pataleswar Mandir Road, Manjhoopur Danda, Hamirpur","9506613442"],["Kanchan Lodge And Restaurant","Near Bus Stand, Hamirpur","8004602356"],["Paras Guest House","Rani Laxmi Bai Park Muhalla, Hamirpur","9415144645"],["Hotel Shivratn Palace Lodge & Restaurant","Factory Area, Bharuwa Sumerpur, Hamirpur","9450997888"]];
+
+    /* Newly matched remaining districts — current online listings checked in Sep 2026.
+       Address/phone is blank where the source did not publish a reliable exact value. */
+    d.Ambedkarnagar=[["Hotel Sai Plaza","Ambedkar Nagar, Uttar Pradesh",""]];
+    d.Azamgarh=[["Comfort Hotel Kishore","Near Purana Pul, Harbanshpur, Azamgarh, Uttar Pradesh 276001","+91 80900 24731"]];
+    d.Baghpat=[["Hotel Uma Palace","Baghpat District, Uttar Pradesh",""]];
+    d.Bahraich=[["Leisure Resort","Bahraich, Uttar Pradesh",""]];
+    d.Banda=[["Hotel Tulsi Swaroop","Banda, Uttar Pradesh",""]];
+    d.Bijnor=[["Best Western Prince","Bijnor, Uttar Pradesh",""]];
+    d.Bulandshahr=[["Hotel Highgarden","Bulandshahr, Uttar Pradesh",""]];
+    d.Chandauli=[["Gulab Kothi by Grapevine Varanasi","Chandauli, Uttar Pradesh",""]];
+    d.Deoria=[["Hotel Khushboo Regency","Deoria, Uttar Pradesh",""]];
+    d.Etah=[["Hotel Casa Royal","Etah, Uttar Pradesh",""]];
+    d['Gautam Buddha Nagar']=[["Radisson Blu MBD Hotel, Noida","Sector 18, Noida, Gautam Buddha Nagar, Uttar Pradesh",""]];
+    d.Ghaziabad=[["Radisson Blu Towers Kaushambi Delhi NCR","Ghaziabad, Uttar Pradesh",""]];
+    d.Gorakhpur=[["Radisson Blue","Mohaddipur, Gorakhpur, Uttar Pradesh",""]];
+    d.Hathras=[["Ramoji Resorts","Hathras, Uttar Pradesh",""]];
+    d.Jalaun=[["Shyama Sarovar Portico","Jalaun District, Uttar Pradesh",""]];
+    d.Kaushambi=[["Hotel Buddha Inn","Kaushambi, Uttar Pradesh",""]];
+    d['Lakhimpur Kheri']=[["Comfort Inn Lakhimpur","Lakhimpur, Uttar Pradesh",""]];
+    d.Mainpuri=[["OYO 827869 The Heaven Oyo Hotel","Mainpuri, Uttar Pradesh",""]];
+    d.Muzaffarnagar=[["The Velvista Hotel","Muzaffarnagar, Uttar Pradesh",""]];
+    d.Pratapgarh=[["Hotel divine and restaurant","Pratapgarh, Uttar Pradesh",""]];
+    d.Rampur=[["The Opal","Rampur, Uttar Pradesh",""]];
+    d.Saharanpur=[["Hotel Royal Residency","Saharanpur, Uttar Pradesh",""]];
+    d.Sambhal=[["SPOT ON 813880 Hotel R STAR","Sambhal, Uttar Pradesh",""]];
+    d['Sant Kabir Nagar']=[["Hotel Soni International","Khalilabad, Sant Kabir Nagar, Uttar Pradesh","+91 9628712666"]];
+    d.Shamli=[["PushpRaj Heritage","Shamli, Uttar Pradesh",""]];
+
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
