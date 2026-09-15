@@ -9,6 +9,11 @@
     'Gorakhpur': './images (3).jpeg?v=20260915'
   };
 
+  const travelImageMap = {
+    'Ayodhya Spiritual Trip': './images (2).jpeg?v=20260915',
+    'Lucknow Heritage Day': './images/lucknow.jpg?v=20260915'
+  };
+
   function applyDistrictImages(){
     document.querySelectorAll('#cityGrid .city').forEach(card => {
       const heading = card.querySelector('.citytext h3');
@@ -19,6 +24,18 @@
       if (!src) return;
       if (img.getAttribute('src') !== src) img.setAttribute('src', src);
       img.setAttribute('data-exploreup-restored-district-image', cityName);
+    });
+  }
+
+  function applyTravelImages(){
+    document.querySelectorAll('#travel .trail').forEach(card => {
+      const heading = card.querySelector('h3');
+      if (!heading) return;
+      const title = heading.textContent.trim();
+      const src = travelImageMap[title];
+      if (!src) return;
+      card.style.backgroundImage = `url("${src}")`;
+      card.setAttribute('data-exploreup-travel-image', title);
     });
   }
 
@@ -92,6 +109,7 @@
 
   function applyAll(){
     applyDistrictImages();
+    applyTravelImages();
     setupTravelIdeasSlider();
   }
 
@@ -113,6 +131,6 @@
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['src','class']
+    attributeFilter: ['src','class','style']
   });
 })();
