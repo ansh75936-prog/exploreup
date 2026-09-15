@@ -1,4 +1,4 @@
-/* ExploreUP V20 — Arya Hinglish understanding layer. Data-preserving. Cache 20260924 */
+/* ExploreUP V20 — Arya Hinglish understanding layer. Data-preserving. Cache 20260925 */
 (function(){
 'use strict';
 if(window.__exploreUpAryaDistrictAliasV20)return;
@@ -40,10 +40,17 @@ function alias(s){let n=norm(s);for(const k of Object.keys(A).sort((a,b)=>b.leng
 function common(s){return norm(s).split(' ').map(w=>C[w]||w).join(' ');}
 function normalize(q){let s=common(alias(q));for(const [r,t] of I){if(r.test(s)){s=s.replace(r,t);break;}}return s;}
 const H=/\b(bhai|yaar|yr|yrr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kitna|kitne|kitni|chahiye|chaiye|btao|bta|krna|krdo|ghoom|ghum|ghumna|ghumne|dekhne|places?|khana|khane|khaane|rehna|rehne|rahna|rukna|ruke|hotel|stay|room|food|hospital|doctor|shopping|market|train|bus|flight|trip|travel|mandir|temple|history|culture|budget|compare|jila|jile)\b/i;
-
 const SAFE_CITY={Prayagraj:'pray'};
 function safeEngineQuery(s){let out=s;for(const [city,token] of Object.entries(SAFE_CITY)){const r=new RegExp('(^|[^a-z0-9])'+city.toLowerCase()+'(?=$|[^a-z0-9])','i');out=out.replace(r,(_,p)=>p+token);}return out;}
-function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}const engineQuery=safeEngineQuery(n);input.value=n;window.aryaAnswer(engineQuery,(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');return true;}
+async function route(input,e){const raw=input.value.trim();if(!raw)return false;const n=normalize(raw),changed=n!==norm(raw);if(!changed&&!H.test(raw))return false;if(typeof window.aryaAnswer!=='function')return false;if(e){e.preventDefault();e.stopImmediatePropagation();}
+  const b=document.getElementById('aryaBody');
+  if(typeof window.aryaAdd==='function')window.aryaAdd(raw,'user');
+  input.value='';
+  const temp=document.createElement('div');temp.className='arya-msg bot';temp.textContent='Checking ExploreUP information…';if(b){b.appendChild(temp);b.scrollTop=b.scrollHeight;}
+  try{const answer=await window.aryaAnswer(safeEngineQuery(n),(document.documentElement.lang||'en').startsWith('hi')?'hi':'en');if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd(answer,'bot');}
+  catch(err){if(temp.parentNode)temp.remove();if(typeof window.aryaAdd==='function')window.aryaAdd('I could not load ExploreUP information right now. Please try again.','bot');}
+  return true;
+}
 function handle(e){if(e.type==='keydown'&&e.key!=='Enter')return;const input=document.getElementById('aryaInput')||document.getElementById('userInput');if(input)route(input,e);}
 document.addEventListener('keydown',handle,true);
 document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('button');if(b&&/send|ask|poocho|पूछ/i.test(norm(b.textContent)))handle(e);},true);
