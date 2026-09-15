@@ -14,9 +14,6 @@
       var stay=document.getElementById('districtStay');
       var block=document.getElementById('exploreup-hotels-stays');
       if(!modal || !stay || !block) return;
-
-      /* Move the actual hotel list itself — never a generic hotel-looking
-         nav/chip/parent element. Keep it inside the district Stay section. */
       if(block.parentElement !== stay) stay.appendChild(block);
       block.setAttribute('data-exploreup-hotel-placement','districtStay');
       block.style.display='block';
@@ -24,31 +21,38 @@
     }catch(e){}
   }
 
-  function mount(){
-    try{
-      if(window.ExploreUPHotels && typeof window.ExploreUPHotels.mount === 'function'){
-        window.ExploreUPHotels.mount();
-      }
-    }catch(e){}
-    [0,60,180,400,800,1400].forEach(function(ms){ setTimeout(placeHotelBlock,ms); });
-  }
-
-  function remountAfterInteraction(){
-    if(isOpen()) mount();
+  var pending=false;
+  function scheduleMount(){
+    if(pending) return;
+    pending=true;
+    setTimeout(function(){
+      pending=false;
+      try{
+        if(isOpen() && window.ExploreUPHotels && typeof window.ExploreUPHotels.mount === 'function'){
+          window.ExploreUPHotels.mount();
+        }
+      }catch(e){}
+      [0,80,220,500,900].forEach(function(ms){ setTimeout(placeHotelBlock,ms); });
+    },40);
   }
 
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded',mount,{once:true});
+    document.addEventListener('DOMContentLoaded',scheduleMount,{once:true});
   }else{
-    mount();
+    scheduleMount();
   }
 
-  document.addEventListener('click',remountAfterInteraction,true);
+  document.addEventListener('click',function(){ scheduleMount(); },true);
   document.addEventListener('keydown',function(e){
-    if(e.key==='Enter' || e.key===' '){ remountAfterInteraction(); }
+    if(e.key==='Enter' || e.key===' ' || e.key==='Escape') scheduleMount();
   },true);
 
+  var observerTimer=null;
   new MutationObserver(function(){
-    if(isOpen()) mount();
+    if(!isOpen()) return;
+    clearTimeout(observerTimer);
+    observerTimer=setTimeout(function(){
+      placeHotelBlock();
+    },120);
   }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
 })();
