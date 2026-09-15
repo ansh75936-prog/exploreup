@@ -26,5 +26,13 @@
     document.addEventListener('DOMContentLoaded', applyCityImages, {once:true});
   } else applyCityImages();
 
-  new MutationObserver(applyCityImages).observe(document.documentElement, {childList:true, subtree:true});
+  let queued = false;
+  new MutationObserver(() => {
+    if (queued) return;
+    queued = true;
+    setTimeout(() => {
+      queued = false;
+      applyCityImages();
+    }, 100);
+  }).observe(document.documentElement, {childList:true, subtree:true});
 })();
