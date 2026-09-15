@@ -21,20 +21,33 @@
   };
 
   const INTENTS=[
-    [/\b(ghoomne|ghumne|ghumna|ghoomna|gumna|gumana|dekhne|dekhna|visit|visiting|tourist|places? to visit|must visit|best places|kya ghoome|kya ghume|kahan ghoome|kaha ghoome|kahan ghume|kaha ghume|ghoomne ki jagah|ghumne ki jagah|ghoomne ke place|ghumne ke place|ghoomne wali jagah|ghumne wali jagah|dekhne layak|dekhne ki jagah|kya dekh sakte|kya dekhe)\b/i,'places'],
-    [/\b(khana|khana hai|khane|khane ko|khaane|khaana|khaane ko|kya khaye|kya khana|kya khaun|kahan khaye|kaha khaye|food|foods|eat|eating|famous food|local food|street food|food places|khaane ki jagah|khane ki jagah|khaane ke liye)\b/i,'food'],
-    [/\b(hotel|hotels|rehne|rehna|rahna|rukna|stay|stays|room|rooms|accommodation|lodge|lodging|kahan ruke|kaha ruke|kahan rahu|kaha rahu|rehne ki jagah|rehne ke liye|rukne ki jagah|stay karna|stay chahiye)\b/i,'hotel'],
-    [/\b(hospital|hospitals|doctor|doctors|clinic|clinics|emergency|medical|ilaaj|ilaj|treatment|dawai|dava|health|healthcare|kahan ilaaj|doctor chahiye|hospital chahiye)\b/i,'hospital'],
-    [/\b(shopping|shop|shops|market|markets|bazaar|bazar|kharidna|kharidari|shopping karni|kya kharide|kahan shopping|kaha shopping)\b/i,'shopping'],
-    [/\b(train|trains|railway|rail|bus|buses|flight|flights|airport|transport|metro|auto|cab|taxi|kaise jaye|kaise jaaye|kaise jana|kaise jaana|kaise pahuche|kaise pahunche|pahuchna|pahunchna|route|raasta|rasta|distance)\b/i,'transport'],
-    [/\b(history|itihaas|itihas|historical|historic|culture|sanskriti|parampara|heritage|virasat|kahani|story|stories)\b/i,'history'],
-    [/\b(trip|travel|travelling|tour|yatra|itinerary|plan|planning|trip plan|travel plan|kitne din|kitne din ka|weekend|weekend trip)\b/i,'trip'],
-    [/\b(kab jaye|kab jaaye|kab jana|kab jaana|best time|best season|season|mausam|weather|sahi time|achha time)\b/i,'best-time']
+    [/\b(ghoomne|ghumne|ghumna|ghoomna|gumna|gumana|dekhne|dekhna|visit|visiting|tourist|tourism|places? to visit|must visit|best places|kya ghoome|kya ghume|kahan ghoome|kaha ghoome|kahan ghume|kaha ghume|ghoomne ki jagah|ghumne ki jagah|ghoomne ke place|ghumne ke place|ghoomne wali jagah|ghumne wali jagah|dekhne layak|dekhne ki jagah|kya dekh sakte|kya dekhe|kya dekhu|kya dekhen|darshan|darshana)\b/i,'places'],
+    [/\b(khana|khana hai|khane|khane ko|khaane|khaana|khaane ko|kya khaye|kya khana|kya khaun|kahan khaye|kaha khaye|food|foods|eat|eating|famous food|local food|street food|food places|khaane ki jagah|khane ki jagah|khaane ke liye|kya kha sakte|kya khana milega|kuch khane)\b/i,'food'],
+    [/\b(hotel|hotels|rehne|rehna|rahna|rukna|stay|stays|room|rooms|accommodation|lodge|lodging|kahan ruke|kaha ruke|kahan rahu|kaha rahu|rehne ki jagah|rehne ke liye|rukne ki jagah|stay karna|stay chahiye|hotel chahiye|room chahiye|rukne ke liye)\b/i,'hotel'],
+    [/\b(hospital|hospitals|doctor|doctors|clinic|clinics|emergency|medical|ilaaj|ilaj|treatment|dawai|dava|health|healthcare|kahan ilaaj|doctor chahiye|hospital chahiye|medical help)\b/i,'hospital'],
+    [/\b(shopping|shop|shops|market|markets|bazaar|bazar|kharidna|kharidari|shopping karni|kya kharide|kahan shopping|kaha shopping|kya lena|shopping ke liye)\b/i,'shopping'],
+    [/\b(train|trains|railway|rail|bus|buses|flight|flights|airport|transport|metro|auto|cab|taxi|kaise jaye|kaise jaaye|kaise jana|kaise jaana|kaise pahuche|kaise pahunche|pahuchna|pahunchna|route|raasta|rasta|distance|kitni door|kitna door|station|terminal)\b/i,'transport'],
+    [/\b(history|itihaas|itihas|historical|historic|culture|sanskriti|parampara|heritage|virasat|kahani|story|stories|purana|purani|pracheen|historical place)\b/i,'history'],
+    [/\b(trip|travel|travelling|tour|yatra|itinerary|plan|planning|trip plan|travel plan|kitne din|kitne din ka|weekend|weekend trip|ghoomne ka plan|trip banana|tour plan)\b/i,'trip'],
+    [/\b(kab jaye|kab jaaye|kab jana|kab jaana|best time|best season|season|mausam|weather|sahi time|achha time|kis time|kab ghoome)\b/i,'best-time'],
+    [/\b(budget|budget me|kitna kharcha|kitne paise|kharcha|cost|price|rates?|sasta|cheap|affordable|paise bachana|budget trip)\b/i,'budget'],
+    [/\b(compare|comparison|tulana|better|best among|kaunsa better|kaun sa better|dono me|do jagah|compare karo)\b/i,'compare'],
+    [/\b(district|districts|jila|jile|zilla|zila|75 district|75 jile|kaunsa jila|kis district)\b/i,'district'],
+    [/\b(mandir|temple|masjid|mosque|gurudwara|church|ghat|fort|qila|mahal|museum|park|zoo|lake|talab|river|nadi|sangam|monument|place)\b/i,'places']
   ];
 
+  // Common Roman-Hindi/Hinglish spellings used naturally on a travel site.
   const COMMON={
-    'plz':'please','pls':'please','btao':'batao','btana':'batana','bta':'batao','kr':'kar','kro':'karo','krna':'karna','krni':'karni','krdo':'kardo','chahiye':'chahiye','chaahiye':'chahiye','chahie':'chahiye',
-    'me':'mein','m':'mein','mai':'mein','ka':'ka','ki':'ki','ke':'ke','ko':'ko','se':'se','par':'par','pe':'par','yha':'yahan','yaha':'yahan','waha':'wahan','kaha':'kahan','kyu':'kyun','kyon':'kyun','kyunki':'kyunki','mujhe':'mujhe','mere':'mere','mera':'mera','meri':'meri','ham':'hum','hum':'hum','aap':'aap','apko':'aapko','apne':'apne','bhi':'bhi','acha':'achha','accha':'achha','achhi':'achhi','badhiya':'badhiya','sahi':'sahi','hai':'hai','hain':'hain','tha':'tha','the':'the','hu':'hoon','hoon':'hoon','nahi':'nahi','nahin':'nahi','haan':'haan','ha':'haan','n':'and','or':'aur','ya':'ya','bas':'bas','sirf':'sirf','sab':'sab','kuch':'kuch','koi':'koi','kaisa':'kaisa','kaisi':'kaisi','kaise':'kaise','kitna':'kitna','kitne':'kitne','kitni':'kitni','famous':'famous','popular':'popular','near':'near','pass':'paas','aaspaas':'aas paas','aas':'aas'
+    'plz':'please','pls':'please','btao':'batao','bta':'batao','btana':'batana','batana':'batana','btado':'bata do','bta do':'bata do','dikhao':'dikhao','dikha':'dikhao',
+    'kr':'kar','kro':'karo','krna':'karna','krni':'karni','krdo':'kardo','kardo':'kardo','krwao':'karwao','karwao':'karwao','chahiye':'chahiye','chaahiye':'chahiye','chahie':'chahiye','chaiye':'chahiye','chiye':'chahiye',
+    'me':'mein','m':'mein','mai':'mein','mein':'mein','mene':'maine','maine':'maine','muje':'mujhe','mujhe':'mujhe','mujko':'mujhe','mereko':'mujhe','mere':'mere','mera':'mera','meri':'meri','ham':'hum','hum':'hum','aap':'aap','apko':'aapko','apko':'aapko','apne':'apne',
+    'bhi':'bhi','acha':'achha','accha':'achha','achhi':'achhi','achhe':'achhe','badhiya':'badhiya','sahi':'sahi','thik':'theek','thik hai':'theek hai','theek':'theek','hai':'hai','hain':'hain','tha':'tha','the':'the','hu':'hoon','hun':'hoon','hoon':'hoon','nahi':'nahi','nahin':'nahi','ni':'nahi','haan':'haan','han':'haan','ha':'haan',
+    'n':'and','or':'aur','ya':'ya','bas':'bas','sirf':'sirf','sab':'sab','sb':'sab','kuch':'kuch','kch':'kuch','koi':'koi','kaisa':'kaisa','kaisi':'kaisi','kaise':'kaise','kitna':'kitna','kitne':'kitne','kitni':'kitni','kyu':'kyun','kyon':'kyun','kyunki':'kyunki',
+    'kaha':'kahan','kahan':'kahan','kha':'kahan','yha':'yahan','yaha':'yahan','yahan':'yahan','wha':'wahan','waha':'wahan','wahan':'wahan','idhr':'idhar','udhr':'udhar','pass':'paas','paas':'paas','aaspaas':'aas paas','as paas':'aas paas',
+    'ghum':'ghoom','ghumna':'ghoomna','ghoomna':'ghoomna','ghumne':'ghoomne','ghoomne':'ghoomne','ghume':'ghoome','ghoom':'ghoom','gumna':'ghoomna','gumna':'ghoomna','dekhna':'dekhna','dekhne':'dekhne','dekho':'dekho','dekhe':'dekhe',
+    'jana':'jaana','jane':'jaane','jaana':'jaana','jaaye':'jaaye','jaye':'jaaye','jao':'jao','pahuch':'pahunch','pahuche':'pahunche','pahuchna':'pahunchna','pahunche':'pahunche','rukna':'rukna','ruke':'ruke','rehna':'rehna','rehne':'rehne','rahna':'rehna',
+    'khana':'khana','khane':'khane','khaana':'khana','khaane':'khane','khaun':'khaun','khaye':'khaye','khae':'khaye','milega':'milega','milenge':'milenge','mil sakta':'mil sakta','bata':'batao',
+    'famous':'famous','popular':'popular','best':'best','near':'near','nearby':'nearby','place':'place','places':'places','hotel':'hotel','stay':'stay','food':'food','hospital':'hospital','doctor':'doctor','market':'market','shopping':'shopping','train':'train','bus':'bus','flight':'flight','trip':'trip','travel':'travel','mandir':'mandir','temple':'temple','bazaar':'bazaar','history':'history','culture':'culture','budget':'budget'
   };
 
   const norm=s=>String(s||'').toLowerCase().normalize('NFKC').replace(/[’']/g,"'").replace(/[^a-z0-9\u0900-\u097f]+/g,' ').replace(/\s+/g,' ').trim();
@@ -46,13 +59,17 @@
     }
     return s;
   }
+  function normalizeCommon(s){
+    return norm(s).split(' ').map(w=>COMMON[w]||w).join(' ');
+  }
   function normalize(q){
     let s=replaceAliases(String(q||'').trim());
+    s=normalizeCommon(s);
     for(const [re,token] of INTENTS){if(re.test(s)){s=s.replace(re,token);break;}}
     return s;
   }
   function intentOf(q){const n=norm(q);for(const [re,token] of INTENTS)if(re.test(n))return token;return '';}
-  const HINGLISH=/\b(bhai|yaar|yr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kaisa|kaisi|kitna|kitne|kitni|chahiye|batao|btao|batana|dikhao|dikhana|jana|jaana|jaye|jaaye|ghoom|ghum|ghumna|ghoomna|ghoomne|ghumne|dekhna|dekhne|khana|khane|khaana|khaane|rehna|rehne|rahna|rukna|ruke|karna|karo|krna|krdo|milega|milenge|paas|pass|aaspaas|famous|best|place|places|hotel|stay|food|hospital|doctor|market|shopping|train|bus|flight|trip|travel|mandir|temple|bazaar|history|culture)\b/i;
+  const HINGLISH=/\b(bhai|yaar|yr|yrr|bro|mujhe|mere|meri|mera|hum|aap|apko|kya|kahan|kaha|kab|kaise|kaisa|kaisi|kitna|kitne|kitni|chahiye|chaiye|batao|btao|batana|dikhao|dikhana|jana|jaana|jaye|jaaye|ghoom|ghum|ghumna|ghoomna|ghoomne|ghumne|dekhna|dekhne|khana|khane|khaana|khaane|rehna|rehne|rahna|rukna|ruke|karna|karo|krna|krdo|milega|milenge|paas|pass|aaspaas|famous|best|popular|near|nearby|place|places|hotel|stay|food|hospital|doctor|market|shopping|train|bus|flight|trip|travel|mandir|temple|bazaar|history|culture|budget|compare|district|jila|jile)\b/i;
 
   function route(input,e){
     const raw=input.value.trim(); if(!raw)return false;
@@ -76,5 +93,5 @@
     if(!b)return;
     if(/send|ask|poocho|पूछ/i.test(norm(b.textContent)))handle(e);
   },true);
-  window.ExploreUPAryaAliases={aliases:ALIASES,normalize,intentOf,commonWords:COMMON};
+  window.ExploreUPAryaAliases={aliases:ALIASES,normalize,intentOf,commonWords:COMMON,intents:INTENTS.map(x=>x[1])};
 })();
