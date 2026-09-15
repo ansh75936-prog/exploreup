@@ -10,7 +10,6 @@ permissions:
   contents: write
 jobs:
   integrate:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +33,9 @@ jobs:
               marker = '</body>'
               s = s.replace(marker, '  ' + tags[0] + '\n' + marker, 1) if marker in s else s + '\n' + tags[0] + '\n'
           alias_pattern = r'<script\s+src=["\']\./arya-v20-district-aliases\.js(?:\?[^"\']*)?["\']\s*></script>'
-          if not re.search(alias_pattern, s):
+          if re.search(alias_pattern, s):
+              s = re.sub(alias_pattern, tags[1], s, count=1)
+          else:
               marker = '</body>'
               s = s.replace(marker, '  ' + tags[1] + '\n' + marker, 1) if marker in s else s + '\n' + tags[1] + '\n'
           bad = re.compile(r'I only answer questions about information and features available inside ExploreUP\.\s*Arya knows the 75-district guides, district-wise Hotels/Stays and Hospitals, Trip Plan Maker, Budget Calculator, Smart Recommendations, and Quick/Smart planning modes\.', re.I)
@@ -47,7 +48,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index-1.html exploreup-city-images-trigger.txt
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Load Arya V20 district aliases and Hinglish layer"
+          git commit -m "Integrate Arya V20 aliases and Hinglish support"
           for i in 1 2 3 4 5; do
             git fetch origin main
             git rebase origin/main && git push origin HEAD:main && exit 0
