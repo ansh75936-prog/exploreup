@@ -60,17 +60,40 @@
     return loadPromise;
   }
 
+  function findRows(city,api){
+    if(!api || !api.data) return null;
+    var rows=api.get ? api.get(city) : api.data[city];
+    if(Array.isArray(rows)) return rows;
+    var aliases=window.ExploreUPHotelAliases||{};
+    var alias=aliases[city];
+    if(alias){
+      rows=api.get ? api.get(alias) : api.data[alias];
+      if(Array.isArray(rows)) return rows;
+    }
+    var wanted=String(city||'').toLowerCase().replace(/\s+/g,' ').trim();
+    var key=Object.keys(api.data).find(function(k){return String(k).toLowerCase().replace(/\s+/g,' ').trim()===wanted;});
+    if(key) return api.data[key];
+    return null;
+  }
+
+  function loadAliases(){
+    if(window.ExploreUPHotelAliases) return Promise.resolve(true);
+    return new Promise(function(resolve){
+      var s=document.createElement('script');
+      s.src='./hotel-district-aliases.js?v=20260915';
+      s.async=true;
+      s.onload=function(){resolve(!!window.ExploreUPHotelAliases);};
+      s.onerror=function(){resolve(false);};
+      document.head.appendChild(s);
+    });
+  }
+
   function render(){
     if(!modalOpen()) return false;
     var block=hotelBlock(), api=window.ExploreUPHotels;
     if(!block || !api || !api.data) return false;
     var city=districtName();
-    var rows=api.get ? api.get(city) : api.data[city];
-    if(!Array.isArray(rows)){
-      var wanted=String(city||'').toLowerCase().replace(/\s+/g,' ').trim();
-      var key=Object.keys(api.data).find(function(k){return String(k).toLowerCase().replace(/\s+/g,' ').trim()===wanted;});
-      rows=key?api.data[key]:null;
-    }
+    var rows=findRows(city,api);
     if(!Array.isArray(rows)){
       block.innerHTML='';
       return false;
@@ -91,7 +114,7 @@
     clearTimeout(timer);
     timer=setTimeout(function(){
       if(!modalOpen()) return;
-      loadHotels().then(function(){
+      Promise.all([loadHotels(),loadAliases()]).then(function(){
         if(!modalOpen()) return;
         try{if(window.ExploreUPHotels&&typeof window.ExploreUPHotels.mount==='function')window.ExploreUPHotels.mount();}catch(e){}
         render();
