@@ -52,6 +52,11 @@ function apply(){
     d.Pilibhit=[["Hotel Moti Mahal","Benhur College Road, Pilibhit, Uttar Pradesh 262001","9412643295"],["Hotel Santosh","Moh. Nakhasa, Near Sungarhi Thana, Pilibhit, Uttar Pradesh 262001","8018091261"],["Hotel Nirmal","Chatri Chauraha, Pilibhit, Uttar Pradesh 262001","9927827777"]];
     d.Gonda=[["J.P Palace","Awas Vikas Colony, Infront of LIC Office, Gonda, Uttar Pradesh 271002","05262 225551"],["Sharma HOTELS","Gonda–Bahraich Rd, Civil Line, Azad Nagar, Gonda, Uttar Pradesh 271003","09555800800"],["Pathik Inn","Station Road, Gonda, Uttar Pradesh 271002","05262 222241"]];
     d.Auraiya=[["Vinayak Palace","Kanpur Road, Auraiya, Uttar Pradesh",""],["Kamla Lodge","Opposite Roadways Bus Stand, Auraiya, Uttar Pradesh",""],["Pradhan Hotel","AH 1, Brahm Nagar, Auraiya, Uttar Pradesh",""],["Sai Kirpa Lodge","Om Nagar, Auraiya, Uttar Pradesh",""]];
+    d.Barabanki=[["Rahi Tourist Bungalow, Dewa Sharif","Dewa Sharif, Barabanki, Uttar Pradesh",""]];
+    d.Firozabad=[["Rahi Tourist Bungalow, Shikohabad","Shikohabad, Firozabad, Uttar Pradesh",""]];
+    d.Kasganj=[["Rahi Tourist Bungalow, Soron","Soron, Kasganj, Uttar Pradesh",""]];
+    d.Lalitpur=[["Rahi Tourist Bungalow, Deogarh","Deogarh, Lalitpur, Uttar Pradesh",""]];
+    d['Siddharth Nagar']=[["Rahi Tourist Bungalow, Navgarh","Navgarh, Siddharth Nagar, Uttar Pradesh",""]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
