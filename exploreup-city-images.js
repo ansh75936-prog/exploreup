@@ -170,6 +170,7 @@
     controls.appendChild(makeButton('‹',-1));controls.appendChild(makeButton('›',1));
     if(heading)heading.appendChild(controls);
     const style=document.createElement('style');
+    style.id='exploreup-travel-slider-style';
     style.textContent='.exploreup-travel-track::-webkit-scrollbar{display:none}.exploreup-travel-track>.trail{min-width:0}@media(min-width:900px){.exploreup-travel-track>.trail{flex-basis:420px}}';
     document.head.appendChild(style);
   }
@@ -182,7 +183,18 @@
     setupTravelIdeasSlider();
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();
+  let observer;
+  const run=()=>{
+    if(observer)observer.disconnect();
+    try{applyAll();}catch(error){console.warn('ExploreUP enhancement warning:',error);}
+    if(observer)observer.observe(document.documentElement,{childList:true,subtree:true});
+  };
+
+  observer=new MutationObserver(()=>{
+    if(queued)return;
+    queued=true;
+    setTimeout(()=>{queued=false;run();},150);
+  });
   let queued=false;
-  new MutationObserver(()=>{if(queued)return;queued=true;setTimeout(()=>{queued=false;applyAll();},150);}).observe(document.documentElement,{childList:true,subtree:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
