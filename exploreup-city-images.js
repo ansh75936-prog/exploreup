@@ -1,12 +1,15 @@
-/* ExploreUP — local image correction layer for city cards + Travel Ideas cards. */
+/* ExploreUP — verified local/official image correction layer for city cards + Travel Ideas cards. */
 (function(){
   'use strict';
 
   const imageMap = {
-    jhansi: './images (1).jpeg',
-    prayagraj: './images (2).jpeg',
-    ayodhya: './images (3).jpeg',
-    gorakhpur: './images.jpeg',
+    // Keep the original uploaded-city mapping intact.
+    jhansi: './images (3).jpeg',
+    prayagraj: './images.jpeg',
+    gorakhpur: './images (2).jpeg',
+
+    // Verified city-specific images.
+    ayodhya: 'https://cdn.s3waas.gov.in/s3b2eb7349035754953b57a32e2841bda5/uploads/bfi_thumb/2024011750-rr7ndu9syeyofn2mpuakhttccve73crnsrq3fvz3z4.jpg',
     varanasi: './images/varanasi.jpg',
     banaras: './images/varanasi.jpg',
     lucknow: './images/lucknow.jpg'
@@ -31,12 +34,10 @@
       const src = imageMap[key];
       if (!src) return;
 
-      if (img) {
-        if (img.getAttribute('src') !== src) img.src = src;
-        img.setAttribute('data-exploreup-local-city-image', key);
-      }
+      if (img && img.getAttribute('src') !== src) img.src = src;
+      if (img) img.setAttribute('data-exploreup-local-city-image', key);
 
-      // Travel Idea cards use CSS background images rather than <img> tags.
+      // Travel Idea cards use CSS backgrounds rather than <img> tags.
       if (card.classList.contains('trail')) {
         card.style.backgroundImage = 'linear-gradient(transparent,#06162ddd),url("' + src.replace(/"/g, '\\"') + '")';
         card.setAttribute('data-exploreup-local-city-image', key);
