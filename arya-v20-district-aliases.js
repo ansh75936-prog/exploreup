@@ -8,7 +8,7 @@
 
   const ALIASES={
     'allahabad':'Prayagraj','prayag':'Prayagraj','prayagraj city':'Prayagraj','prayag raj':'Prayagraj',
-    'banaras':'Varanasi','benaras':'Varanasi','kashi':'Varanasi','kashi nagari':'Varanasi','banaras city':'Varanasi','varanasi city':'Varanasi',
+    'banaras':'Varanasi','benaras':'Varanasi','banarasi':'Varanasi','varansi':'Varanasi','varanasi':'Varanasi','kashi':'Varanasi','kashi nagari':'Varanasi','banaras city':'Varanasi','varanasi city':'Varanasi',
     'faizabad':'Ayodhya','faizabad city':'Ayodhya','ayodhya dham':'Ayodhya','ayodhya ji':'Ayodhya',
     'noida':'Gautam Buddh Nagar','new okhla':'Gautam Buddh Nagar','greater noida':'Gautam Buddh Nagar','gb nagar':'Gautam Buddh Nagar','gautam buddha nagar':'Gautam Buddh Nagar','gautam buddh nagar':'Gautam Buddh Nagar',
     'mughalsarai':'Chandauli','mughal sarai':'Chandauli','dd u nagar':'Chandauli','pt deen dayal upadhyaya nagar':'Chandauli',
@@ -34,7 +34,7 @@
   }
 
   // Common Hinglish phrasing is intentionally kept broad but travel-scoped.
-  const HINGLISH=/\b(ke baare mein|ke bare mein|ke baare me|ke bare me|batao|btao|dikhao|dikhana|chahiye|chaahiye|chahie|kahan|kaha|kaise|kaisa|kaisi|kitna|kitne|kab|jana hai|jaana hai|ghoomna|ghumna|rehna|rahna|rukna|khana|khana hai|khane|gumana|gumna|pahunchna|pahuche|pahuchna|near|pass|aas paas|aaspaas|milega|milenge|suggest|recommend|best|famous|place|jagah|hotel|stay|food|khana|trip|travel|yatra|tour|mandir|temple|market|bazaar|shopping|hospital|doctor|transport|train|bus|flight|festival|tyohar|history|itihaas|culture|sanskriti)\b/i;
+  const HINGLISH=/\b(ke baare mein|ke bare mein|ke baare me|ke bare me|batao|btao|dikhao|dikhana|chahiye|chaahiye|chahie|kahan|kaha|kaise|kaisa|kaisi|kitna|kitne|kab|jana hai|jaana hai|ghoomna|ghoomne|ghumna|ghumne|rehna|rahna|rukna|khana|khana hai|khane|gumana|gumna|pahunchna|pahuche|pahuchna|near|pass|aas paas|aaspaas|milega|milenge|suggest|recommend|best|famous|place|jagah|hotel|stay|food|khana|trip|travel|yatra|tour|mandir|temple|market|bazaar|shopping|hospital|doctor|transport|train|bus|flight|festival|tyohar|history|itihaas|culture|sanskriti)\b/i;
 
   function handle(e){
     if(e.type==='keydown' && e.key!=='Enter')return;
@@ -46,7 +46,6 @@
     const changed=normalized!==raw;
     if(!changed && !HINGLISH.test(raw))return;
     if(typeof window.aryaAnswer!=='function')return;
-    // Let the original Arya UI submit its own message when no alias needs interception.
     if(!changed)return;
     e.preventDefault();
     if(e.stopImmediatePropagation)e.stopImmediatePropagation();
