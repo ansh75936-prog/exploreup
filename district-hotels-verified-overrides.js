@@ -32,13 +32,15 @@ function apply(){
     d.Lucknow=[["Hotel Gomti","6, Tej Bahadur Sapru Marg, Near Sahara Ganj Mall, Hazratganj, Lucknow, Uttar Pradesh-226001","9453671319"]];
     d.Maharajganj=[["Rahi Tourist Bungalow, Sonauli","Sonauli, Maharajganj, Uttar Pradesh",""]];
     d.Mau=[["Rahi Tourist Bungalow, DohriGhat","NH-29, Gontha Bazar, DohriGhat, Mau, Uttar Pradesh-275303","9415013039"]];
+    d.Meerut=[["Hotel Crystal Palace","Jawahar Quarters, Jawahar Nagar, Meerut, Uttar Pradesh 250001","+91-9639111100"],["Hotel Samrat Heavens","Opposite Lokpriya Hospital, Garh Road, Meerut, Uttar Pradesh 250004","+91-9358827004"],["Hotel Bravura Resort","Delhi–Roorkee Bypass, Partapur, Meerut, Uttar Pradesh 250103","+91-8191900048"]];
     d.Mirzapur=[["Hotel Jahnavi","Near Shashtri Bridge, Mirzapur, Uttar Pradesh-231312","8004494476"],["Yatri Niwas, Vindhyachal","Partar Tiraha, Near Hanuman Mandir, Vindhyachal, Mirzapur, Uttar Pradesh-231307","8004494476"]];
     d.Moradabad=[["Rahi Tourist Bungalow","Near Circuit House Delhi Road, Moradabad, Uttar Pradesh-244001","9412155143"]];
     d.Prayagraj=[["Rahi Ilawart Tourist Bungalow","35, M.G. Marg Civil Line, Prayagraj, Uttar Pradesh-211001","8789773573"],["Rahi Triveni Darshan","Yamuna Bank Road, Kydganj, Prayagraj, Uttar Pradesh-211003","8789773573"]];
     d.Raebareli=[["Hotel Saras","Malikmau Crossing, Gol Chauraha, Raebareli, Uttar Pradesh-229001","9451090074"]];
-    d.Shahjahanpur=[["Rahi Tourist Bungalow","Bank of Garra River, Shahjahanpur, Uttar Pradesh-242406","9415608122"]];
+    d.Shahjahanpur=[["Royal Panna Hotel","Shahjahanpur, Uttar Pradesh",""],["Satyam Hotel","Shahjahanpur, Uttar Pradesh",""],["Durga Hotel","Shahjahanpur, Uttar Pradesh",""]];
     d.Shravasti=[["Rahi Tourist Bungalow","Katra Shrawasti Marg, Shravasti, Uttar Pradesh-271805","9415013781"]];
     d.Sitapur=[["Rahi Tourist Bungalow, Neemsar","Neemsar, Sitapur, Uttar Pradesh",""]];
+    d.Sonbhadra=[["New Hotel Savera","Civil Lines Road, Sonbhadra, Robertsganj, Uttar Pradesh 231216","05444 222 231"],["Hotel Shubh Shree Palace","Near Mission Hospital, 62, SH 5A, Tagore Nagar, Robertsganj, Uttar Pradesh 231216","094152 72411"],["Hotel Surya International","Near Mandi Samiti Pipri Road, Robertsganj, Uttar Pradesh 231216","086016 75655"]];
     d.Unnao=[["Rahi Tourist Bungalow, Nawabganj","Pakshi Vihar, Lucknow-Kanpur Road, Nawabganj, Unnao, Uttar Pradesh-209859","9149099890"]];
     d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Varanasi, Uttar Pradesh-221007",""]];
     d.Jaunpur=[["Raghuwanshi Hotel","Jaunpur, Uttar Pradesh",""],["Siddharth Hotel","Jaunpur, Uttar Pradesh",""],["Hotel Riverview","Jaunpur, Uttar Pradesh",""]];
