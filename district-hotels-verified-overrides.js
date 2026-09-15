@@ -51,6 +51,7 @@ function apply(){
     d.Fatehpur=[["Hotel A INN","371, Banda-Sagar Road, Harihar Ganj, Fatehpur, Uttar Pradesh 212601","05180-653200"],["Hotel Diplomat","State Highway 13, Near Road Ways Bus Stand Jawalaganj, Fatehpur, Uttar Pradesh 212601","05180-222786"],["Hotel Maya shayam","Bada sagar road, Plot No.400 near Mission Hospital, Harihar Ganj, Fatehpur, Uttar Pradesh 212601","05180-221466"]];
     d.Pilibhit=[["Hotel Moti Mahal","Benhur College Road, Pilibhit, Uttar Pradesh 262001","9412643295"],["Hotel Santosh","Moh. Nakhasa, Near Sungarhi Thana, Pilibhit, Uttar Pradesh 262001","8018091261"],["Hotel Nirmal","Chatri Chauraha, Pilibhit, Uttar Pradesh 262001","9927827777"]];
     d.Gonda=[["J.P Palace","Awas Vikas Colony, Infront of LIC Office, Gonda, Uttar Pradesh 271002","05262 225551"],["Sharma HOTELS","Gonda–Bahraich Rd, Civil Line, Azad Nagar, Gonda, Uttar Pradesh 271003","09555800800"],["Pathik Inn","Station Road, Gonda, Uttar Pradesh 271002","05262 222241"]];
+    d.Auraiya=[["Vinayak Palace","Kanpur Road, Auraiya, Uttar Pradesh",""],["Kamla Lodge","Opposite Roadways Bus Stand, Auraiya, Uttar Pradesh",""],["Pradhan Hotel","AH 1, Brahm Nagar, Auraiya, Uttar Pradesh",""],["Sai Kirpa Lodge","Om Nagar, Auraiya, Uttar Pradesh",""]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
