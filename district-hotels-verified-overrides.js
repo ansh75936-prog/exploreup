@@ -46,6 +46,11 @@ function apply(){
     d.Unnao=[["Rahi Tourist Bungalow, Nawabganj","Pakshi Vihar, Lucknow-Kanpur Road, Nawabganj, Unnao, Uttar Pradesh-209859","9149099890"]];
     d.Varanasi=[["Rahi Tourist Bungalow","Parade Kothi, Near Cantt. Railway Station, Varanasi, Uttar Pradesh-221002","9415902707"],["Rahi Tourist Bungalow Sarnath","Sarnath Station Road, Near Maha Bodhi Inter College, Sarnath, Uttar Pradesh-221007",""]];
     d.Jaunpur=[["Raghuwanshi Hotel","Jaunpur, Uttar Pradesh",""],["Siddharth Hotel","Jaunpur, Uttar Pradesh",""],["Hotel Riverview","Jaunpur, Uttar Pradesh",""]];
+    d.Basti=[["Hotel Prakash","Tiwari Tola, Basti, Uttar Pradesh 272002","05542288301"],["Hotel Shivay Palace","Roadways Tiraha, Jaipuriya, Basti, Uttar Pradesh 272001","05542288999"],["Hotel Maharaja","Pikura Shiv Gulam, Malviya Road, Basti, Uttar Pradesh 272001","09825156150"]];
+    d.Sultanpur=[["Hotel Vijay Delux","Lal Diggi Road, Civil Lines, Sultanpur, Uttar Pradesh 228001",""],["Hotel Vrindavan","Near Convent School, Civil Lines, Sultanpur, Uttar Pradesh 228001",""],["Garden View Hotel","Sirwara Road, Sultanpur, Uttar Pradesh 228001",""]];
+    d.Fatehpur=[["Hotel A INN","371, Banda-Sagar Road, Harihar Ganj, Fatehpur, Uttar Pradesh 212601","05180-653200"],["Hotel Diplomat","State Highway 13, Near Road Ways Bus Stand Jawalaganj, Fatehpur, Uttar Pradesh 212601","05180-222786"],["Hotel Maya shayam","Bada sagar road, Plot No.400 near Mission Hospital, Harihar Ganj, Fatehpur, Uttar Pradesh 212601","05180-221466"]];
+    d.Pilibhit=[["Hotel Moti Mahal","Benhur College Road, Pilibhit, Uttar Pradesh 262001","9412643295"],["Hotel Santosh","Moh. Nakhasa, Near Sungarhi Thana, Pilibhit, Uttar Pradesh 262001","8018091261"],["Hotel Nirmal","Chatri Chauraha, Pilibhit, Uttar Pradesh 262001","9927827777"]];
+    d.Gonda=[["J.P Palace","Awas Vikas Colony, Infront of LIC Office, Gonda, Uttar Pradesh 271002","05262 225551"],["Sharma HOTELS","Gonda–Bahraich Rd, Civil Line, Azad Nagar, Gonda, Uttar Pradesh 271003","09555800800"],["Pathik Inn","Station Road, Gonda, Uttar Pradesh 271002","05262 222241"]];
     window.__exploreUpVerifiedHotelOverridesApplied=true;
     if(typeof api.mount==='function') api.mount();
     return true;
