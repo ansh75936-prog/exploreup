@@ -1,4 +1,5 @@
 /* ExploreUP V20 — Arya Hinglish understanding layer. Data-preserving. Cache 20260927 */
+/* Final deployment trigger: 2026-09-15 */
 (function(){
 'use strict';
 if(window.__exploreUpAryaDistrictAliasV20)return;
