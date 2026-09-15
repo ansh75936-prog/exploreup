@@ -1,72 +1,52 @@
-/* ExploreUP — targeted image restoration layer.
- * Only the four requested district cards are restored here.
- * All other district cards remain untouched.
+/* ExploreUP — targeted district image restoration.
+ * Only the four requested district cards are changed here.
+ * Travel Ideas and all other district cards are left untouched.
  */
 (function(){
   'use strict';
 
   const districtImageMap = {
-    jhansi: './images.jpeg',
-    prayagraj: './images (1).jpeg',
-    ayodhya: './images (2).jpeg',
-    gorakhpur: './images (3).jpeg'
+    'Jhansi': './images.jpeg?v=20260915',
+    'Prayagraj': './images (1).jpeg?v=20260915',
+    'Ayodhya': './images (2).jpeg?v=20260915',
+    'Gorakhpur': './images (3).jpeg?v=20260915'
   };
-
-  const travelImageMap = {
-    ayodhya: 'https://cdn.s3waas.gov.in/s3b2eb7349035754953b57a32e2841bda5/uploads/bfi_thumb/2024011750-rr7ndu9syeyofn2mpuakhttccve73crnsrq3fvz3z4.jpg',
-    varanasi: './images/varanasi.jpg',
-    banaras: './images/varanasi.jpg',
-    lucknow: './images/lucknow.jpg'
-  };
-
-  function textKey(text, map){
-    const value = String(text || '').toLowerCase();
-    return Object.keys(map).find(key => new RegExp('\\b' + key + '\\b').test(value)) || null;
-  }
 
   function applyDistrictImages(){
-    document.querySelectorAll('.city').forEach(card => {
-      const key = textKey(card.innerText || card.textContent || '', districtImageMap);
-      if (!key) return;
+    document.querySelectorAll('#cityGrid .city').forEach(card => {
+      const heading = card.querySelector('.citytext h3');
       const img = card.querySelector('img');
-      if (!img) return;
-      const src = districtImageMap[key];
-      if (img.getAttribute('src') !== src) img.src = src;
-      img.setAttribute('data-exploreup-restored-district-image', key);
-    });
-  }
+      if (!heading || !img) return;
 
-  function applyTravelIdeas(){
-    document.querySelectorAll('.trail').forEach(card => {
-      const key = textKey(card.innerText || card.textContent || '', travelImageMap);
-      if (!key) return;
-      const src = travelImageMap[key];
-      const background = 'linear-gradient(transparent,#06162ddd),url("' + src.replace(/"/g, '\\"') + '")';
-      if (card.style.backgroundImage !== background) card.style.backgroundImage = background;
-      card.setAttribute('data-exploreup-travel-image', key);
-    });
-  }
+      const cityName = heading.textContent.trim();
+      const src = districtImageMap[cityName];
+      if (!src) return;
 
-  function applyAll(){
-    applyDistrictImages();
-    applyTravelIdeas();
+      if (img.getAttribute('src') !== src) {
+        img.setAttribute('src', src);
+      }
+      img.setAttribute('data-exploreup-restored-district-image', cityName);
+    });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyAll, {once:true});
+    document.addEventListener('DOMContentLoaded', applyDistrictImages, {once:true});
   } else {
-    applyAll();
+    applyDistrictImages();
   }
 
   let queued = false;
   new MutationObserver(() => {
     if (queued) return;
     queued = true;
-    setTimeout(() => { queued = false; applyAll(); }, 100);
+    setTimeout(() => {
+      queued = false;
+      applyDistrictImages();
+    }, 100);
   }).observe(document.documentElement, {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['style','src','class']
+    attributeFilter: ['src','class']
   });
 })();
