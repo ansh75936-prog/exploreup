@@ -25,7 +25,7 @@ jobs:
           s = p.read_text(encoding='utf-8')
           tags = [
               '<script src="./exploreup-city-images.js?v=20260923"></script>',
-              '<script src="./arya-v20-district-aliases.js?v=20260924"></script>'
+              '<script src="./arya-v20-district-aliases.js?v=20260925"></script>'
           ]
           pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
           if re.search(pattern, s):
