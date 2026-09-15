@@ -1,0 +1,48 @@
+name: ExploreUP Arya hotfix
+on:
+  push:
+    paths:
+      - "exploreup-arya-hotfix-trigger.txt"
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch Arya Banaras hotel handling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index-1.html')
+          s=p.read_text(encoding='utf-8')
+          old="""const c=cities.find(c=>{const n=c.name.toLowerCase();return x.includes(n)||n.includes(x)}) || (liveDistrict?cities.find(c=>c.name.toLowerCase()===liveDistrict.name.toLowerCase()):null);"""
+          new="""const aryaAliases={banaras:'Varanasi',kashi:'Varanasi',benaras:'Varanasi'};
+ const aryaDestination=aryaAliases[Object.keys(aryaAliases).find(k=>x.includes(k))||''];
+ const c=cities.find(c=>{const n=c.name.toLowerCase();return x.includes(n)||n.includes(x)}) || (aryaDestination?cities.find(c=>c.name.toLowerCase()===aryaDestination.toLowerCase()):null) || (liveDistrict?cities.find(c=>c.name.toLowerCase()===liveDistrict.name.toLowerCase()):null);"""
+          if old not in s:
+              raise SystemExit('Arya destination resolver pattern not found')
+          s=s.replace(old,new,1)
+          old2="Namaste! I’m Arya. I only answer questions about ExploreUP. Ask about destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans, reviews or website features."
+          new2="Namaste! I’m Arya. I can help you explore Uttar Pradesh — including destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features."
+          if old2 in s:
+              s=s.replace(old2,new2,1)
+          old3='<script src="./exploreup-city-images.js?v=20260923"></script>'
+          new3='<script src="./exploreup-city-images.js?v=20260924"></script>'
+          if old3 in s:
+              s=s.replace(old3,new3,1)
+          p.write_text(s,encoding='utf-8')
+          Path('exploreup-arya-hotfix-trigger.txt').unlink(missing_ok=True)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index-1.html exploreup-arya-hotfix-trigger.txt .github/workflows/exploreup-arya-hotfix.yml
+          git commit -m "Fix Arya Banaras destination matching"
+          git push origin HEAD:main
+          git rm .github/workflows/exploreup-arya-hotfix.yml
+          git commit -m "Remove temporary Arya hotfix workflow"
+          git push origin HEAD:main
