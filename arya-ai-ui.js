@@ -1,12 +1,11 @@
 /* ExploreUP Arya AI — single V20 send handler
- * Keeps the existing V20 panel/layout. This is the only file that handles
- * the visible Arya send button and Enter key. OpenAI API access is provided
- * by arya-ai-bridge.js; no duplicate document-level handlers are installed.
+ * Keeps the existing V20 panel/layout. This is the only visible Arya
+ * send/Enter handler. It calls the same-origin /api/arya endpoint directly.
  */
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-single-handler-v1';
+  AI.uiBridgeVersion='v20-openai-direct-v2';
   AI.freeMode=false;
   AI.uiWired=false;
 
@@ -28,6 +27,18 @@
     return el;
   }
 
+  async function askDirect(q,city){
+    const response=await fetch('/api/arya',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({query:q,city:city||''})
+    });
+    const data=await response.json().catch(function(){return {};});
+    if(!response.ok||!data.answer)throw new Error(String(data.error||('http_'+response.status)));
+    return String(data.answer).trim();
+  }
+
   async function send(){
     const i=input();
     const q=String(i?.value||'').replace(/\s+/g,' ').trim();
@@ -36,26 +47,24 @@
     add(q,'user');
     const pending=add('Arya is thinking…','bot');
     try{
-      if(typeof AI.askOpenAI!=='function')throw new Error('openai_client_missing');
       const city=String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||'').trim();
-      const result=await AI.askOpenAI(q,city);
+      const answer=await askDirect(q,city);
       if(pending?.parentNode)pending.parentNode.removeChild(pending);
-      if(result?.ok&&result.answer){
-        add(result.answer,'bot');
-        AI.internetConnected=true;
-        return false;
-      }
-      add('Arya could not connect to OpenAI right now. Please try again.','bot');
+      add(answer,'bot');
+      AI.internetConnected=true;
+      AI.freeMode=false;
     }catch(e){
       if(pending?.parentNode)pending.parentNode.removeChild(pending);
       add('Arya could not connect to OpenAI right now. Please try again.','bot');
+      AI.internetConnected=false;
     }
     return false;
   }
 
-  /* The V20 HTML button calls askArya(). Make that one entry point use OpenAI. */
   window.askArya=function(){return send();};
   AI.handleSend=send;
+  AI.askOpenAI=askDirect;
+  AI.askInternet=askDirect;
 
   function wire(){
     const i=input();
@@ -74,5 +83,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire,{once:true});
   else wire();
   window.addEventListener('load',wire,{once:true});
-  [100,300,700,1500].forEach(t=>setTimeout(wire,t));
+  [100,300,700,1500].forEach(function(t){setTimeout(wire,t);});
 })();
