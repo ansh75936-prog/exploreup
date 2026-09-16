@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ExploreUP — Powerful Search</title>
+<meta name="description" content="Search ExploreUP city guides, food, hotels, cinemas, health, transport and essential services.">
+<style>
+:root{--navy:#071b35;--blue:#0b67d1;--gold:#ffb51b;--bg:#f4f8fc;--text:#10233f;--muted:#60708a;--card:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 5%}.logo{font-weight:800;font-size:23px}.logo span{color:var(--gold)}.back{border:1px solid #ffffff44;border-radius:20px;padding:9px 14px;font-size:13px}
+.hero{background:linear-gradient(90deg,#071b35ee,#071b35aa),url('./images/agra-photo.svg') center/cover;color:#fff;padding:65px 7% 75px}.hero small{letter-spacing:3px;font-weight:800}.hero h1{font-size:clamp(38px,7vw,64px);margin:10px 0}.hero p{max-width:720px;color:#eaf3ff;line-height:1.6}
+.searchbox{width:min(900px,100%);margin-top:24px}.row{display:flex;gap:10px;background:#fff;padding:7px;border-radius:18px;box-shadow:0 12px 35px #001a3d55}.row input{flex:1;min-width:0;border:0;outline:0;padding:15px 18px;font-size:16px;color:var(--text);background:#fff}.row button{border:0;background:var(--gold);color:#14233a;border-radius:13px;padding:0 24px;font-weight:850;cursor:pointer}.filters{display:flex;gap:10px;margin-top:12px}.filters select{border:1px solid #ffffff55;background:#fff;color:var(--text);border-radius:12px;padding:10px 12px;font-weight:700}
+.wrap{width:min(1100px,90%);margin:0 auto}.panel{margin-top:-28px;position:relative;background:#fff;border-radius:22px;padding:20px;box-shadow:0 10px 35px #001b3b18}.status{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.status b{font-size:16px;color:#10233f}.status span{color:#60708a;font-size:13px}.results{display:grid;gap:10px}
+.search-result{width:100%;text-align:left;border:1px solid #cbd8e8;background:#fff;color:#10233f !important;border-radius:15px;padding:15px;cursor:pointer;display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center;box-shadow:0 2px 8px #001b3b0b}
+.search-result *{color:inherit}.search-result:hover{border-color:#7daee8;background:#f4f8fc;transform:translateY(-1px)}.result-title{font-weight:850;color:#10233f !important}.result-type{font-size:11px;font-weight:800;background:#eef5ff;color:#1559a5 !important;border-radius:10px;padding:5px 8px}.result-desc{color:#52657f !important;font-size:13px;line-height:1.4}.result-go{color:#0b67d1 !important;font-weight:850;font-size:12px}.no-results{border:1px dashed #b9c9dc;border-radius:15px;padding:25px;color:#52657f !important;background:#fff;font-size:13px;line-height:1.5}
+.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 35px}.tip{background:#fff;border:1px solid #e3ebf5;border-radius:15px;padding:15px;color:#10233f}.tip b{display:block;margin-bottom:5px;color:#10233f}.tip small{color:#60708a;line-height:1.5}.footer{background:var(--navy);color:#cddbf0;padding:30px 5%;font-size:13px}.footer b{color:#fff}
+@media(max-width:700px){.row{flex-direction:column}.row button{height:48px}.filters{flex-wrap:wrap}.search-result{grid-template-columns:1fr auto}.result-desc{grid-column:1/-1}.result-go{grid-column:2;grid-row:1}.tips{grid-template-columns:1fr}.hero{padding:48px 5% 65px}.wrap{width:92%}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="logo">Explore<span>UP</span></div><a class="back" href="./index-1.html">← Main ExploreUP</a></nav>
+<header class="hero"><div><small>EXPLOREUP V21</small><h1>Powerful Search 🔎</h1><p>Search naturally by city, topic or category. Filter the results and jump directly to the relevant city-guide section.</p><div class="searchbox"><div class="row"><input id="powerSearch" type="search" autocomplete="off" placeholder="Try: Varanasi food, Ayodhya, cinemas, hotels…" aria-label="Search ExploreUP"><button type="button" onclick="document.getElementById('powerSearch').focus()">Search</button></div><div class="filters"><select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option><option value="places">Cities & Places</option><option value="food">Food</option><option value="hotels">Hotels</option><option value="cinema">Cinemas</option><option value="health">Health</option><option value="transport">Transport</option><option value="services">Essential Services</option></select></div></div></div></header>
+<main class="wrap"><section class="panel"><div class="status"><b>Search results</b><span id="searchCount">0 results</span></div><div id="searchResults" class="results" aria-live="polite"></div></section><section class="tips"><div class="tip"><b>🗣️ Natural search</b><small>Try city + topic phrases such as “Varanasi food” or “Lucknow hotels”.</small></div><div class="tip"><b>🏷️ Category filter</b><small>Limit results to food, hotels, cinemas, health, transport or services.</small></div><div class="tip"><b>➡️ Direct navigation</b><small>Open a result to jump to the matching section of the city guide.</small></div></section></main>
+<footer class="footer"><b>ExploreUP</b> — Powerful Search for Uttar Pradesh</footer>
+<script src="./v21-step2-powerful-search.js?v=20260916-2"></script>
+</body>
+</html>
