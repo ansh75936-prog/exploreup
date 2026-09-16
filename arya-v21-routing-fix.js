@@ -67,7 +67,6 @@
     if(typeof window.aryaAnswer!=='function'){setTimeout(install,250);return;}
     if(window.aryaAnswer.__exploreupV21RoutingFix)return;
     const original=window.aryaAnswer;
-
     async function fixedAryaAnswer(query,lang){
       const raw=String(query||'').trim();
       const detected=detectCity(raw);
@@ -77,7 +76,6 @@
       const replyLang=lang||((typeof window.aryaDetectLanguage==='function')?window.aryaDetectLanguage(raw):'en');
       return original.call(this,q,replyLang);
     }
-
     fixedAryaAnswer.__exploreupV21RoutingFix=true;
     fixedAryaAnswer.original=original;
     window.aryaAnswer=fixedAryaAnswer;
@@ -113,6 +111,27 @@
     }
     window.askArya=send;
     window.__exploreUpAryaOpenAISend=true;
+
+    // Capture the actual UI events before the old inline V20 listeners can handle them.
+    function isSendButton(target){
+      const el=target?.closest?.('#aryaSend,.arya-send,[data-arya-send]');
+      return !!el;
+    }
+    document.addEventListener('click',function(e){
+      if(isSendButton(e.target)){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        send();
+      }
+    },true);
+    document.addEventListener('keydown',function(e){
+      const el=e.target;
+      if(el?.id==='aryaInput'&&e.key==='Enter'&&!e.shiftKey){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        send();
+      }
+    },true);
   }
 
   if(document.readyState==='loading'){
