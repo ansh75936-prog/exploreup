@@ -26,7 +26,7 @@ jobs:
           tags = [
               '<script src="./exploreup-city-images.js?v=20260923"></script>',
               '<script src="./arya-v20-district-aliases.js?v=20260915"></script>',
-              '<script src="./arya-v21-routing-fix.js?v=20260915"></script>'
+              '<script src="./arya-v21-routing-fix.js?v=20260916"></script>'
           ]
           pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
           if re.search(pattern, s):
