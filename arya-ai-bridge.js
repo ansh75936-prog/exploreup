@@ -7,28 +7,23 @@
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
   AI.freeMode=false;
   AI.internetConnected=false;
-  AI.uiBridgeVersion='openai-client-only-v1';
-
+  AI.uiBridgeVersion='openai-client-only-v2';
+  const API='https://exploreup-five.vercel.app/api/arya';
   function currentDistrict(){
-    try{
-      return String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||'').trim();
-    }catch(e){return '';}
+    try{return String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||'').trim();}
+    catch(e){return '';}
   }
-
   async function askOpenAI(query,city){
     const q=String(query||'').replace(/\s+/g,' ').trim().slice(0,4000);
     if(!q)return {ok:false,error:'empty'};
     try{
-      const response=await fetch(window.location.origin+'/api/arya',{
+      const response=await fetch(API+'?v=20260916-4',{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
-        credentials:'same-origin',
+        headers:{'Content-Type':'application/json','Cache-Control':'no-cache'},
         body:JSON.stringify({query:q,city:String(city||currentDistrict()).trim().slice(0,120)})
       });
       const data=await response.json().catch(()=>({}));
-      if(!response.ok||!data.answer){
-        return {ok:false,error:String(data.error||('http_'+response.status))};
-      }
+      if(!response.ok||!data.answer)return {ok:false,error:String(data.error||('http_'+response.status))};
       AI.internetConnected=true;
       AI.freeMode=false;
       return {ok:true,answer:String(data.answer).trim(),source:'openai'};
@@ -37,7 +32,6 @@
       return {ok:false,error:'openai_connection_failed'};
     }
   }
-
   AI.askOpenAI=askOpenAI;
   AI.askInternet=askOpenAI;
   AI.askFree=async function(){return {ok:false,error:'free_mode_disabled'}};
