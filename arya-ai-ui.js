@@ -1,13 +1,12 @@
 /* ExploreUP Arya AI — V20 OpenAI send bridge
- * Keeps the original V20 panel and controls. The send/Enter events are
- * scoped only to Arya, and the response is rendered inside the existing
- * panel instead of creating a floating/fixed UI element.
+ * Keeps the original V20 panel and controls. If the OpenAI runtime bridge
+ * is not loaded yet, load it on demand before sending the request.
  */
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
   AI.freeMode=false;
-  AI.uiBridgeVersion='v20-openai-send-v2';
+  AI.uiBridgeVersion='v20-openai-send-v3';
   AI.uiWired=false;
 
   const $=s=>document.querySelector(s);
@@ -45,11 +44,49 @@
     return wrap;
   }
   function busy(text){return addBubble(text,'ai');}
+
+  let bridgePromise=null;
+  function ensureOpenAIBridge(){
+    if(typeof AI.askOpenAI==='function')return Promise.resolve(true);
+    if(bridgePromise)return bridgePromise;
+    bridgePromise=new Promise(function(resolve){
+      const existing=document.querySelector('script[data-arya-openai-bridge="1"]');
+      if(existing){
+        const started=Date.now();
+        const wait=function(){
+          if(typeof AI.askOpenAI==='function')return resolve(true);
+          if(Date.now()-started>5000)return resolve(false);
+          setTimeout(wait,100);
+        };
+        wait();
+        return;
+      }
+      const script=document.createElement('script');
+      script.src='/arya-ai-bridge.js?v=openai-v3';
+      script.async=true;
+      script.dataset.aryaOpenaiBridge='1';
+      script.onload=function(){
+        const started=Date.now();
+        const wait=function(){
+          if(typeof AI.askOpenAI==='function')return resolve(true);
+          if(Date.now()-started>5000)return resolve(false);
+          setTimeout(wait,100);
+        };
+        wait();
+      };
+      script.onerror=function(){resolve(false);};
+      document.head.appendChild(script);
+    });
+    return bridgePromise;
+  }
+
   async function run(q){
     const city=String(window.currentExploreCity||$('#modalTitle')?.textContent||'').trim();
-    if(!AI.askOpenAI)return null;
+    const ready=await ensureOpenAIBridge();
+    if(!ready||typeof AI.askOpenAI!=='function')return null;
     return AI.askOpenAI(q,city);
   }
+
   function intercept(e){
     const p=panel(),i=input();
     if(!p||!i)return;
@@ -76,6 +113,7 @@
       }
     }).catch(function(){if(wait)wait.textContent='Arya is temporarily unable to connect. Please try again.';});
   }
+
   function wire(){
     const p=panel(),i=input();
     if(!p||!i||p.dataset.aryaOpenAIWired==='1')return false;
