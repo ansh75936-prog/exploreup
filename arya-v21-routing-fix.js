@@ -81,66 +81,7 @@
     window.aryaAnswer=fixedAryaAnswer;
   }
 
-  function installOpenAISend(){
-    if(window.__exploreUpAryaOpenAISend)return;
-    const API='https://exploreup-five.vercel.app/api/arya';
-    function add(text,type){
-      if(typeof window.aryaAdd==='function')return window.aryaAdd(String(text||''),type||'bot');
-      const b=document.getElementById('aryaBody');
-      if(!b)return null;
-      const d=document.createElement('div');d.className='arya-msg '+(type||'bot');d.textContent=String(text||'');b.appendChild(d);b.scrollTop=b.scrollHeight;return d;
-    }
-    async function send(){
-      const i=document.getElementById('aryaInput');
-      const q=String(i?.value||'').replace(/\s+/g,' ').trim();
-      if(!q)return false;
-      if(i)i.value='';
-      add(q,'user');
-      const pending=add('Arya is thinking…','bot');
-      try{
-        const c=city();
-        const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,city:c})});
-        const data=await r.json().catch(()=>({}));
-        if(!r.ok||!data.answer)throw new Error(String(data.error||('http_'+r.status)));
-        if(pending?.parentNode)pending.parentNode.removeChild(pending);
-        add(String(data.answer).trim(),'bot');
-      }catch(e){
-        if(pending?.parentNode)pending.parentNode.removeChild(pending);
-        add('Arya could not connect to OpenAI right now. Please try again.','bot');
-      }
-      return false;
-    }
-    window.askArya=send;
-    window.__exploreUpAryaOpenAISend=true;
-
-    function isSendButton(target){
-      const el=target?.closest?.('#aryaSend,.arya-send,[data-arya-send]');
-      return !!el;
-    }
-    document.addEventListener('click',function(e){
-      if(isSendButton(e.target)){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        send();
-      }
-    },true);
-    document.addEventListener('keydown',function(e){
-      const el=e.target;
-      if(el?.id==='aryaInput'&&e.key==='Enter'&&!e.shiftKey){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        send();
-      }
-    },true);
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',install,{once:true});
-    document.addEventListener('DOMContentLoaded',installOpenAISend,{once:true});
-  }else{
-    install();
-    installOpenAISend();
-  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
   window.addEventListener('load',install,{once:true});
-  window.addEventListener('load',installOpenAISend,{once:true});
 })();
