@@ -1,6 +1,7 @@
 /* ExploreUP Arya AI — runtime bridge
  * Connects the A-Z site knowledge layer to the existing Arya input flow without replacing the UI.
  * No factual listings are created here; this only normalizes language/context and exposes navigation helpers.
+ * V20 dataset remains read-only. Internet answers come through /api/arya.
  */
 (function(){
   'use strict';
@@ -61,9 +62,50 @@
     return false;
   }
 
+  function internetBox(){
+    let box=document.getElementById('exploreup-arya-live-response');
+    if(box)return box;
+    box=document.createElement('div');
+    box.id='exploreup-arya-live-response';
+    box.setAttribute('role','status');
+    box.style.cssText='margin:12px 0;padding:14px 16px;background:#fff;border:1px solid #dce6f2;border-radius:14px;color:#10233f;line-height:1.55;font-size:14px;white-space:pre-wrap;box-shadow:0 5px 18px rgba(0,27,59,.08)';
+    const input=document.getElementById('aryaInput');
+    if(input&&input.parentElement) input.parentElement.insertAdjacentElement('afterend',box);
+    else document.body.appendChild(box);
+    return box;
+  }
+
+  function showInternetAnswer(text){
+    const box=internetBox();
+    box.textContent='Arya • Live web\n\n'+String(text||'').trim();
+  }
+
+  async function askInternet(query, city){
+    const q=normalizeQuery(query);
+    if(!q)return {ok:false,error:'empty'};
+    const box=internetBox();
+    box.textContent='Arya • Live web\n\nSearching the web…';
+    try{
+      const response=await fetch('/api/arya',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({query:q,city:String(city||currentDistrict()).trim()})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.answer)throw new Error(data.error||'internet_backend_unavailable');
+      showInternetAnswer(data.answer);
+      AI.internetConnected=true;
+      return {ok:true,answer:data.answer};
+    }catch(error){
+      AI.internetConnected=false;
+      return {ok:false,error:String(error&&error.message||error)};
+    }
+  }
+
   AI.normalizeQuery=normalizeQuery;
   AI.getContext=getContext;
   AI.openSection=openSection;
+  AI.askInternet=askInternet;
   AI.knowledge=K;
 
   function connect(){
@@ -71,16 +113,24 @@
       if(typeof window.askArya!=='function')return false;
       if(window.askArya.__exploreupKnowledgeBridge)return true;
       const original=window.askArya;
-      function bridgedAskArya(){
+      async function bridgedAskArya(){
         const input=document.getElementById('aryaInput');
         if(!input)return original.apply(this,arguments);
         const before=input.value;
-        input.value=normalizeQuery(before);
-        try{return original.apply(this,arguments)}finally{input.value=before;}
+        const normalized=normalizeQuery(before);
+        input.value=normalized;
+        try{
+          const live=await askInternet(normalized,currentDistrict());
+          if(live.ok)return live.answer;
+          return original.apply(this,arguments);
+        }finally{
+          input.value=before;
+        }
       }
       bridgedAskArya.__exploreupKnowledgeBridge=true;
       bridgedAskArya.original=original;
       window.askArya=bridgedAskArya;
+      window.askAryaInternet=askInternet;
       AI.connected=true;
       return true;
     }catch(e){AI.lastBridgeError=String(e&&e.message||e);return false;}
