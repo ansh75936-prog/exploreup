@@ -1,11 +1,13 @@
 /* ExploreUP Arya AI — single V20 send handler
  * Uses the fixed production Vercel API so GitHub Pages cannot accidentally
  * send /api/arya to the static host. Keeps the existing V20 panel/layout.
+ * v8: avoid CORS preflight by sending JSON as text/plain; the API already
+ * accepts a string body and parses JSON server-side.
  */
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-direct-v7';
+  AI.uiBridgeVersion='v20-openai-direct-v8';
   AI.freeMode=false;
   const API='https://exploreup-five.vercel.app/api/arya';
 
@@ -28,9 +30,9 @@
   }
 
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260916-7',{
+    const response=await fetch(API+'?v=20260916-8',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
       body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
     });
     const data=await response.json().catch(function(){return {};});
