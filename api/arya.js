@@ -20,24 +20,6 @@ function cors(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
 }
 
-async function callOpenAI(key, system, query) {
-  return fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${key}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-5.6-luna',
-      store: false,
-      input: [
-        { role: 'system', content: [{ type: 'input_text', text: system }] },
-        { role: 'user', content: [{ type: 'input_text', text: query }] }
-      ]
-    })
-  });
-}
-
 module.exports = async function handler(req, res) {
   cors(req, res);
   if (req.method === 'OPTIONS') return send(res, 204, {});
@@ -68,7 +50,22 @@ module.exports = async function handler(req, res) {
   ].filter(Boolean).join('\n');
 
   try {
-    const response = await callOpenAI(key, system, query);
+    const response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-5.6',
+        store: false,
+        input: [
+          { role: 'system', content: [{ type: 'input_text', text: system }] },
+          { role: 'user', content: [{ type: 'input_text', text: query }] }
+        ]
+      })
+    });
+
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       let code = 'openai_request_failed';
