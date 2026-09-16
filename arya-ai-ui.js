@@ -1,6 +1,6 @@
-/* ExploreUP Arya UI bridge
- * Forces the visible Arya interaction to use the secure /api/arya OpenAI backend first.
- * V20 data remains read-only; this file only handles UI -> backend wiring.
+/* ExploreUP Arya UI bridge — FREE/local mode
+ * Wires the visible Arya interaction to the local Arya assistant.
+ * No external AI/API key is required in this mode.
  */
 (function(){
   'use strict';
@@ -43,21 +43,19 @@
     const q=String(query||'').replace(/\s+/g,' ').trim();
     if(!q)return false;
     const box=responseBox(input);
-    box.textContent='Arya • OpenAI\n\nThinking…';
+    box.textContent='Arya • Free\n\nThinking…';
     try{
-      const r=await fetch('/api/arya',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({query:q,city:city()})
-      });
-      const data=await r.json().catch(()=>({}));
-      if(!r.ok || !data.answer) throw new Error(data.error || 'OpenAI backend unavailable');
-      box.textContent='Arya • OpenAI\n\n'+String(data.answer).trim();
-      AI.openAIConnected=true;
-      return true;
+      const result=typeof AI.askFree==='function'
+        ? AI.askFree(q,city())
+        : {ok:false};
+      if(result && result.ok){
+        box.textContent='Arya • Free\n\n'+String(result.answer||'').trim();
+        AI.freeMode=true;
+        return true;
+      }
+      throw new Error('free_mode_unavailable');
     }catch(e){
-      AI.openAIConnected=false;
-      box.textContent='Arya • OpenAI\n\nLive AI temporarily unavailable. Please try again.';
+      box.textContent='Arya • Free\n\nArya is temporarily unavailable. Please try again.';
       return false;
     }
   }
@@ -65,8 +63,8 @@
   function wire(){
     const input=findInput();
     if(!input)return false;
-    if(input.dataset.exploreupOpenAIWired==='1')return true;
-    input.dataset.exploreupOpenAIWired='1';
+    if(input.dataset.exploreupFreeAryaWired==='1')return true;
+    input.dataset.exploreupFreeAryaWired='1';
 
     const form=input.closest('form');
     if(form){
@@ -89,18 +87,19 @@
       }
     },true);
 
-    if(typeof window.askArya==='function' && !window.askArya.__openAIUIBridge){
+    if(typeof window.askArya==='function' && !window.askArya.__freeAryaUIBridge){
       const original=window.askArya;
-      async function openAIAskArya(){
+      async function freeAskArya(){
         const ok=await live(input.value,input);
         if(ok)return;
         return original.apply(this,arguments);
       }
-      openAIAskArya.__openAIUIBridge=true;
-      openAIAskArya.original=original;
-      window.askArya=openAIAskArya;
+      freeAskArya.__freeAryaUIBridge=true;
+      freeAskArya.original=original;
+      window.askArya=freeAskArya;
     }
     AI.uiWired=true;
+    AI.freeMode=true;
     return true;
   }
 
