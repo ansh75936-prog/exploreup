@@ -1,13 +1,14 @@
 /* ExploreUP Arya AI — single OpenAI runtime bridge
- * V20 panel/layout stays untouched. This file owns only Arya message sending.
- * No document-level listeners and no second UI renderer are added.
+ * V20 panel/layout stays untouched. This file owns the Arya send action.
+ * The page's original askArya name is replaced with this one authoritative
+ * OpenAI handler so the old local/planner response cannot take over.
  */
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
   AI.freeMode=false;
   AI.internetConnected=false;
-  AI.uiBridgeVersion='v20-openai-single-handler';
+  AI.uiBridgeVersion='v20-openai-single-handler-v2';
 
   const aliases={
     theater:'theatre',theaters:'theatres','theatre hall':'theatre','movie hall':'theatre','movie halls':'theatres',
@@ -36,10 +37,16 @@
     try{return String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||document.querySelector('#breadcrumb')?.textContent?.split('›').pop()||'').trim();}
     catch(e){return '';}
   }
-  function getContext(){
-    const K=window.ExploreUPAryaKnowledge||{};
-    const data=K.siteMap||{};
-    return {brand:K.brand||'ExploreUP',assistant:K.assistantName||'Arya AI',city:currentDistrict(),categories:Array.isArray(data.categories)?data.categories.slice():[],features:Array.isArray(data.existingDistrictFeatures)?data.existingDistrictFeatures.slice():[],rules:Array.isArray(K.rules)?K.rules.slice():[],noFakeData:true,language:K.language||null};
+  function addMessage(text,who){
+    const body=document.getElementById('aryaBody');
+    if(!body)return null;
+    if(typeof window.aryaAdd==='function')return window.aryaAdd(text,who);
+    const el=document.createElement('div');
+    el.className='arya-msg '+(who==='user'?'user':'bot');
+    el.textContent=String(text||'');
+    body.appendChild(el);
+    body.scrollTop=body.scrollHeight;
+    return el;
   }
 
   async function askOpenAI(query,city){
@@ -63,63 +70,55 @@
   }
 
   AI.normalizeQuery=normalizeQuery;
-  AI.getContext=getContext;
   AI.askFree=async function(){return {ok:false,error:'free_mode_disabled'};};
   AI.askInternet=askOpenAI;
   AI.askOpenAI=askOpenAI;
   AI.knowledge=window.ExploreUPAryaKnowledge||{};
+  AI.answerRouting='openai-first';
 
-  function addMessage(text,who){
-    const body=document.getElementById('aryaBody');
-    if(!body)return null;
-    if(typeof window.aryaAdd==='function')return window.aryaAdd(text,who);
-    const el=document.createElement('div');
-    el.className='arya-msg '+(who==='user'?'user':'bot');
-    el.textContent=String(text||'');
-    body.appendChild(el);
-    body.scrollTop=body.scrollHeight;
-    return el;
-  }
-
-  async function handleSend(){
+  async function handleSend(queryFromButton){
     const input=document.getElementById('aryaInput');
-    if(!input)return;
-    const q=String(input.value||'').replace(/\s+/g,' ').trim();
-    if(!q)return;
+    const q=String(queryFromButton||input?.value||'').replace(/\s+/g,' ').trim();
+    if(!q)return false;
+    if(input&&(!queryFromButton||input.value===q))input.value='';
     addMessage(q,'user');
-    input.value='';
     const pending=addMessage('Arya is thinking…','bot');
     const result=await askOpenAI(q,currentDistrict());
     if(pending&&pending.parentNode)pending.parentNode.removeChild(pending);
-    if(result&&result.ok&&result.answer)addMessage(result.answer,'bot');
-    else addMessage('Arya could not connect to OpenAI right now. Please try again.','bot');
-    const body=document.getElementById('aryaBody');
-    if(body)body.scrollTop=body.scrollHeight;
+    if(result&&result.ok&&result.answer){
+      addMessage(result.answer,'bot');
+    }else{
+      addMessage('Arya could not connect to OpenAI right now. Please try again.','bot');
+    }
+    return false;
   }
 
-  function wire(){
+  function installSingleHandler(){
+    /* V20 inline buttons call window.askArya(). Replacing that single global
+       entry point is safer than adding document-level competing listeners. */
+    window.askArya=function(){
+      return handleSend();
+    };
     const input=document.getElementById('aryaInput');
+    if(input&&input.dataset.aryaOpenAIKeyWired!=='1'){
+      input.dataset.aryaOpenAIKeyWired='1';
+      input.onkeydown=function(e){
+        if(e&&e.key==='Enter'&&!e.shiftKey){
+          e.preventDefault();
+          handleSend();
+          return false;
+        }
+      };
+    }
     const button=document.getElementById('aryaSend');
-    if(!input||!button)return false;
-    if(button.dataset.aryaOpenAIWired==='1')return true;
-    button.dataset.aryaOpenAIWired='1';
-    button.onclick=function(e){
-      if(e)e.preventDefault();
-      handleSend();
-      return false;
-    };
-    input.onkeydown=function(e){
-      if(e&&e.key==='Enter'&&!e.shiftKey){
-        e.preventDefault();
-        handleSend();
-        return false;
-      }
-    };
-    AI.answerRouting='openai-first';
+    if(button){
+      button.dataset.aryaOpenAIWired='1';
+    }
     return true;
   }
 
-  function boot(){wire();}
+  AI.handleSend=handleSend;
+  function boot(){installSingleHandler();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
   window.addEventListener('load',boot,{once:true});
