@@ -20,6 +20,23 @@ function cors(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
 }
 
+function extractText(data) {
+  if (typeof data?.output_text === 'string' && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
+  const parts = [];
+  const output = Array.isArray(data?.output) ? data.output : [];
+  for (const item of output) {
+    const content = Array.isArray(item?.content) ? item.content : [];
+    for (const chunk of content) {
+      if (chunk?.type === 'output_text' && typeof chunk.text === 'string') {
+        parts.push(chunk.text);
+      }
+    }
+  }
+  return parts.join('').trim();
+}
+
 module.exports = async function handler(req, res) {
   cors(req, res);
   if (req.method === 'OPTIONS') return send(res, 204, {});
@@ -77,7 +94,7 @@ module.exports = async function handler(req, res) {
       return send(res, response.status >= 500 ? 502 : response.status, { error: code });
     }
 
-    const text = typeof data.output_text === 'string' ? data.output_text.trim() : '';
+    const text = extractText(data);
     if (!text) {
       console.error('Arya OpenAI upstream: empty response');
       return send(res, 502, { error: 'openai_empty_response' });
