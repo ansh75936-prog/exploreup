@@ -5,9 +5,10 @@
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-direct-v4';
+  AI.uiBridgeVersion='v20-openai-direct-v5';
   AI.freeMode=false;
   const API='https://exploreup-five.vercel.app/api/arya';
+
   function input(){return document.getElementById('aryaInput');}
   function body(){return document.getElementById('aryaBody');}
   function add(text,type){
@@ -25,8 +26,9 @@
     b.scrollTop=b.scrollHeight;
     return el;
   }
+
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260916-4',{
+    const response=await fetch(API+'?v=20260916-5',{
       method:'POST',
       headers:{'Content-Type':'application/json','Cache-Control':'no-cache'},
       body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
@@ -35,6 +37,7 @@
     if(!response.ok||!data.answer)throw new Error(String(data.error||('http_'+response.status)));
     return String(data.answer).trim();
   }
+
   async function send(){
     const i=input();
     const q=String(i?.value||'').replace(/\s+/g,' ').trim();
@@ -57,8 +60,57 @@
     }
     return false;
   }
+
   window.askArya=send;
   AI.handleSend=send;
   AI.askOpenAI=askDirect;
   AI.askInternet=askDirect;
+
+  function wire(){
+    const i=input();
+    if(i && i.dataset.aryaOpenAIKeyWired!=='1'){
+      i.dataset.aryaOpenAIKeyWired='1';
+      i.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&!e.shiftKey){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          send();
+        }
+      },true);
+    }
+
+    const buttons=[];
+    const main=document.getElementById('aryaSend');
+    if(main)buttons.push(main);
+    document.querySelectorAll('.arya-send,[data-arya-send]').forEach(function(btn){
+      if(buttons.indexOf(btn)<0)buttons.push(btn);
+    });
+    buttons.forEach(function(btn){
+      if(btn.dataset.aryaOpenAIButtonWired==='1')return;
+      btn.dataset.aryaOpenAIButtonWired='1';
+      btn.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        send();
+      },true);
+    });
+
+    if(i){
+      const form=i.closest('form');
+      if(form && form.dataset.aryaOpenAIFormWired!=='1'){
+        form.dataset.aryaOpenAIFormWired='1';
+        form.addEventListener('submit',function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          send();
+        },true);
+      }
+    }
+    AI.uiWired=!!i || buttons.length>0;
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire,{once:true});
+  else wire();
+  window.addEventListener('load',wire,{once:true});
+  [100,300,700,1500,3000].forEach(function(t){setTimeout(wire,t);});
 })();
