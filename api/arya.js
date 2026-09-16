@@ -20,6 +20,24 @@ function cors(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
 }
 
+async function callOpenAI(key, system, query) {
+  return fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${key}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-5.6-luna',
+      store: false,
+      input: [
+        { role: 'system', content: [{ type: 'input_text', text: system }] },
+        { role: 'user', content: [{ type: 'input_text', text: query }] }
+      ]
+    })
+  });
+}
+
 module.exports = async function handler(req, res) {
   cors(req, res);
   if (req.method === 'OPTIONS') return send(res, 204, {});
@@ -50,22 +68,7 @@ module.exports = async function handler(req, res) {
   ].filter(Boolean).join('\n');
 
   try {
-    const response = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${key}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-5.6-luna',
-        store: false,
-        input: [
-          { role: 'system', content: [{ type: 'input_text', text: system }] },
-          { role: 'user', content: [{ type: 'input_text', text: query }] }
-        ]
-      })
-    });
-
+    const response = await callOpenAI(key, system, query);
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       let code = 'openai_request_failed';
@@ -73,13 +76,18 @@ module.exports = async function handler(req, res) {
       else if (response.status === 403) code = 'openai_access_denied';
       else if (response.status === 429) code = 'openai_rate_or_quota';
       else if (response.status >= 500) code = 'openai_service_error';
+      console.error('Arya OpenAI upstream:', response.status, code);
       return send(res, response.status >= 500 ? 502 : response.status, { error: code });
     }
 
     const text = typeof data.output_text === 'string' ? data.output_text.trim() : '';
-    if (!text) return send(res, 502, { error: 'openai_empty_response' });
+    if (!text) {
+      console.error('Arya OpenAI upstream: empty response');
+      return send(res, 502, { error: 'openai_empty_response' });
+    }
     return send(res, 200, { answer: text, source: 'openai' });
   } catch (error) {
+    console.error('Arya OpenAI connection:', error?.name || 'Error', error?.message || 'unknown');
     return send(res, 502, { error: 'openai_connection_failed' });
   }
 };
