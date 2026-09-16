@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-direct-v5';
+  AI.uiBridgeVersion='v20-openai-direct-v6';
   AI.freeMode=false;
   const API='https://exploreup-five.vercel.app/api/arya';
 
@@ -28,7 +28,7 @@
   }
 
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260916-5',{
+    const response=await fetch(API+'?v=20260916-6',{
       method:'POST',
       headers:{'Content-Type':'application/json','Cache-Control':'no-cache'},
       body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
@@ -82,7 +82,7 @@
     const buttons=[];
     const main=document.getElementById('aryaSend');
     if(main)buttons.push(main);
-    document.querySelectorAll('.arya-send,[data-arya-send]').forEach(function(btn){
+    document.querySelectorAll('.arya-send,[data-arya-send],.arya-input button,#aryaPanel .arya-input button').forEach(function(btn){
       if(buttons.indexOf(btn)<0)buttons.push(btn);
     });
     buttons.forEach(function(btn){
