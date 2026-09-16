@@ -1,8 +1,7 @@
 /* ExploreUP Arya AI — secure OpenAI runtime bridge
- * V20 compatibility: do not replace or wrap the original askArya() handler.
- * The V20 handler in index-1.html owns the chat UI, message rendering,
- * language detection and multilingual response flow.
- * This bridge only provides the secure /api/arya connection plus local fallback.
+ * V20 compatibility: keep the original chat UI and askArya() handler.
+ * This bridge intercepts only the answer-generation function so V20
+ * rendering, language detection and message bubbles stay unchanged.
  */
 (function(){
   'use strict';
@@ -82,5 +81,25 @@
   AI.askInternet=askOpenAI;
   AI.askOpenAI=askOpenAI;
   AI.knowledge=K;
-  // IMPORTANT: never replace/wrap window.askArya. V20 owns that function.
+
+  // V20 owns askArya() and its UI. Wrap only aryaAnswer(), which lets the
+  // existing V20 message renderer display the OpenAI answer normally.
+  function wireOpenAIAnswer(){
+    if(typeof window.aryaAnswer!=='function' || window.aryaAnswer.__exploreUpOpenAI)return false;
+    const original=window.aryaAnswer;
+    const wrapped=async function(query,lang){
+      const remote=await AI.askOpenAI(query,currentDistrict());
+      if(remote&&remote.ok&&remote.answer)return remote.answer;
+      return original.apply(this,arguments);
+    };
+    wrapped.__exploreUpOpenAI=true;
+    wrapped.__exploreUpOriginal=original;
+    window.aryaAnswer=wrapped;
+    AI.answerRouting='openai-first';
+    return true;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wireOpenAIAnswer,{once:true});
+  else wireOpenAIAnswer();
+  window.addEventListener('load',wireOpenAIAnswer,{once:true});
+  [250,750,1500,3000].forEach(t=>setTimeout(wireOpenAIAnswer,t));
 })();
