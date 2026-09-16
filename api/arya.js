@@ -50,32 +50,49 @@ module.exports = async function handler(req, res) {
     context
   ].filter(Boolean).join('\n');
 
-  try {
+  async function callOpenAI(withWebSearch) {
+    const payload = {
+      model: 'gpt-5.6-luna',
+      store: false,
+      input: [
+        { role: 'system', content: [{ type: 'input_text', text: system }] },
+        { role: 'user', content: [{ type: 'input_text', text: query }] }
+      ]
+    };
+    if (withWebSearch) {
+      payload.tools = [{ type: 'web_search' }];
+      payload.tool_choice = 'auto';
+    }
+
     const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${key}`
       },
-      body: JSON.stringify({
-        model: 'gpt-5.6-luna',
-        store: false,
-        tools: [{ type: 'web_search' }],
-        input: [
-          { role: 'system', content: [{ type: 'input_text', text: system }] },
-          { role: 'user', content: [{ type: 'input_text', text: query }] }
-        ]
-      })
+      body: JSON.stringify(payload)
     });
 
-    const data = await response.json();
-    if (!response.ok) {
-      return send(res, response.status >= 500 ? 502 : response.status, {
-        error: 'Arya could not reach the web service.'
+    const data = await response.json().catch(() => ({}));
+    return { response, data };
+  }
+
+  try {
+    let result = await callOpenAI(true);
+
+    // If the hosted web-search call is rejected, retry the same Arya request
+    // without the optional search tool so normal OpenAI chat still works.
+    if (!result.response.ok && result.response.status >= 400 && result.response.status < 500) {
+      result = await callOpenAI(false);
+    }
+
+    if (!result.response.ok) {
+      return send(res, result.response.status >= 500 ? 502 : result.response.status, {
+        error: 'Arya could not reach the OpenAI service.'
       });
     }
 
-    const text = typeof data.output_text === 'string' ? data.output_text.trim() : '';
+    const text = typeof result.data.output_text === 'string' ? result.data.output_text.trim() : '';
     if (!text) return send(res, 502, { error: 'Arya received no answer.' });
     return send(res, 200, { answer: text, source: 'openai' });
   } catch (error) {
