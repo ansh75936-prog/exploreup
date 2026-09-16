@@ -1,7 +1,7 @@
-/* ExploreUP Arya AI — runtime bridge
- * Connects the A-Z site knowledge layer to the existing Arya input flow without replacing the UI.
- * No factual listings are created here; this only normalizes language/context and exposes navigation helpers.
- * V20 dataset remains read-only. Internet answers come through /api/arya.
+/* ExploreUP Arya AI — FREE/local runtime bridge
+ * Keeps Arya usable without an external AI/API key.
+ * This file only handles Arya's local language understanding and navigation.
+ * Paid/API-backed web answers can be added later without changing the site structure.
  */
 (function(){
   'use strict';
@@ -52,7 +52,8 @@
 
   function openSection(section){
     const map={overview:'#districtOverview',food:'#districtFood',hotels:'#districtStay',stay:'#districtStay',health:'#districtStay',
-      knowledge:'#districtKnowledgeSection',planner:'#districtPlanner',transport:'#districtTransport',shopping:'#districtShopping'};
+      knowledge:'#districtKnowledgeSection',planner:'#districtPlanner',transport:'#districtTransport',shopping:'#districtShopping',
+      theatres:'#districtKnowledgeSection',theatre:'#districtKnowledgeSection',places:'#districtKnowledgeSection'};
     const key=String(section||'').toLowerCase().trim();
     const target=map[key]||section;
     try{
@@ -62,7 +63,7 @@
     return false;
   }
 
-  function internetBox(){
+  function responseBox(){
     let box=document.getElementById('exploreup-arya-live-response');
     if(box)return box;
     box=document.createElement('div');
@@ -75,38 +76,54 @@
     return box;
   }
 
-  function showInternetAnswer(text){
-    const box=internetBox();
-    box.textContent='Arya • Live web\n\n'+String(text||'').trim();
+  function showAnswer(text){
+    responseBox().textContent='Arya • Free\n\n'+String(text||'').trim();
+  }
+
+  function intentFor(q){
+    const text=q.toLowerCase();
+    const intents=K.intents||{};
+    for(const name of Object.keys(intents)){
+      const words=Array.isArray(intents[name])?intents[name]:[];
+      if(words.some(w=>text.includes(String(w).toLowerCase()))) return name;
+    }
+    return '';
+  }
+
+  function localAnswer(query, city){
+    const q=normalizeQuery(query), c=String(city||currentDistrict()).trim();
+    if(!q)return {ok:false,error:'empty'};
+    const intent=intentFor(q);
+    const name=c?` ${c}`:'';
+    const labels={
+      places:'Famous Places / Hidden Gems',food:'Food & Restaurants',hotels:'Hotels & Stays',
+      theatres:'Theatres & Cinemas',health:'Hospitals, Clinics & Pharmacies',transport:'Transport',
+      shopping:'Markets & Shopping',emergency:'Emergency Services',planner:'Trip Planner'
+    };
+    if(intent){
+      const label=labels[intent]||'relevant section';
+      const opened=openSection(intent==='theatres'?'theatres':intent);
+      if(opened) return {ok:true,answer:`${label}${name ? ` in${name}` : ''} ke liye ExploreUP ka relevant section khol diya hai.\n\nMain sirf site par available information use karta hoon; missing listings invent nahi karta.`};
+      return {ok:true,answer:`${label}${name ? ` in${name}` : ''} ExploreUP mein available hai. Relevant section mein details dekho.`};
+    }
+    if(/hello|hi|hii|hey|namaste|namaskar/.test(q)) return {ok:true,answer:`Namaste! Main Arya AI hoon. ${c?c+' ke ':''}places, food, hotels, theatres, transport aur trip planning mein site ke available data ke saath help kar sakta hoon.`};
+    if(/help|kya kar|kya kya|what can/.test(q)) return {ok:true,answer:'Main ExploreUP ke available sections tak jaldi pahunchne mein help kar sakta hoon: Places, Food, Hotels & Stays, Theatres/Cinemas, Health, Transport, Shopping aur Trip Planner.'};
+    return {ok:true,answer:`Main abhi FREE mode mein hoon, isliye bina API key ke ExploreUP ke built-in knowledge aur navigation ke saath help karta hoon. ${c?c+' ke ':''}liye kya dekhna hai—places, food, hotel, theatre, transport ya trip plan?`};
   }
 
   async function askInternet(query, city){
-    const q=normalizeQuery(query);
-    if(!q)return {ok:false,error:'empty'};
-    const box=internetBox();
-    box.textContent='Arya • Live web\n\nSearching the web…';
-    try{
-      const response=await fetch('/api/arya',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({query:q,city:String(city||currentDistrict()).trim()})
-      });
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok||!data.answer)throw new Error(data.error||'internet_backend_unavailable');
-      showInternetAnswer(data.answer);
-      AI.internetConnected=true;
-      return {ok:true,answer:data.answer};
-    }catch(error){
-      AI.internetConnected=false;
-      return {ok:false,error:String(error&&error.message||error)};
-    }
+    const result=localAnswer(query,city);
+    if(result.ok){showAnswer(result.answer);AI.internetConnected=false;AI.freeMode=true;return result;}
+    return result;
   }
 
   AI.normalizeQuery=normalizeQuery;
   AI.getContext=getContext;
   AI.openSection=openSection;
   AI.askInternet=askInternet;
+  AI.askFree=localAnswer;
   AI.knowledge=K;
+  AI.freeMode=true;
 
   function connect(){
     try{
@@ -117,15 +134,10 @@
         const input=document.getElementById('aryaInput');
         if(!input)return original.apply(this,arguments);
         const before=input.value;
-        const normalized=normalizeQuery(before);
-        input.value=normalized;
-        try{
-          const live=await askInternet(normalized,currentDistrict());
-          if(live.ok)return live.answer;
-          return original.apply(this,arguments);
-        }finally{
-          input.value=before;
-        }
+        const result=localAnswer(before,currentDistrict());
+        if(result.ok){showAnswer(result.answer);return result.answer;}
+        input.value=before;
+        return original.apply(this,arguments);
       }
       bridgedAskArya.__exploreupKnowledgeBridge=true;
       bridgedAskArya.original=original;
