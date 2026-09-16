@@ -25,7 +25,8 @@ jobs:
           s = p.read_text(encoding='utf-8')
           tags = [
               '<script src="./exploreup-city-images.js?v=20260923"></script>',
-              '<script src="./arya-v20-district-aliases.js?v=20260915"></script>'
+              '<script src="./arya-v20-district-aliases.js?v=20260915"></script>',
+              '<script src="./arya-v21-routing-fix.js?v=20260915"></script>'
           ]
           pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
           if re.search(pattern, s):
@@ -37,6 +38,10 @@ jobs:
           if not re.search(alias_pattern, s):
               marker = '</body>'
               s = s.replace(marker, '  ' + tags[1] + '\n' + marker, 1) if marker in s else s + '\n' + tags[1] + '\n'
+          v21_pattern = r'<script\s+src=["\']\./arya-v21-routing-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
+          if not re.search(v21_pattern, s):
+              marker = '</body>'
+              s = s.replace(marker, '  ' + tags[2] + '\n' + marker, 1) if marker in s else s + '\n' + tags[2] + '\n'
           bad = re.compile(r'I only answer questions about information and features available inside ExploreUP\.\s*Arya knows the 75-district guides, district-wise Hotels/Stays and Hospitals, Trip Plan Maker, Budget Calculator, Smart Recommendations, and Quick/Smart planning modes\.', re.I)
           replacement = 'I can help with Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features.'
           s = bad.sub(replacement, s)
@@ -45,9 +50,9 @@ jobs:
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index-1.html exploreup-city-images-trigger.txt
+          git add -u -- index-1.html exploreup-city-images-trigger.txt
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Load Arya V20 district aliases and Hinglish layer"
+          git commit -m "Load Arya V21 routing fix safely"
           for i in 1 2 3 4 5; do
             git fetch origin main
             git rebase origin/main && git push origin HEAD:main && exit 0
