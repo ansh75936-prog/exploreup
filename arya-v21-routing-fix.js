@@ -83,6 +83,7 @@
 
   function installOpenAISend(){
     if(window.__exploreUpAryaOpenAISend)return;
+    const API='https://exploreup-five.vercel.app/api/arya';
     function add(text,type){
       if(typeof window.aryaAdd==='function')return window.aryaAdd(String(text||''),type||'bot');
       const b=document.getElementById('aryaBody');
@@ -98,7 +99,7 @@
       const pending=add('Arya is thinking…','bot');
       try{
         const c=city();
-        const r=await fetch('/api/arya',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({query:q,city:c})});
+        const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,city:c})});
         const data=await r.json().catch(()=>({}));
         if(!r.ok||!data.answer)throw new Error(String(data.error||('http_'+r.status)));
         if(pending?.parentNode)pending.parentNode.removeChild(pending);
@@ -112,7 +113,6 @@
     window.askArya=send;
     window.__exploreUpAryaOpenAISend=true;
 
-    // Capture the actual UI events before the old inline V20 listeners can handle them.
     function isSendButton(target){
       const el=target?.closest?.('#aryaSend,.arya-send,[data-arya-send]');
       return !!el;
