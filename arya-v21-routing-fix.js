@@ -10,7 +10,6 @@
     lucknow:'Lucknow',varanasi:'Varanasi',banaras:'Varanasi',kashi:'Varanasi',
     ayodhya:'Ayodhya',faizabad:'Ayodhya',agra:'Agra',mathura:'Mathura',vrindavan:'Mathura',
     gorakhpur:'Gorakhpur',jhansi:'Jhansi',kanpur:'Kanpur Nagar',meerut:'Meerut',bareilly:'Bareilly',
-    kanpur:'Kanpur Nagar',
     noida:'Gautam Buddh Nagar','greater noida':'Gautam Buddh Nagar','gb nagar':'Gautam Buddh Nagar',
     orai:'Jalaun',urai:'Jalaun',mughalsarai:'Chandauli',khalilabad:'Sant Kabir Nagar',
     robertsganj:'Sonbhadra',naugarh:'Siddharthnagar',siddharthnagar:'Siddharthnagar'
@@ -75,9 +74,6 @@
       let q=raw;
       if(detected && (detectIntent(raw)||clean(raw)!==clean(detected))) q=canonicalQuery(raw);
       else if(detected && intentOnly.test(q)) q=detected+' '+q;
-
-      // Keep V20's existing answer/data engine and preserve the language detected by it.
-      // This fixes Hindi/Hinglish/Indian-language replies without changing the chat UI.
       const replyLang=lang||((typeof window.aryaDetectLanguage==='function')?window.aryaDetectLanguage(raw):'en');
       return original.call(this,q,replyLang);
     }
@@ -87,6 +83,45 @@
     window.aryaAnswer=fixedAryaAnswer;
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  function installOpenAISend(){
+    if(window.__exploreUpAryaOpenAISend)return;
+    function add(text,type){
+      if(typeof window.aryaAdd==='function')return window.aryaAdd(String(text||''),type||'bot');
+      const b=document.getElementById('aryaBody');
+      if(!b)return null;
+      const d=document.createElement('div');d.className='arya-msg '+(type||'bot');d.textContent=String(text||'');b.appendChild(d);b.scrollTop=b.scrollHeight;return d;
+    }
+    async function send(){
+      const i=document.getElementById('aryaInput');
+      const q=String(i?.value||'').replace(/\s+/g,' ').trim();
+      if(!q)return false;
+      if(i)i.value='';
+      add(q,'user');
+      const pending=add('Arya is thinking…','bot');
+      try{
+        const c=city();
+        const r=await fetch('/api/arya',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({query:q,city:c})});
+        const data=await r.json().catch(()=>({}));
+        if(!r.ok||!data.answer)throw new Error(String(data.error||('http_'+r.status)));
+        if(pending?.parentNode)pending.parentNode.removeChild(pending);
+        add(String(data.answer).trim(),'bot');
+      }catch(e){
+        if(pending?.parentNode)pending.parentNode.removeChild(pending);
+        add('Arya could not connect to OpenAI right now. Please try again.','bot');
+      }
+      return false;
+    }
+    window.askArya=send;
+    window.__exploreUpAryaOpenAISend=true;
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',install,{once:true});
+    document.addEventListener('DOMContentLoaded',installOpenAISend,{once:true});
+  }else{
+    install();
+    installOpenAISend();
+  }
   window.addEventListener('load',install,{once:true});
+  window.addEventListener('load',installOpenAISend,{once:true});
 })();
