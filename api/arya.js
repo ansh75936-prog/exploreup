@@ -57,7 +57,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${key}`
       },
       body: JSON.stringify({
-        model: 'gpt-5.6',
+        model: 'gpt-5.6-luna',
         store: false,
         input: [
           { role: 'system', content: [{ type: 'input_text', text: system }] },
