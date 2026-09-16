@@ -27,26 +27,22 @@ jobs:
               '<script src="./exploreup-city-images.js?v=20260923"></script>',
               '<script src="./arya-v20-district-aliases.js?v=20260915"></script>',
               '<script src="./arya-v21-routing-fix.js?v=20260916"></script>',
-              '<script src="./arya-ai-bridge.js?v=20260916"></script>'
+              '<script src="./arya-ai-bridge.js?v=20260916"></script>',
+              '<script src="./arya-ai-ui.js?v=20260916"></script>'
           ]
-          pattern = r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>'
-          if re.search(pattern, s):
-              s = re.sub(pattern, tags[0], s, count=1)
-          else:
-              marker = '</body>'
-              s = s.replace(marker, '  ' + tags[0] + '\n' + marker, 1) if marker in s else s + '\n' + tags[0] + '\n'
-          alias_pattern = r'<script\s+src=["\']\./arya-v20-district-aliases\.js(?:\?[^"\']*)?["\']\s*></script>'
-          if not re.search(alias_pattern, s):
-              marker = '</body>'
-              s = s.replace(marker, '  ' + tags[1] + '\n' + marker, 1) if marker in s else s + '\n' + tags[1] + '\n'
-          v21_pattern = r'<script\s+src=["\']\./arya-v21-routing-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
-          if not re.search(v21_pattern, s):
-              marker = '</body>'
-              s = s.replace(marker, '  ' + tags[2] + '\n' + marker, 1) if marker in s else s + '\n' + tags[2] + '\n'
-          bridge_pattern = r'<script\s+src=["\']\./arya-ai-bridge\.js(?:\?[^"\']*)?["\']\s*></script>'
-          if not re.search(bridge_pattern, s):
-              marker = '</body>'
-              s = s.replace(marker, '  ' + tags[3] + '\n' + marker, 1) if marker in s else s + '\n' + tags[3] + '\n'
+          patterns = [
+              (r'<script\s+src=["\']\./exploreup-city-images\.js(?:\?[^"\']*)?["\']\s*></script>', tags[0]),
+              (r'<script\s+src=["\']\./arya-v20-district-aliases\.js(?:\?[^"\']*)?["\']\s*></script>', tags[1]),
+              (r'<script\s+src=["\']\./arya-v21-routing-fix\.js(?:\?[^"\']*)?["\']\s*></script>', tags[2]),
+              (r'<script\s+src=["\']\./arya-ai-bridge\.js(?:\?[^"\']*)?["\']\s*></script>', tags[3]),
+              (r'<script\s+src=["\']\./arya-ai-ui\.js(?:\?[^"\']*)?["\']\s*></script>', tags[4])
+          ]
+          for pattern, tag in patterns:
+              if re.search(pattern, s):
+                  s = re.sub(pattern, tag, s, count=1)
+              else:
+                  marker = '</body>'
+                  s = s.replace(marker, '  ' + tag + '\n' + marker, 1) if marker in s else s + '\n' + tag + '\n'
           bad = re.compile(r'I only answer questions about information and features available inside ExploreUP\.\s*Arya knows the 75-district guides, district-wise Hotels/Stays and Hospitals, Trip Plan Maker, Budget Calculator, Smart Recommendations, and Quick/Smart planning modes\.', re.I)
           replacement = 'I can help with Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features.'
           s = bad.sub(replacement, s)
@@ -57,7 +53,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -u -- index-1.html exploreup-city-images-trigger.txt
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Load Arya live web bridge safely"
+          git commit -m "Connect Arya UI directly to OpenAI backend"
           for i in 1 2 3 4 5; do
             git fetch origin main
             git rebase origin/main && git push origin HEAD:main && exit 0
