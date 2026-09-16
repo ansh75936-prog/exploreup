@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-direct-v6';
+  AI.uiBridgeVersion='v20-openai-direct-v7';
   AI.freeMode=false;
   const API='https://exploreup-five.vercel.app/api/arya';
 
@@ -28,9 +28,9 @@
   }
 
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260916-6',{
+    const response=await fetch(API+'?v=20260916-7',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Cache-Control':'no-cache'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
     });
     const data=await response.json().catch(function(){return {};});
@@ -112,5 +112,8 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire,{once:true});
   else wire();
   window.addEventListener('load',wire,{once:true});
-  [100,300,700,1500,3000].forEach(function(t){setTimeout(wire,t);});
+  [100,300,700,1500,3000,5000,8000].forEach(function(t){setTimeout(wire,t);});
+  if(window.MutationObserver){
+    new MutationObserver(function(){wire();}).observe(document.documentElement,{childList:true,subtree:true});
+  }
 })();
