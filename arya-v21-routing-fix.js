@@ -1,4 +1,4 @@
-/* ExploreUP Arya V21 — routing fix. Data-preserving. */
+/* ExploreUP Arya V21 — routing + language fix. Data-preserving. */
 (function(){
   'use strict';
   if(window.__exploreUpAryaV21RoutingFix)return;
@@ -9,7 +9,11 @@
     prayagraj:'Prayagraj',allahabad:'Prayagraj',prayag:'Prayagraj',
     lucknow:'Lucknow',varanasi:'Varanasi',banaras:'Varanasi',kashi:'Varanasi',
     ayodhya:'Ayodhya',faizabad:'Ayodhya',agra:'Agra',mathura:'Mathura',vrindavan:'Mathura',
-    gorakhpur:'Gorakhpur',jhansi:'Jhansi',kanpur:'Kanpur Nagar',meerut:'Meerut',bareilly:'Bareilly'
+    gorakhpur:'Gorakhpur',jhansi:'Jhansi',kanpur:'Kanpur Nagar',meerut:'Meerut',bareilly:'Bareilly',
+    kanpur:'Kanpur Nagar',
+    noida:'Gautam Buddh Nagar','greater noida':'Gautam Buddh Nagar','gb nagar':'Gautam Buddh Nagar',
+    orai:'Jalaun',urai:'Jalaun',mughalsarai:'Chandauli',khalilabad:'Sant Kabir Nagar',
+    robertsganj:'Sonbhadra',naugarh:'Siddharthnagar',siddharthnagar:'Siddharthnagar'
   };
 
   function clean(s){
@@ -29,7 +33,8 @@
     const n=clean(q);
     const keys=Object.keys(cityAliases).sort((a,b)=>b.length-a.length);
     for(const key of keys){
-      const re=new RegExp('(^|[^a-z])'+key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^a-z])','i');
+      const escaped=key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const re=new RegExp('(^|[^a-z])'+escaped+'(?=$|[^a-z])','i');
       if(re.test(n))return cityAliases[key];
     }
     return city();
@@ -39,15 +44,15 @@
     const n=clean(q);
     if(/ghumne ki jagah|ghumna|ghoomna|tourist place|tourist places|places|place|jagah|darshani|dekhne ki jagah|kya dekhe/.test(n))return 'places';
     if(/ke baare mein|ke bare mein|ke baare me|ke bare me|about|batao|btao|overview/.test(n))return 'overview';
-    if(/food|khana|khane|restaurant|restaurants|kha sakte|famous food/.test(n))return 'food';
-    if(/hotel|hotels|stay|rehne|rehna|rukna/.test(n))return 'hotel';
-    if(/hospital|doctor|medical/.test(n))return 'hospital';
-    if(/shopping|market|bazaar|bazar/.test(n))return 'shopping';
-    if(/transport|train|bus|flight|station|airport/.test(n))return 'transport';
-    if(/history|itihaas|culture|sanskriti/.test(n))return 'history';
-    if(/trip|travel|yatra|plan|itinerary/.test(n))return 'trip';
+    if(/food|khana|khane|khaana|restaurant|restaurants|kha sakte|famous food|cuisine/.test(n))return 'food';
+    if(/hotel|hotels|stay|stays|rehne|rehna|rukna|room|rooms/.test(n))return 'hotel';
+    if(/hospital|hospitals|doctor|medical|aspataal|aspatal|dawai|pharmacy/.test(n))return 'hospital';
+    if(/shopping|market|bazaar|bazar|mall/.test(n))return 'shopping';
+    if(/transport|train|bus|flight|station|airport|railway/.test(n))return 'transport';
+    if(/history|itihaas|culture|sanskriti|heritage/.test(n))return 'history';
+    if(/trip|travel|yatra|plan|itinerary|planner/.test(n))return 'trip';
     if(/best time|kab jana|kab jaaye|season/.test(n))return 'best-time';
-    if(/budget|kitna kharcha|cost/.test(n))return 'budget';
+    if(/budget|kitna kharcha|cost|expense|paisa/.test(n))return 'budget';
     return '';
   }
 
@@ -65,21 +70,16 @@
     const original=window.aryaAnswer;
 
     async function fixedAryaAnswer(query,lang){
-      let raw=String(query||'').trim();
-      let q=raw;
+      const raw=String(query||'').trim();
       const detected=detectCity(raw);
-
-      // Raw Hinglish/Hindi city questions were previously falling into the generic fallback.
-      // Route them through the existing V20 answer engine using a canonical city + intent query.
+      let q=raw;
       if(detected && (detectIntent(raw)||clean(raw)!==clean(detected))) q=canonicalQuery(raw);
-      else {
-        const c=city();
-        if(c && intentOnly.test(q))q=c+' '+q;
-      }
+      else if(detected && intentOnly.test(q)) q=detected+' '+q;
 
-      // Use the existing engine's English routing for canonicalized queries, while leaving
-      // the existing response/data engine untouched.
-      return original.call(this,q,(detected||city())?'en':(lang||'en'));
+      // Keep V20's existing answer/data engine and preserve the language detected by it.
+      // This fixes Hindi/Hinglish/Indian-language replies without changing the chat UI.
+      const replyLang=lang||((typeof window.aryaDetectLanguage==='function')?window.aryaDetectLanguage(raw):'en');
+      return original.call(this,q,replyLang);
     }
 
     fixedAryaAnswer.__exploreupV21RoutingFix=true;
