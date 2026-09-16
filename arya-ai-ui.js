@@ -7,17 +7,20 @@
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
   AI.freeMode=false;
-  AI.uiBridgeVersion='v20-openai-send';
+  AI.uiBridgeVersion='v20-openai-send-v2';
   AI.uiWired=false;
 
   const $=s=>document.querySelector(s);
   function panel(){return $('#aryaPanel');}
   function input(){return $('#aryaInput')||panel()?.querySelector('input[name="arya"],textarea[name="arya"]');}
-  function sendButton(){return $('#aryaSend')||panel()?.querySelector('button[type="submit"],input[type="submit"]');}
+  function sendButton(){
+    const p=panel();
+    return $('#aryaSend')||p?.querySelector('.arya-input button')||p?.querySelector('button[onclick*="askArya"]')||p?.querySelector('button[type="submit"],input[type="submit"]');
+  }
   function messageHost(){
     const p=panel(),i=input();
     if(!p)return null;
-    return p.querySelector('#aryaMessages,.arya-messages,.arya-chat-messages,[data-arya-messages],.arya-chat-body,.arya-body')||i?.closest('form')?.parentElement||p;
+    return p.querySelector('#aryaBody,#aryaMessages,.arya-messages,.arya-chat-messages,[data-arya-messages],.arya-chat-body,.arya-body')||i?.closest('form')?.parentElement||p;
   }
   function addBubble(text,who){
     const host=messageHost(),i=input();
@@ -52,8 +55,8 @@
     if(!p||!i)return;
     const b=sendButton();
     const target=e.target?.closest?.('button,input[type="submit"],input[type="button"]');
-    const isClick=b&&target===b;
-    const isSubmit=target&&target.closest?.('form')?.contains(i);
+    const isClick=!!(b&&target===b);
+    const isSubmit=!!(target&&target.closest?.('form')?.contains(i));
     const isEnter=e.type==='keydown'&&e.key==='Enter'&&!e.shiftKey&&document.activeElement===i;
     if(!(isClick||isSubmit||isEnter))return;
     e.preventDefault();
