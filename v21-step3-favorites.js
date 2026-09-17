@@ -3,6 +3,7 @@
  * Bridges the existing .save / Save-this-destination UI.
  * Also mounts the Nearby tab/section into the existing district modal.
  * V21 Favorites visual fix: use one existing launcher only, positioned left.
+ * V21 Nearby back-navigation fix: restore normal page scrolling after returning from Maps.
  */
 (function(){
   'use strict';
@@ -17,7 +18,18 @@
   function loadNearbyHelper(){return new Promise(resolve=>{if(window.ExploreUPNearby?.open){resolve(true);return}if(document.querySelector('script[data-v21-nearby-loader]')){resolve(false);return}const s=document.createElement('script');s.src='./v21-step4-nearby.js?v=20260917-3';s.async=true;s.dataset.v21NearbyLoader='1';s.onload=()=>resolve(!!window.ExploreUPNearby?.open);s.onerror=()=>resolve(false);document.head.appendChild(s);});}
   function mountNearbyInDistrictModal(){const modal=document.getElementById('modal');const nav=modal?.querySelector('.district-subnav');if(!modal||!nav)return;if(!nav.querySelector('#v21NearbyTab')){const tab=document.createElement('a');tab.id='v21NearbyTab';tab.href='#v21NearbySection';tab.textContent='📍 Nearby';tab.addEventListener('click',()=>{setTimeout(()=>document.getElementById('v21NearbySection')?.scrollIntoView({behavior:'smooth',block:'start'}),0)});nav.appendChild(tab);}if(!document.getElementById('v21NearbySection')){const section=document.createElement('section');section.id='v21NearbySection';section.className='district-section';section.setAttribute('data-search','nearby location map places around me');section.style.cssText='margin-top:24px;padding:18px;border:1px solid #e2eaf3;border-radius:16px;background:#fff;scroll-margin-top:90px';section.innerHTML='<h2 class="section-title" style="margin-top:0">📍 Nearby</h2><p class="section-intro">Find places around your current location using your device map. ExploreUP does not save your location.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button id="v21NearbyModalBtn" type="button" style="border:0;border-radius:12px;background:#0b67d1;color:#fff;padding:11px 16px;font-weight:800;cursor:pointer">📍 Find Nearby Places</button><small id="v21NearbyStatus" aria-live="polite" style="color:#60708a">Location is requested only when you press the button.</small></div>';const planner=document.getElementById('districtPlanner');if(planner?.parentNode)planner.parentNode.insertBefore(section,planner.nextSibling);else modal.querySelector('.modalcontent')?.appendChild(section);const btn=section.querySelector('#v21NearbyModalBtn');btn?.addEventListener('click',async()=>{const ok=await loadNearbyHelper();if(ok){window.ExploreUPNearby.open();return}const status=document.getElementById('v21NearbyStatus');if(status)status.textContent='Nearby could not be loaded. Please refresh the page and try again.'});}}
   function wireNearbyModal(){mountNearbyInDistrictModal();const modal=document.getElementById('modal');if(modal&&!modal.dataset.v21NearbyObserver&&window.MutationObserver){modal.dataset.v21NearbyObserver='1';new MutationObserver(()=>mountNearbyInDistrictModal()).observe(modal,{childList:true,subtree:true});}}
+  function restoreAfterMaps(){
+    const modal=document.getElementById('modal');
+    if(modal){
+      modal.style.display='none';
+      modal.setAttribute('aria-hidden','true');
+    }
+    document.documentElement.style.overflow='';
+    document.body.style.overflow='';
+    document.body.style.position='';
+    document.body.classList.remove('modal-open','no-scroll','lock-scroll');
+  }
   function wire(){document.querySelectorAll('[data-favorite]').forEach(btn=>wireButton(btn,()=>({name:btn.dataset.favorite||btn.textContent.trim(),type:btn.dataset.favoriteType||'Place',city:btn.dataset.favoriteCity||currentCity()})));document.querySelectorAll('.save').forEach(btn=>wireButton(btn,()=>({name:inferLegacyName(btn),type:'Place',city:btn.dataset.favoriteCity||''})));const cityBtn=document.getElementById('saveCityBtn');if(cityBtn)wireButton(cityBtn,()=>({name:currentCity(),type:'Destination',city:currentCity()}));const bar=document.querySelector('.favbar');if(bar&&!bar.dataset.favoritesBarWired){bar.dataset.favoritesBarWired='1';bar.onclick=null;bar.textContent='♥ Favorites ';const count=document.createElement('span');count.id='v21FavCount';bar.appendChild(count);bar.addEventListener('click',()=>{location.href='./favorites.html'});}if(bar)Object.assign(bar.style,{left:'18px',right:'auto',bottom:'18px',zIndex:'9999'});updateFavUI();wireNearbyModal();}
   function updateFavUI(){const count=document.getElementById('v21FavCount');if(count)count.textContent=String(read().length);document.querySelectorAll('[data-favorite]').forEach(btn=>{if(btn.dataset.favoritesWired){const name=btn.dataset.favorite||btn.textContent.trim();const city=btn.dataset.favoriteCity||currentCity();const on=window.ExploreUPFavorites.has(name,city);btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'♥ Saved':'♡ Save';btn.classList.toggle('saved',on)}});}
-  document.addEventListener('DOMContentLoaded',wire);window.addEventListener('load',wire);window.addEventListener('exploreup:favorites-changed',updateFavUI);
+  document.addEventListener('DOMContentLoaded',wire);window.addEventListener('load',wire);window.addEventListener('pageshow',restoreAfterMaps);window.addEventListener('exploreup:favorites-changed',updateFavUI);
 })();
