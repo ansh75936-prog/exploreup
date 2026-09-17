@@ -2,26 +2,33 @@
  * Browser-only nearby helper. Uses device Geolocation only after an explicit
  * user click. Coordinates are used only to open Google Maps and are not stored.
  * Arya AI is untouched.
+ * Back-navigation fix: restore document scrolling when returning from Maps.
  */
 (function(){
   'use strict';
-
   function status(text){
     const el=document.getElementById('v21NearbyStatus');
     if(el) el.textContent=text||'';
   }
-
+  function restorePageScroll(){
+    try{
+      document.documentElement.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('position');
+      document.body.style.removeProperty('position');
+      document.documentElement.style.removeProperty('height');
+      document.body.style.removeProperty('height');
+      document.documentElement.classList.remove('modal-open','no-scroll');
+      document.body.classList.remove('modal-open','no-scroll');
+    }catch(e){}
+  }
   function buildMapsUrl(latitude,longitude){
     const lat=Number(latitude),lng=Number(longitude);
     if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat<-90||lat>90||lng<-180||lng>180)return '';
     return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(lat+','+lng);
   }
-
   function openNearby(){
-    if(!navigator.geolocation){
-      status('Nearby location is not supported by this browser.');
-      return;
-    }
+    if(!navigator.geolocation){status('Nearby location is not supported by this browser.');return;}
     status('Requesting your location…');
     navigator.geolocation.getCurrentPosition(
       pos=>{
@@ -39,23 +46,21 @@
       {enableHighAccuracy:false,maximumAge:60000,timeout:10000}
     );
   }
-
   function wire(){
+    restorePageScroll();
     const btn=document.getElementById('nearbyBtn');
     if(!btn||btn.dataset.nearbyWired)return;
     btn.dataset.nearbyWired='1';
     btn.addEventListener('click',openNearby);
     let s=document.getElementById('v21NearbyStatus');
     if(!s){
-      s=document.createElement('small');
-      s.id='v21NearbyStatus';
-      s.setAttribute('aria-live','polite');
-      s.style.cssText='display:block;margin-top:7px;color:#60708a;font-size:12px';
-      btn.insertAdjacentElement('afterend',s);
+      s=document.createElement('small');s.id='v21NearbyStatus';s.setAttribute('aria-live','polite');
+      s.style.cssText='display:block;margin-top:7px;color:#60708a;font-size:12px';btn.insertAdjacentElement('afterend',s);
     }
   }
-
   window.ExploreUPNearby={open:openNearby};
-  document.addEventListener('DOMContentLoaded',wire);
+  window.addEventListener('pageshow',restorePageScroll);
+  window.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')restorePageScroll();});
+  window.addEventListener('DOMContentLoaded',wire);
   window.addEventListener('load',wire);
 })();
