@@ -1,9 +1,8 @@
 /* ExploreUP V21 Step 3 — Favorites
  * Safe local-only favorites helper. Does not touch Arya AI.
  * Bridges the existing .save / Save-this-destination UI.
- * V21 Step 4 patch: also mounts the Nearby tab/section into the existing
- * district modal used by index-1.html, without replacing the modal UI.
- * V21 Favorites visual fix: one launcher only, positioned on the left.
+ * Also mounts the Nearby tab/section into the existing district modal.
+ * V21 Favorites visual fix: use one existing launcher only, positioned left.
  */
 (function(){
   'use strict';
