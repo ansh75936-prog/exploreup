@@ -3,6 +3,7 @@
  * Bridges the existing .save / Save-this-destination UI.
  * V21 Step 4 patch: also mounts the Nearby tab/section into the existing
  * district modal used by index-1.html, without replacing the modal UI.
+ * V21 Favorites visual fix: one launcher only, positioned on the left.
  */
 (function(){
   'use strict';
