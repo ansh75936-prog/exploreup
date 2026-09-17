@@ -1,0 +1,8 @@
+V21 Step 4 Nearby verification checklist
+- Dedicated Nearby helper uses browser Geolocation only after explicit button click.
+- Location is not stored by the helper.
+- Permission-denied and unsupported-browser states are handled.
+- City guide contains Nearby tab/section and button.
+- Standalone nearby.html uses the same helper.
+- Step 4 branch diff contains only city.html, nearby.html, and v21-step4-nearby.js.
+- Arya AI files are not part of the Step 4 diff.
