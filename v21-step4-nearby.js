@@ -14,13 +14,11 @@
     navigator.geolocation.getCurrentPosition(
       pos=>{
         const {latitude,longitude}=pos.coords;
-        // Location is used only to open a standard map search; it is not stored.
         const url='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(latitude+','+longitude);
-        window.open(url,'_blank','noopener,noreferrer');
-        status('Nearby map opened. Your location is not saved by ExploreUP.');
+        window.location.href=url;
       },
       err=>{
-        status(err&&err.code===1?'Location permission was not granted.':'Could not get your location.');
+        status(err&&err.code===1?'Location permission was not granted.':'Could not get your location. Please try again.');
       },
       {enableHighAccuracy:false,maximumAge:60000,timeout:10000}
     );
