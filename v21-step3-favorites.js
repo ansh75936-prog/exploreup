@@ -79,7 +79,7 @@
       section.className='district-section';
       section.setAttribute('data-search','nearby location map places around me');
       section.style.cssText='margin-top:24px;padding:18px;border:1px solid #e2eaf3;border-radius:16px;background:#fff;scroll-margin-top:90px';
-      section.innerHTML='<h2 class="section-title" style="margin-top:0">📍 Nearby</h2><p class="section-intro">Find places around your current location using your device map. ExploreUP does not save your location.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button id="v21NearbyModalBtn" type="button" style="border:0;border-radius:12px;background:#0b67d1;color:#fff;padding:11px 16px;font-weight:800;cursor:pointer">📍 Find Nearby Places</button><small id="v21NearbyModalStatus" aria-live="polite" style="color:#60708a">Location is requested only when you press the button.</small></div>';
+      section.innerHTML='<h2 class="section-title" style="margin-top:0">📍 Nearby</h2><p class="section-intro">Find places around your current location using your device map. ExploreUP does not save your location.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button id="v21NearbyModalBtn" type="button" style="border:0;border-radius:12px;background:#0b67d1;color:#fff;padding:11px 16px;font-weight:800;cursor:pointer">📍 Find Nearby Places</button><small id="v21NearbyStatus" aria-live="polite" style="color:#60708a">Location is requested only when you press the button.</small></div>';
       const planner=document.getElementById('districtPlanner');
       if(planner?.parentNode) planner.parentNode.insertBefore(section,planner.nextSibling);
       else modal.querySelector('.modalcontent')?.appendChild(section);
@@ -87,7 +87,7 @@
       btn?.addEventListener('click',async()=>{
         const ok=await loadNearbyHelper();
         if(ok){window.ExploreUPNearby.open();return;}
-        const status=document.getElementById('v21NearbyModalStatus');
+        const status=document.getElementById('v21NearbyStatus');
         if(status)status.textContent='Nearby could not be loaded. Please refresh the page and try again.';
       });
     }
