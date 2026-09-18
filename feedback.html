@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Feedback — ExploreUP</title>
+<meta name="description" content="Send feedback, suggestions, bug reports and design ideas to ExploreUP.">
+<style>
+:root{--navy:#071b35;--blue:#0b67d1;--gold:#ffb51b;--bg:#f4f8fc;--text:#10233f;--muted:#60708a;--line:#dfe7f1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.top{background:var(--navy);color:#fff;padding:16px 5%;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;font-size:21px}.brand span{color:var(--gold)}.back{color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+main{width:min(720px,92%);margin:34px auto 60px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 12px 35px #001b3b12}
+h1{margin:0 0 8px;font-size:30px}p{color:var(--muted);line-height:1.6}.form{display:grid;gap:13px;margin-top:22px}
+label{font-size:13px;font-weight:800}input,select,textarea{width:100%;margin-top:6px;border:1px solid #d5dfeb;border-radius:12px;padding:12px 13px;font:inherit;color:var(--text);background:#fff}textarea{min-height:130px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.submit{border:0;border-radius:13px;padding:14px;background:var(--navy);color:#fff;font-weight:900;font-size:14px;cursor:pointer}.submit:disabled{opacity:.6;cursor:wait}
+.status{min-height:20px;font-size:13px;font-weight:800}.status[data-state=ok]{color:#16723a}.privacy{font-size:12px;color:var(--muted);margin:0}
+@media(max-width:560px){.row{grid-template-columns:1fr}.card{padding:20px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Explore<span>UP</span></div><a class="back" href="./index-1.html">← Back to ExploreUP</a></header>
+<main><section class="card">
+<h1>💬 Share your feedback</h1>
+<p>Help us improve ExploreUP. Tell us what worked, what needs fixing, or what you would like us to add.</p>
+<form class="form" id="feedbackForm">
+<div class="row">
+<label>Your name (optional)<input id="feedbackName" maxlength="100" autocomplete="name" placeholder="Your name"></label>
+<label>What is this about?
+<select id="feedbackCategory">
+<option value="general">General feedback</option><option value="suggestion">Suggestion</option><option value="bug">Report a problem</option><option value="design">Design / UI</option><option value="content">Content</option><option value="other">Other</option>
+</select></label>
+</div>
+<label>Rating (optional)
+<select id="feedbackRating"><option value="">No rating</option><option value="5">★★★★★ 5</option><option value="4">★★★★☆ 4</option><option value="3">★★★☆☆ 3</option><option value="2">★★☆☆☆ 2</option><option value="1">★☆☆☆☆ 1</option></select></label>
+<label>Your feedback<textarea id="feedbackMessage" maxlength="1000" required placeholder="Write your feedback here…"></textarea></label>
+<button class="submit" type="submit">Submit Feedback</button>
+<div class="status" id="feedbackStatus" aria-live="polite"></div>
+<p class="privacy">Your feedback is stored for review. Name is optional. ExploreUP does not request or store your device location through this form.</p>
+</form>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./feedback.js?v=20260918-1"></script>
+</body>
+</html>
