@@ -11,10 +11,14 @@
     if(el) el.textContent=text||'';
   }
 
+  function mapsSearchUrl(query){
+    return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(query);
+  }
+
   function buildMapsUrl(latitude,longitude){
     const lat=Number(latitude),lng=Number(longitude);
     if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat<-90||lat>90||lng<-180||lng>180)return '';
-    return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(lat+','+lng);
+    return mapsSearchUrl(lat+','+lng);
   }
 
   function openNearby(){
@@ -40,22 +44,36 @@
     );
   }
 
-  function wire(){
-    const btn=document.getElementById('nearbyBtn');
-    if(!btn||btn.dataset.nearbyWired)return;
-    btn.dataset.nearbyWired='1';
-    btn.addEventListener('click',openNearby);
-    let s=document.getElementById('v21NearbyStatus');
-    if(!s){
-      s=document.createElement('small');
-      s.id='v21NearbyStatus';
-      s.setAttribute('aria-live','polite');
-      s.style.cssText='display:block;margin-top:7px;color:#60708a;font-size:12px';
-      btn.insertAdjacentElement('afterend',s);
-    }
+  function openCategory(category){
+    const params=new URLSearchParams(location.search);
+    const city=(params.get('city')||params.get('district')||'').trim();
+    const query=city?category+' near '+city:category+' near me';
+    window.open(mapsSearchUrl(query),'_blank','noopener,noreferrer');
   }
 
-  window.ExploreUPNearby={open:openNearby};
+  function wire(){
+    const btn=document.getElementById('nearbyBtn');
+    if(btn&&!btn.dataset.nearbyWired){
+      btn.dataset.nearbyWired='1';
+      btn.addEventListener('click',openNearby);
+      let s=document.getElementById('v21NearbyStatus');
+      if(!s){
+        s=document.createElement('small');
+        s.id='v21NearbyStatus';
+        s.setAttribute('aria-live','polite');
+        s.style.cssText='display:block;margin-top:7px;color:#60708a;font-size:12px';
+        btn.insertAdjacentElement('afterend',s);
+      }
+    }
+
+    document.querySelectorAll('[data-nearby-category]').forEach(btn=>{
+      if(btn.dataset.nearbyCategoryWired)return;
+      btn.dataset.nearbyCategoryWired='1';
+      btn.addEventListener('click',()=>openCategory(btn.dataset.nearbyCategory));
+    });
+  }
+
+  window.ExploreUPNearby={open:openNearby,openCategory:openCategory};
   document.addEventListener('DOMContentLoaded',wire);
   window.addEventListener('load',wire);
 })();
