@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071b35">
+<title>ExploreUP — Login</title>
+<style>
+:root{--navy:#071b35;--blue:#0b67d1;--gold:#ffb51b;--bg:#f4f8fc;--text:#10233f;--muted:#60708a;--card:#fff;--danger:#b42318;--success:#067647}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#071b35 0 42%,#f4f8fc 42%);color:var(--text);display:grid;place-items:center;padding:24px}a{text-decoration:none;color:inherit}
+.shell{width:min(430px,100%)}.brand{text-align:center;color:#fff;margin-bottom:18px}.brand b{font-size:30px}.brand span{color:var(--gold)}
+.card{background:var(--card);border-radius:24px;padding:28px;box-shadow:0 20px 55px #001b3b2b;border:1px solid #e2eaf3}.card h1{margin:0 0 6px;font-size:27px}.sub{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}input{width:100%;border:1px solid #d4dfeb;border-radius:12px;padding:13px 14px;font:inherit;outline:0}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0b67d11c}
+.password{position:relative}.password input{padding-right:78px}.show{position:absolute;right:7px;top:7px;border:0;background:#eef5ff;color:#1559a5;border-radius:8px;padding:7px 9px;font-weight:800;cursor:pointer}
+.primary{width:100%;border:0;border-radius:12px;background:var(--blue);color:#fff;padding:13px;font-weight:900;cursor:pointer;margin-top:18px}.secondary{width:100%;border:1px solid #d4dfeb;background:#fff;color:var(--text);border-radius:12px;padding:12px;font-weight:800;cursor:pointer;margin-top:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}.link{border:0;background:none;color:var(--blue);font-weight:800;padding:0;cursor:pointer;font-size:12px}.message{min-height:20px;margin-top:14px;font-size:13px;line-height:1.45}.message.error{color:var(--danger)}.message.success{color:var(--success)}
+.account{display:none}.account.show{display:block}.auth-form.hide{display:none}.email{background:#f4f8fc;border-radius:12px;padding:12px;font-weight:800;overflow-wrap:anywhere}.footer{text-align:center;margin-top:18px;color:#dce8f7;font-size:12px}.back{display:inline-block;margin-top:16px;color:#fff;font-size:13px;font-weight:800}
+@media(max-width:520px){body{background:linear-gradient(160deg,#071b35 0 28%,#f4f8fc 28%)}.card{padding:22px}}
+</style>
+</head>
+<body>
+<main class="shell">
+<div class="brand"><b>Explore<span>UP</span></b></div>
+<section class="card">
+<div id="authForm" class="auth-form">
+<h1 id="title">Welcome back</h1>
+<p class="sub" id="subtitle">Login to your own ExploreUP account. Your session will stay active after a page refresh until you sign out.</p>
+<label for="email">Email</label>
+<input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+<label for="password">Password</label>
+<div class="password"><input id="password" type="password" autocomplete="current-password" placeholder="Your password" required><button class="show" id="showPassword" type="button">Show</button></div>
+<div class="row"><button class="link" id="forgot" type="button">Forgot password?</button><button class="link" id="mode" type="button">Create account</button></div>
+<button class="primary" id="submit" type="button">Login</button>
+<div class="message" id="message" role="status" aria-live="polite"></div>
+</div>
+<div id="account" class="account">
+<h1>You're logged in</h1>
+<p class="sub">This is your ExploreUP account.</p>
+<div class="email" id="accountEmail"></div>
+<button class="primary" id="continue" type="button">Continue to ExploreUP</button>
+<button class="secondary" id="logout" type="button">Log out</button>
+<div class="message" id="accountMessage" role="status" aria-live="polite"></div>
+</div>
+</section>
+<div class="footer">Each person uses their own ExploreUP account.</div>
+<div style="text-align:center"><a class="back" href="./index-1.html">← Back to ExploreUP</a></div>
+</main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPABASE_URL='https://jsfjorthausrepgnsymv.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Lgj3WAOWOny7WQAloGqHcQ_hupjaK-e';
+const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+let signupMode=false;
+function msg(text,type=''){$('message').textContent=text;$('message').className='message '+type}
+function accountMsg(text,type=''){$('accountMessage').textContent=text;$('accountMessage').className='message '+type}
+function render(session){if(session?.user){$('authForm').classList.add('hide');$('account').classList.add('show');$('accountEmail').textContent=session.user.email||'Signed-in user';}else{$('authForm').classList.remove('hide');$('account').classList.remove('show')}}
+$('showPassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password';$('showPassword').textContent=p.type==='password'?'Show':'Hide'};
+$('mode').onclick=()=>{signupMode=!signupMode;$('title').textContent=signupMode?'Create your account':'Welcome back';$('subtitle').textContent=signupMode?'Create your own ExploreUP account. Use your email and a password you can remember.':'Login to your own ExploreUP account. Your session will stay active after a page refresh until you sign out.';$('submit').textContent=signupMode?'Create account':'Login';$('mode').textContent=signupMode?'Already have an account?':'Create account';$('password').autocomplete=signupMode?'new-password':'current-password';msg('')};
+$('submit').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){msg('Enter your email and password.','error');return}$('submit').disabled=true;msg('Please wait…');try{if(signupMode){const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;if(data.session){msg('Account created and logged in.','success');render(data.session)}else msg('Account created. Check your email if confirmation is required.','success')}else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;render(data.session)}}catch(e){msg(e?.message||'Authentication failed.','error')}finally{$('submit').disabled=false}};
+$('forgot').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Enter your email first.','error');return}try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;msg('If this email is registered, a password-reset email will be sent.','success')}catch(e){msg(e?.message||'Could not start password reset.','error')}};
+$('logout').onclick=async()=>{const {error}=await supabase.auth.signOut({scope:'local'});if(error){accountMsg(error.message,'error');return}render(null);accountMsg('Logged out from this device.','success')};
+$('continue').onclick=()=>location.href='./index-1.html';
+supabase.auth.onAuthStateChange((_event,session)=>render(session));
+const {data:{session}}=await supabase.auth.getSession();render(session);
+</script>
+</body>
+</html>
