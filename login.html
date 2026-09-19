@@ -25,6 +25,8 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}input{width
 <div id="authForm" class="auth-form">
 <h1 id="title">Welcome back</h1>
 <p class="sub" id="subtitle">Login to your own ExploreUP account. Your session will stay active after a page refresh until you sign out.</p>
+<label for="name" id="nameLabel">Name</label>
+<input id="name" type="text" autocomplete="name" placeholder="Your name" required>
 <label for="email">Email</label>
 <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
 <label for="password">Password</label>
@@ -34,9 +36,13 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}input{width
 <div class="message" id="message" role="status" aria-live="polite"></div>
 </div>
 <div id="account" class="account">
-<h1>You're logged in</h1>
-<p class="sub">This is your ExploreUP account.</p>
-<div class="email" id="accountEmail"></div>
+<h1>My Profile</h1>
+<p class="sub">Your private ExploreUP profile.</p>
+<label for="profileName">Name</label>
+<input id="profileName" type="text" autocomplete="name" placeholder="Your name">
+<label for="profileEmail">Email</label>
+<div class="email" id="profileEmail"></div>
+<button class="secondary" id="saveProfile" type="button">Save profile</button>
 <button class="primary" id="continue" type="button">Continue to ExploreUP</button>
 <button class="secondary" id="logout" type="button">Log out</button>
 <div class="message" id="accountMessage" role="status" aria-live="polite"></div>
@@ -54,12 +60,20 @@ const $=id=>document.getElementById(id);
 let signupMode=false;
 function msg(text,type=''){$('message').textContent=text;$('message').className='message '+type}
 function accountMsg(text,type=''){$('accountMessage').textContent=text;$('accountMessage').className='message '+type}
-function render(session){if(session?.user){$('authForm').classList.add('hide');$('account').classList.add('show');$('accountEmail').textContent=session.user.email||'Signed-in user';}else{$('authForm').classList.remove('hide');$('account').classList.remove('show')}}
+async function render(session){
+if(session?.user){
+$('authForm').classList.add('hide');$('account').classList.add('show');
+$('profileEmail').textContent=session.user.email||'Signed-in user';
+const {data:profile}=await supabase.from('profiles').select('display_name').eq('id',session.user.id).maybeSingle();
+$('profileName').value=profile?.display_name||session.user.user_metadata?.display_name||'';
+}else{$('authForm').classList.remove('hide');$('account').classList.remove('show')}}
+$('name').style.display='none';$('nameLabel').style.display='none';
 $('showPassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password';$('showPassword').textContent=p.type==='password'?'Show':'Hide'};
-$('mode').onclick=()=>{signupMode=!signupMode;$('title').textContent=signupMode?'Create your account':'Welcome back';$('subtitle').textContent=signupMode?'Create your own ExploreUP account. Use your email and a password you can remember.':'Login to your own ExploreUP account. Your session will stay active after a page refresh until you sign out.';$('submit').textContent=signupMode?'Create account':'Login';$('mode').textContent=signupMode?'Already have an account?':'Create account';$('password').autocomplete=signupMode?'new-password':'current-password';msg('')};
-$('submit').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(!email||!password){msg('Enter your email and password.','error');return}$('submit').disabled=true;msg('Please wait…');try{if(signupMode){const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;if(data.session){msg('Account created and logged in.','success');render(data.session)}else msg('Account created. Check your email if confirmation is required.','success')}else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;render(data.session)}}catch(e){msg(e?.message||'Authentication failed.','error')}finally{$('submit').disabled=false}};
+$('mode').onclick=()=>{signupMode=!signupMode;$('title').textContent=signupMode?'Create your account':'Welcome back';$('subtitle').textContent=signupMode?'Create your own ExploreUP account. Use your email and a password you can remember.':'Login to your own ExploreUP account. Your session will stay active after a page refresh until you sign out.';$('submit').textContent=signupMode?'Create account':'Login';$('mode').textContent=signupMode?'Already have an account?':'Create account';$('password').autocomplete=signupMode?'new-password':'current-password';$('name').style.display=signupMode?'block':'none';$('nameLabel').style.display=signupMode?'block':'none';msg('')};
+$('submit').onclick=async()=>{const name=$('name').value.trim(),email=$('email').value.trim(),password=$('password').value;if(signupMode&&!name){msg('Enter your name.','error');return}if(!email||!password){msg('Enter your email and password.','error');return}$('submit').disabled=true;msg('Please wait…');try{if(signupMode){const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname,data:{display_name:name}}});if(error)throw error;if(data.session){await supabase.from('profiles').upsert({id:data.session.user.id,display_name:name},{onConflict:'id'});render(data.session)}else{$('mode').click();$('email').value=email;$('password').value='';msg('Account created. Now log in after confirming your email, if required.','success')}}else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;await supabase.from('profiles').upsert({id:data.session.user.id,display_name:name||data.session.user.user_metadata?.display_name||''},{onConflict:'id'});render(data.session)}}catch(e){msg(e?.message||'Authentication failed.','error')}finally{$('submit').disabled=false}};
 $('forgot').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Enter your email first.','error');return}try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;msg('If this email is registered, a password-reset email will be sent.','success')}catch(e){msg(e?.message||'Could not start password reset.','error')}};
 $('logout').onclick=async()=>{const {error}=await supabase.auth.signOut({scope:'local'});if(error){accountMsg(error.message,'error');return}render(null);accountMsg('Logged out from this device.','success')};
+$('saveProfile').onclick=async()=>{const {data:{session}}=await supabase.auth.getSession();if(!session){render(null);return}const name=$('profileName').value.trim();const {error}=await supabase.from('profiles').upsert({id:session.user.id,display_name:name},{onConflict:'id'});accountMsg(error?error.message:'Profile saved.','success')};
 $('continue').onclick=()=>location.href='./index-1.html';
 supabase.auth.onAuthStateChange((_event,session)=>render(session));
 const {data:{session}}=await supabase.auth.getSession();render(session);
