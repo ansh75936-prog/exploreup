@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://exploreup-kp17ojmuz-ansh75936-prog.vercel.app/sitemap.xml
+Sitemap: https://exploreup-five.vercel.app/sitemap.xml
