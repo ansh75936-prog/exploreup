@@ -1484,28 +1484,4 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   <script src="./arya-ai-bridge.js?v=20260916"></script>
   <script src="./arya-ai-ui.js?v=20260916"></script>
 <script src="./v21-step3-favorites.js?v=20260916-1"></script>
-<script>
-/* ExploreUP account navigation: show Login until authenticated, then show Profile. */
-(function(){
-  function setAccountNav(session){
-    const a=document.getElementById('accountNav');
-    if(!a)return;
-    if(session&&session.user){
-      a.textContent='Profile';
-      a.setAttribute('aria-label','Open my ExploreUP profile');
-    }else{
-      a.textContent='Login';
-      a.setAttribute('aria-label','Login to ExploreUP');
-    }
-  }
-  function initAccountNav(){
-    if(!window.supabase?.createClient)return;
-    try{
-      const client=window.supabase.createClient('https://jsfjorthausrepgnsymv.supabase.co','sb_publishable_Lgj3WAOWOny7WQAloGqHcQ_hupjaK-e',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-      client.auth.getSession().then(({data})=>setAccountNav(data?.session||null));
-      client.auth.onAuthStateChange((_event,session)=>setAccountNav(session));
-    }catch(e){setAccountNav(null);}
-  }
-  loadSupabaseBackend().then(initAccountNav);
-})();
 </script></body></html>
