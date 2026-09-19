@@ -22,7 +22,7 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
 <div class="city-quick-actions"><button type="button" id="shareGuide">↗ Share Guide</button><button type="button" id="printGuide">🖨 Print</button></div><nav class="tabs"><a href="#places">Places</a><a href="#food">Food</a><a href="#hotels">Hotels & Stays</a><a href="#cinema">Theatres / Cinemas</a><a href="#health">Hospitals</a><a href="#transport">Transport</a><a href="#services">Essential Services</a><a href="#nearby">Nearby</a></nav>
 <section class="section" id="places"><h2>📍 Tourist Places & Attractions</h2><p class="sub">Verified destination highlights for the selected city. Open the official travel source for the latest visitor information.</p><div id="placeListings" class="grid"><div class="empty">Loading verified attractions…</div></div></section>
 <section class="section" id="food"><h2>🍴 Food & Local Cuisine</h2><p class="sub">Verified local food highlights for the selected city. Open the official travel source for more details.</p><div id="foodListings" class="grid"><div class="empty">Loading verified food highlights…</div></div></section>
-<section class="section" id="hotels"><h2>🏨 Hotels & Stays</h2><p class="sub">Accommodation section — keep hotel information only in this section.</p><div class="empty">Add verified hotel/stay records here. No fabricated hotel details are included.</div></section>
+<section class="section" id="hotels"><h2>🏨 Hotels & Stays</h2><p class="sub">Verified hotel/stay records for the selected city. Confirm current availability and details directly before booking.</p><div id="hotelListings" class="grid"><div class="empty">Loading verified hotel/stay listings…</div></div></section>
 <section class="section" id="cinema"><h2>🎭 Theatres / Cinemas</h2><p class="sub">Cinema and theatre locations for the selected city.</p><div class="empty">Add verified theatre/cinema records here.</div></section>
 <section class="section" id="health"><h2>🏥 Hospitals & Clinics</h2><p class="sub">Health facilities and useful medical services.</p><div class="empty">Add verified health-facility records here.</div></section>
 <section class="section" id="transport"><h2>🚌 Transport</h2><p class="sub">Rail, bus, airport and local transport information.</p><div class="grid"><div class="card"><span class="badge">RAIL</span><h3>Railway</h3><p>Use verified station information for the selected city.</p></div><div class="card"><span class="badge">BUS</span><h3>Bus</h3><p>Use verified bus-stand and route information.</p></div><div class="card"><span class="badge">LOCAL</span><h3>Local Transport</h3><p>Use verified local transport information.</p></div></div></section>
@@ -116,6 +116,27 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
   }
   const escapeHtml=(value)=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   list.innerHTML=items.map(x=>'<article class="card place-card"><span class="badge">OFFICIAL TRAVEL SOURCE</span><h3>'+escapeHtml(x[0])+'</h3><p>'+escapeHtml(x[1])+'</p><a class="place-source" href="'+encodeURI(x[2])+'" target="_blank" rel="noopener noreferrer" aria-label="Open official food information for '+escapeHtml(x[0])+'">Official food information ↗</a></article>').join('');
+})();
+</script><script src="./district-hotels.js?v=20260919-1"></script><script src="./district-hotels-verified-overrides.js?v=20260919-1"></script><script>
+(function(){
+  function render(){
+    const list=document.getElementById('hotelListings');
+    const api=window.ExploreUPHotels;
+    if(!list||!api||!api.data)return;
+    const params=new URLSearchParams(location.search);
+    const raw=(params.get('city')||params.get('district')||'').trim();
+    const cityKey=Object.keys(api.data).find(k=>k.toLowerCase()===raw.toLowerCase())||Object.keys(api.data).find(k=>k.toLowerCase().replace(/\\s+/g,' ')===raw.toLowerCase().replace(/\\s+/g,' '));
+    const rows=cityKey?api.data[cityKey]:null;
+    if(!rows){list.innerHTML='<div class="empty">Verified hotel/stay listings for this city are not added yet. No unverified hotel details are shown.</div>';return;}
+    const esc=v=>String(v??'').replace(/[&<>\\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\"':'&quot;',"'":'&#39;'}[m]));
+    list.innerHTML=rows.map(r=>{
+      const phone=String(r[2]||'').replace(/[^0-9+]/g,'');
+      const map='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r[0]+' '+r[1]);
+      return '<article class="card place-card"><span class="badge">VERIFIED HOTEL RECORD</span><h3>'+esc(r[0])+'</h3><p>'+esc(r[1])+'</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">'+(phone?'<a class="place-source" style="margin-top:0" href="tel:'+esc(phone)+'">📞 Call</a>':'')+'<a class="place-source" style="margin-top:0" href="'+map+'" target="_blank" rel="noopener noreferrer">📍 Directions</a></div></article>';
+    }).join('');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(render,50),{once:true});else setTimeout(render,50);
+  window.addEventListener('load',()=>setTimeout(render,100));
 })();
 </script><script src="./v21-step4-nearby.js?v=20260917-2"></script><script>(function(){const s=document.getElementById('citySearch'),cl=document.getElementById('clearCitySearch'),secs=[...document.querySelectorAll('main .section')],tabs=[...document.querySelectorAll('.tabs a')];function f(){const q=(s?.value||'').trim().toLowerCase();secs.forEach(x=>x.classList.toggle('is-hidden',!!q&&!x.textContent.toLowerCase().includes(q)));}s?.addEventListener('input',f);cl?.addEventListener('click',()=>{s.value='';f();s.focus()});tabs.forEach(t=>t.addEventListener('click',()=>tabs.forEach(x=>x.classList.remove('active'))));document.getElementById('shareGuide')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return;}if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert('City guide link copied.');return;}throw new Error('share unavailable')}catch(e){if(e&&e.name==='AbortError')return;alert('Sharing is not available here. Please copy the page link from your browser.');}});document.getElementById('printGuide')?.addEventListener('click',()=>window.print());const p=new URLSearchParams(location.search),cat=p.get('category');if(cat&&document.getElementById(cat))setTimeout(()=>document.getElementById(cat).scrollIntoView({behavior:'smooth'}),100)})();</script>
 </body>
