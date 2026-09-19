@@ -7,14 +7,14 @@
 <title>ExploreUP — Login</title>
 <style>
 :root{--navy:#071b35;--blue:#0b67d1;--gold:#ffb51b;--bg:#f4f8fc;--text:#10233f;--muted:#60708a;--card:#fff;--danger:#b42318;--success:#067647}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#071b35 0 42%,#f4f8fc 42%);color:var(--text);display:grid;place-items:center;padding:24px}a{text-decoration:none;color:inherit}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#071b35 0 42%,#f4f8fc 42%);color:var(--text);display:flex;justify-content:center;align-items:center;padding:24px;overflow-x:hidden}a{text-decoration:none;color:inherit}
 .shell{width:min(430px,100%)}.brand{text-align:center;color:#fff;margin-bottom:18px}.brand b{font-size:30px}.brand span{color:var(--gold)}
 .card{background:var(--card);border-radius:24px;padding:28px;box-shadow:0 20px 55px #001b3b2b;border:1px solid #e2eaf3}.card h1{margin:0 0 6px;font-size:27px}.sub{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.5}
-label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}input{width:100%;border:1px solid #d4dfeb;border-radius:12px;padding:13px 14px;font:inherit;outline:0}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0b67d11c}
+label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}textarea{width:100%;border:1px solid #d4dfeb;border-radius:12px;padding:13px 14px;font:inherit;outline:0;resize:vertical}textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0b67d11c}input{width:100%;border:1px solid #d4dfeb;border-radius:12px;padding:13px 14px;font:inherit;outline:0}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0b67d11c}
 .password{position:relative}.password input{padding-right:78px}.show{position:absolute;right:7px;top:7px;border:0;background:#eef5ff;color:#1559a5;border-radius:8px;padding:7px 9px;font-weight:800;cursor:pointer}
 .primary{width:100%;border:0;border-radius:12px;background:var(--blue);color:#fff;padding:13px;font-weight:900;cursor:pointer;margin-top:18px}.secondary{width:100%;border:1px solid #d4dfeb;background:#fff;color:var(--text);border-radius:12px;padding:12px;font-weight:800;cursor:pointer;margin-top:10px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}.link{border:0;background:none;color:var(--blue);font-weight:800;padding:0;cursor:pointer;font-size:12px}.message{min-height:20px;margin-top:14px;font-size:13px;line-height:1.45}.message.error{color:var(--danger)}.message.success{color:var(--success)}
-.account{display:none}.account.show{display:block}.auth-form.hide{display:none}.email{background:#f4f8fc;border-radius:12px;padding:12px;font-weight:800;overflow-wrap:anywhere}.footer{text-align:center;margin-top:18px;color:#dce8f7;font-size:12px}.back{display:inline-block;margin-top:16px;color:#fff;font-size:13px;font-weight:800}
+.account{display:none}.account.show{display:block}.profile-head{text-align:center;margin-bottom:18px}.avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;background:#eaf2fb;border:4px solid #fff;box-shadow:0 8px 24px #071b3520;display:block;margin:0 auto 10px}.avatar-placeholder{display:grid;place-items:center;font-size:38px;color:#5b7391}.profile-fields{display:grid;gap:2px}.profile-actions{display:flex;gap:10px}.profile-actions>*{flex:1}.photo-label{display:inline-block;color:var(--blue);font-weight:800;font-size:12px;cursor:pointer}.photo-label input{display:none}.auth-form.hide{display:none}.email{background:#f4f8fc;border-radius:12px;padding:12px;font-weight:800;overflow-wrap:anywhere}.footer{text-align:center;margin-top:18px;color:#dce8f7;font-size:12px}.back{display:inline-block;margin-top:16px;color:#fff;font-size:13px;font-weight:800}
 @media(max-width:520px){body{background:linear-gradient(160deg,#071b35 0 28%,#f4f8fc 28%)}.card{padding:22px}}
 </style>
 </head>
@@ -36,14 +36,20 @@ label{display:block;font-size:13px;font-weight:800;margin:14px 0 7px}input{width
 <div class="message" id="message" role="status" aria-live="polite"></div>
 </div>
 <div id="account" class="account">
-<h1>My Profile</h1>
-<p class="sub">Your private ExploreUP profile.</p>
-<label for="profileName">Name</label>
-<input id="profileName" type="text" autocomplete="name" placeholder="Your name">
-<label for="profileEmail">Email</label>
-<div class="email" id="profileEmail"></div>
-<button class="secondary" id="saveProfile" type="button">Save profile</button>
-<button class="primary" id="continue" type="button">Continue to ExploreUP</button>
+<div class="profile-head">
+  <img id="avatar" class="avatar avatar-placeholder" alt="Profile photo" src="">
+  <label class="photo-label" for="avatarInput">Add / change profile photo<input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp"></label>
+</div>
+<h1 style="text-align:center">My Profile</h1>
+<p class="sub" style="text-align:center">Fill in your profile details. Your information is stored with your account.</p>
+<div class="profile-fields">
+<label for="profileName">Full name</label><input id="profileName" type="text" autocomplete="name" placeholder="Your full name">
+<label for="profilePhone">Phone</label><input id="profilePhone" type="tel" autocomplete="tel" placeholder="Your phone number">
+<label for="profileCity">City</label><input id="profileCity" type="text" autocomplete="address-level2" placeholder="Your city">
+<label for="profileBio">About you</label><textarea id="profileBio" rows="3" maxlength="160" placeholder="A short introduction"></textarea>
+<label for="profileEmail">Email</label><div class="email" id="profileEmail"></div>
+</div>
+<div class="profile-actions"><button class="primary" id="saveProfile" type="button">Save profile</button><button class="secondary" id="continue" type="button">ExploreUP</button></div>
 <button class="secondary" id="logout" type="button">Log out</button>
 <div class="message" id="accountMessage" role="status" aria-live="polite"></div>
 </div>
@@ -64,8 +70,13 @@ async function render(session){
 if(session?.user){
 $('authForm').classList.add('hide');$('account').classList.add('show');
 $('profileEmail').textContent=session.user.email||'Signed-in user';
-const {data:profile}=await supabase.from('profiles').select('display_name').eq('id',session.user.id).maybeSingle();
+const {data:profile}=await supabase.from('profiles').select('display_name,phone,city,bio,avatar_url').eq('id',session.user.id).maybeSingle();
 $('profileName').value=profile?.display_name||session.user.user_metadata?.display_name||'';
+$('profilePhone').value=profile?.phone||'';
+$('profileCity').value=profile?.city||'';
+$('profileBio').value=profile?.bio||'';
+$('avatar').src='';
+if(profile?.avatar_url){const {data}=await supabase.storage.from('avatars').createSignedUrl(profile.avatar_url,3600);if(data?.signedUrl)$('avatar').src=data.signedUrl}
 }else{$('authForm').classList.remove('hide');$('account').classList.remove('show')}}
 $('name').style.display='none';$('nameLabel').style.display='none';
 $('showPassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password';$('showPassword').textContent=p.type==='password'?'Show':'Hide'};
@@ -73,7 +84,14 @@ $('mode').onclick=()=>{signupMode=!signupMode;$('title').textContent=signupMode?
 $('submit').onclick=async()=>{const name=$('name').value.trim(),email=$('email').value.trim(),password=$('password').value;if(signupMode&&!name){msg('Enter your name.','error');return}if(!email||!password){msg('Enter your email and password.','error');return}$('submit').disabled=true;msg('Please wait…');try{if(signupMode){const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname,data:{display_name:name}}});if(error)throw error;if(data.session){await supabase.from('profiles').upsert({id:data.session.user.id,display_name:name},{onConflict:'id'});render(data.session)}else{$('mode').click();$('email').value=email;$('password').value='';msg('Account created. Now log in after confirming your email, if required.','success')}}else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;await supabase.from('profiles').upsert({id:data.session.user.id,display_name:name||data.session.user.user_metadata?.display_name||''},{onConflict:'id'});render(data.session)}}catch(e){msg(e?.message||'Authentication failed.','error')}finally{$('submit').disabled=false}};
 $('forgot').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Enter your email first.','error');return}try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;msg('If this email is registered, a password-reset email will be sent.','success')}catch(e){msg(e?.message||'Could not start password reset.','error')}};
 $('logout').onclick=async()=>{const {error}=await supabase.auth.signOut({scope:'local'});if(error){accountMsg(error.message,'error');return}render(null);accountMsg('Logged out from this device.','success')};
-$('saveProfile').onclick=async()=>{const {data:{session}}=await supabase.auth.getSession();if(!session){render(null);return}const name=$('profileName').value.trim();const {error}=await supabase.from('profiles').upsert({id:session.user.id,display_name:name},{onConflict:'id'});accountMsg(error?error.message:'Profile saved.','success')};
+$('saveProfile').onclick=async()=>{const {data:{session}}=await supabase.auth.getSession();if(!session){render(null);return}
+const row={id:session.user.id,display_name:$('profileName').value.trim(),phone:$('profilePhone').value.trim(),city:$('profileCity').value.trim(),bio:$('profileBio').value.trim()};
+const {error}=await supabase.from('profiles').upsert(row,{onConflict:'id'});accountMsg(error?error.message:'Profile saved.','success');if(!error)render(session)};
+$('avatarInput').onchange=async(e)=>{const file=e.target.files?.[0];if(!file)return;const {data:{session}}=await supabase.auth.getSession();if(!session){render(null);return}
+if(file.size>2*1024*1024){accountMsg('Profile photo must be under 2 MB.','error');return}
+const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';const path=session.user.id+'/avatar.'+ext;
+accountMsg('Uploading photo…');const {error}=await supabase.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});if(error){accountMsg(error.message,'error');return}
+const {error:dbError}=await supabase.from('profiles').upsert({id:session.user.id,avatar_url:path},{onConflict:'id'});if(dbError){accountMsg(dbError.message,'error');return}accountMsg('Profile photo saved.','success');render(session)};
 $('continue').onclick=()=>location.href='./index-1.html';
 supabase.auth.onAuthStateChange((_event,session)=>render(session));
 const {data:{session}}=await supabase.auth.getSession();render(session);
