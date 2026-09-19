@@ -66,15 +66,18 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
       ['Kanak Bhawan','Temple dedicated to Lord Rama and Goddess Sita.','https://www.incredibleindia.gov.in/en/uttar-pradesh/ayodhya/kanak-bhawan']
     ]
   };
-  const city=(new URLSearchParams(location.search).get('city')||new URLSearchParams(location.search).get('district')||'').trim();
+  const params=new URLSearchParams(location.search);
+  const rawCity=(params.get('city')||params.get('district')||'').trim();
+  const cityKey=Object.keys(data).find(k=>k.toLowerCase()===rawCity.toLowerCase());
   const list=document.getElementById('placeListings');
   if(!list)return;
-  const items=data[city];
+  const items=cityKey?data[cityKey]:null;
   if(!items){
     list.innerHTML='<div class="empty">Verified attraction listings for this city are not added yet. No unverified place details are shown.</div>';
     return;
   }
-  list.innerHTML=items.map((x,i)=>'<article class="card place-card"><span class="badge">OFFICIAL TRAVEL SOURCE</span><h3>'+x[0]+'</h3><p>'+x[1]+'</p><a class="place-source" href="'+x[2]+'" target="_blank" rel="noopener noreferrer" aria-label="Open official travel information for '+x[0]+'">Official travel information ↗</a></article>').join('');
+  const escapeHtml=(value)=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  list.innerHTML=items.map(x=>'<article class="card place-card"><span class="badge">OFFICIAL TRAVEL SOURCE</span><h3>'+escapeHtml(x[0])+'</h3><p>'+escapeHtml(x[1])+'</p><a class="place-source" href="'+encodeURI(x[2])+'" target="_blank" rel="noopener noreferrer" aria-label="Open official travel information for '+escapeHtml(x[0])+'">Official travel information ↗</a></article>').join('');
 })();
 </script>
 <script src="./v21-step4-nearby.js?v=20260917-2"></script><script>(function(){const s=document.getElementById('citySearch'),cl=document.getElementById('clearCitySearch'),secs=[...document.querySelectorAll('main .section')],tabs=[...document.querySelectorAll('.tabs a')];function f(){const q=(s?.value||'').trim().toLowerCase();secs.forEach(x=>x.classList.toggle('is-hidden',!!q&&!x.textContent.toLowerCase().includes(q)));}s?.addEventListener('input',f);cl?.addEventListener('click',()=>{s.value='';f();s.focus()});tabs.forEach(t=>t.addEventListener('click',()=>tabs.forEach(x=>x.classList.remove('active'))));document.getElementById('shareGuide')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return;}if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert('City guide link copied.');return;}throw new Error('share unavailable')}catch(e){if(e&&e.name==='AbortError')return;alert('Sharing is not available here. Please copy the page link from your browser.');}});document.getElementById('printGuide')?.addEventListener('click',()=>window.print());const p=new URLSearchParams(location.search),cat=p.get('category');if(cat&&document.getElementById(cat))setTimeout(()=>document.getElementById(cat).scrollIntoView({behavior:'smooth'}),100)})();</script>
