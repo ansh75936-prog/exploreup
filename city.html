@@ -21,7 +21,7 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
 <div class="guide-note"><b>City guide:</b> Use the category tabs to jump directly to what you need. Listings stay separated by category so verified information can be added without mixing city data.</div><div class="city-filter" role="search">🔎<input id="citySearch" type="search" placeholder="Search this city guide…"><button id="clearCitySearch" type="button">Clear</button></div>
 <div class="city-quick-actions"><button type="button" id="shareGuide">↗ Share Guide</button><button type="button" id="printGuide">🖨 Print</button></div><nav class="tabs"><a href="#places">Places</a><a href="#food">Food</a><a href="#hotels">Hotels & Stays</a><a href="#cinema">Theatres / Cinemas</a><a href="#health">Hospitals</a><a href="#transport">Transport</a><a href="#services">Essential Services</a><a href="#nearby">Nearby</a></nav>
 <section class="section" id="places"><h2>📍 Tourist Places & Attractions</h2><p class="sub">Verified destination highlights for the selected city. Open the official travel source for the latest visitor information.</p><div id="placeListings" class="grid"><div class="empty">Loading verified attractions…</div></div></section>
-<section class="section" id="food"><h2>🍴 Food</h2><p class="sub">Local food and restaurant information.</p><div class="empty">Restaurant listings are intentionally left empty until verified.</div></section>
+<section class="section" id="food"><h2>🍴 Food & Local Cuisine</h2><p class="sub">Verified local food highlights for the selected city. Open the official travel source for more details.</p><div id="foodListings" class="grid"><div class="empty">Loading verified food highlights…</div></div></section>
 <section class="section" id="hotels"><h2>🏨 Hotels & Stays</h2><p class="sub">Accommodation section — keep hotel information only in this section.</p><div class="empty">Add verified hotel/stay records here. No fabricated hotel details are included.</div></section>
 <section class="section" id="cinema"><h2>🎭 Theatres / Cinemas</h2><p class="sub">Cinema and theatre locations for the selected city.</p><div class="empty">Add verified theatre/cinema records here.</div></section>
 <section class="section" id="health"><h2>🏥 Hospitals & Clinics</h2><p class="sub">Health facilities and useful medical services.</p><div class="empty">Add verified health-facility records here.</div></section>
@@ -80,6 +80,43 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
   list.innerHTML=items.map(x=>'<article class="card place-card"><span class="badge">OFFICIAL TRAVEL SOURCE</span><h3>'+escapeHtml(x[0])+'</h3><p>'+escapeHtml(x[1])+'</p><a class="place-source" href="'+encodeURI(x[2])+'" target="_blank" rel="noopener noreferrer" aria-label="Open official travel information for '+escapeHtml(x[0])+'">Official travel information ↗</a></article>').join('');
 })();
 </script>
-<script src="./v21-step4-nearby.js?v=20260917-2"></script><script>(function(){const s=document.getElementById('citySearch'),cl=document.getElementById('clearCitySearch'),secs=[...document.querySelectorAll('main .section')],tabs=[...document.querySelectorAll('.tabs a')];function f(){const q=(s?.value||'').trim().toLowerCase();secs.forEach(x=>x.classList.toggle('is-hidden',!!q&&!x.textContent.toLowerCase().includes(q)));}s?.addEventListener('input',f);cl?.addEventListener('click',()=>{s.value='';f();s.focus()});tabs.forEach(t=>t.addEventListener('click',()=>tabs.forEach(x=>x.classList.remove('active'))));document.getElementById('shareGuide')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return;}if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert('City guide link copied.');return;}throw new Error('share unavailable')}catch(e){if(e&&e.name==='AbortError')return;alert('Sharing is not available here. Please copy the page link from your browser.');}});document.getElementById('printGuide')?.addEventListener('click',()=>window.print());const p=new URLSearchParams(location.search),cat=p.get('category');if(cat&&document.getElementById(cat))setTimeout(()=>document.getElementById(cat).scrollIntoView({behavior:'smooth'}),100)})();</script>
+<script>
+(function(){
+  const data={
+    Agra:[
+      ['Petha','A well-known Agra sweet made from ash gourd; official tourism information also highlights Dal Moth and local chaat.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra'],
+      ['Dal Moth','A savoury lentil-based snack associated with Agra.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra'],
+      ['Mughlai Cuisine','Agra’s food culture includes Mughlai dishes such as kebabs, naan and curries.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra']
+    ],
+    Lucknow:[
+      ['Tunday Kebab','A well-known Lucknow kebab highlighted in official tourism food guides.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow/food-guide-what-and-where-to-eat-in-lucknow'],
+      ['Awadhi Biryani','A Lucknow culinary highlight described by official tourism information.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow'],
+      ['Basket Chaat','A Lucknow street-food speciality made with a crisp basket, potato, chickpeas, chutneys and curd.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow/food-guide-what-and-where-to-eat-in-lucknow']
+    ],
+    Varanasi:[
+      ['Baati Chokha','A traditional Varanasi food highlighted by official tourism information.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi'],
+      ['Lassi','A yoghurt-based drink traditionally served in Varanasi and highlighted in official tourism information.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi'],
+      ['Kachori','A popular savoury snack in Varanasi, with official tourism information highlighting Kachori Gali.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi']
+    ],
+    Banaras:[
+      ['Baati Chokha','A traditional Varanasi food highlighted by official tourism information.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi'],
+      ['Lassi','A yoghurt-based drink traditionally served in Varanasi and highlighted in official tourism information.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi'],
+      ['Kachori','A popular savoury snack in Varanasi, with official tourism information highlighting Kachori Gali.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/culinary-delights-of-varanasi']
+    ]
+  };
+  const params=new URLSearchParams(location.search);
+  const rawCity=(params.get('city')||params.get('district')||'').trim();
+  const cityKey=Object.keys(data).find(k=>k.toLowerCase()===rawCity.toLowerCase());
+  const list=document.getElementById('foodListings');
+  if(!list)return;
+  const items=cityKey?data[cityKey]:null;
+  if(!items){
+    list.innerHTML='<div class="empty">Verified food highlights for this city are not added yet. No unverified restaurant details are shown.</div>';
+    return;
+  }
+  const escapeHtml=(value)=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  list.innerHTML=items.map(x=>'<article class="card place-card"><span class="badge">OFFICIAL TRAVEL SOURCE</span><h3>'+escapeHtml(x[0])+'</h3><p>'+escapeHtml(x[1])+'</p><a class="place-source" href="'+encodeURI(x[2])+'" target="_blank" rel="noopener noreferrer" aria-label="Open official food information for '+escapeHtml(x[0])+'">Official food information ↗</a></article>').join('');
+})();
+</script><script src="./v21-step4-nearby.js?v=20260917-2"></script><script>(function(){const s=document.getElementById('citySearch'),cl=document.getElementById('clearCitySearch'),secs=[...document.querySelectorAll('main .section')],tabs=[...document.querySelectorAll('.tabs a')];function f(){const q=(s?.value||'').trim().toLowerCase();secs.forEach(x=>x.classList.toggle('is-hidden',!!q&&!x.textContent.toLowerCase().includes(q)));}s?.addEventListener('input',f);cl?.addEventListener('click',()=>{s.value='';f();s.focus()});tabs.forEach(t=>t.addEventListener('click',()=>tabs.forEach(x=>x.classList.remove('active'))));document.getElementById('shareGuide')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return;}if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert('City guide link copied.');return;}throw new Error('share unavailable')}catch(e){if(e&&e.name==='AbortError')return;alert('Sharing is not available here. Please copy the page link from your browser.');}});document.getElementById('printGuide')?.addEventListener('click',()=>window.print());const p=new URLSearchParams(location.search),cat=p.get('category');if(cat&&document.getElementById(cat))setTimeout(()=>document.getElementById(cat).scrollIntoView({behavior:'smooth'}),100)})();</script>
 </body>
 </html>
