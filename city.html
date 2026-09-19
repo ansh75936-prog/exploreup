@@ -20,7 +20,7 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
 <div class="citytools" aria-label="City guide overview"><div class="citytool"><b>📍 Explore</b><small>Tourist places and local highlights.</small></div><div class="citytool"><b>🍴 Taste</b><small>Food and restaurant information.</small></div><div class="citytool"><b>🛏️ Stay</b><small>Hotels and accommodation.</small></div><div class="citytool"><b>🧭 Move & Help</b><small>Transport, health and essential services.</small></div></div>
 <div class="guide-note"><b>City guide:</b> Use the category tabs to jump directly to what you need. Listings stay separated by category so verified information can be added without mixing city data.</div><div class="city-filter" role="search">🔎<input id="citySearch" type="search" placeholder="Search this city guide…"><button id="clearCitySearch" type="button">Clear</button></div>
 <div class="city-quick-actions"><button type="button" id="shareGuide">↗ Share Guide</button><button type="button" id="printGuide">🖨 Print</button></div><nav class="tabs"><a href="#places">Places</a><a href="#food">Food</a><a href="#hotels">Hotels & Stays</a><a href="#cinema">Theatres / Cinemas</a><a href="#health">Hospitals</a><a href="#transport">Transport</a><a href="#services">Essential Services</a><a href="#nearby">Nearby</a></nav>
-<section class="section" id="places"><h2>📍 Tourist Places</h2><p class="sub">Verified places can be added here from reliable sources.</p><div class="empty">No unverified place listings are included in this standalone file.</div></section>
+<section class="section" id="places"><h2>📍 Tourist Places & Attractions</h2><p class="sub">Verified destination highlights for the selected city. Open the official travel source for the latest visitor information.</p><div id="placeListings" class="grid"><div class="empty">Loading verified attractions…</div></div></section>
 <section class="section" id="food"><h2>🍴 Food</h2><p class="sub">Local food and restaurant information.</p><div class="empty">Restaurant listings are intentionally left empty until verified.</div></section>
 <section class="section" id="hotels"><h2>🏨 Hotels & Stays</h2><p class="sub">Accommodation section — keep hotel information only in this section.</p><div class="empty">Add verified hotel/stay records here. No fabricated hotel details are included.</div></section>
 <section class="section" id="cinema"><h2>🎭 Theatres / Cinemas</h2><p class="sub">Cinema and theatre locations for the selected city.</p><div class="empty">Add verified theatre/cinema records here.</div></section>
@@ -37,7 +37,46 @@ a{text-decoration:none;color:inherit}.nav{height:68px;background:var(--navy);col
  if(city){const name=city.trim();document.getElementById('cityName').textContent=name;document.title='ExploreUP — '+name+' City Guide';document.getElementById('cityIntro').textContent='Explore '+name+' through one clear city guide: places, food, stays, cinemas, health, transport and essential services.';const heroImages={'Agra':'./images/agra-photo.svg','Lucknow':'./images/lucknow.jpg','Varanasi':'./images/varanasi.jpg','Banaras':'./images/varanasi.jpg','Ayodhya':'./images/ayodhya-gallery-2.jpg','Jhansi':'./images.jpeg','Prayagraj':'./images (1).jpeg','Gorakhpur':'./images (3).jpeg'};const hero=document.getElementById('cityHero');const src=heroImages[name]||'./images/agra-photo.svg';hero.style.backgroundImage='linear-gradient(90deg,#071b35dd,#071b3522),url("'+src+'")';}
 })();
 </script>
-<script src="./v21-step3-favorites.js?v=20260917-1"></script>
+<script src="./v21-step3-favorites.js?v=20260917-1"></script><script>
+(function(){
+  const data={
+    Agra:[
+      ['Taj Mahal','World-famous Mughal-era monument and UNESCO World Heritage Site.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra/taj-mahal'],
+      ['Agra Fort','Historic Mughal fort in Agra and UNESCO World Heritage Site.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra/agra-fort'],
+      ['Mehtab Bagh','Mughal garden across the Yamuna, known for views toward the Taj Mahal.','https://www.incredibleindia.gov.in/en/uttar-pradesh/agra']
+    ],
+    Lucknow:[
+      ['Bara Imambara','Historic Lucknow landmark known for its grand vaulted hall and Bhul Bhulaiya.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow/bara-imambara'],
+      ['Rumi Darwaza','Iconic historic gateway in Lucknow.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow/rumi-darwaza'],
+      ['Lucknow Residency','Historic site included among Lucknow attractions by Incredible India.','https://www.incredibleindia.gov.in/en/uttar-pradesh/lucknow']
+    ],
+    Varanasi:[
+      ['Dashashwamedh Ghat','Major Ganga riverside ghat associated with the evening Ganga Aarti.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi'],
+      ['Sarnath','Important Buddhist heritage destination near Varanasi.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/sarnath-museum'],
+      ['Kashi Vishwanath Temple','Major temple destination in Varanasi.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi']
+    ],
+    Banaras:[
+      ['Dashashwamedh Ghat','Major Ganga riverside ghat associated with the evening Ganga Aarti.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi'],
+      ['Sarnath','Important Buddhist heritage destination near Varanasi.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi/sarnath-museum'],
+      ['Kashi Vishwanath Temple','Major temple destination in Varanasi.','https://www.incredibleindia.gov.in/en/uttar-pradesh/varanasi']
+    ],
+    Ayodhya:[
+      ['Ram Mandir','Major landmark within Ayodhya’s temple precincts.','https://www.incredibleindia.gov.in/en/uttar-pradesh/ayodhya'],
+      ['Hanuman Garhi','Historic temple complex on a hilltop in Ayodhya.','https://www.incredibleindia.gov.in/en/uttar-pradesh/ayodhya/hanuman-garhi'],
+      ['Kanak Bhawan','Temple dedicated to Lord Rama and Goddess Sita.','https://www.incredibleindia.gov.in/en/uttar-pradesh/ayodhya/kanak-bhawan']
+    ]
+  };
+  const city=(new URLSearchParams(location.search).get('city')||new URLSearchParams(location.search).get('district')||'').trim();
+  const list=document.getElementById('placeListings');
+  if(!list)return;
+  const items=data[city];
+  if(!items){
+    list.innerHTML='<div class="empty">Verified attraction listings for this city are not added yet. No unverified place details are shown.</div>';
+    return;
+  }
+  list.innerHTML=items.map((x,i)=>'<article class="card"><span class="badge">VERIFIED SOURCE</span><h3>'+x[0]+'</h3><p>'+x[1]+'</p><a href="'+x[2]+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:12px;color:var(--blue);font-weight:800;font-size:12px">Official travel information ↗</a></article>').join('');
+})();
+</script>
 <script src="./v21-step4-nearby.js?v=20260917-2"></script><script>(function(){const s=document.getElementById('citySearch'),cl=document.getElementById('clearCitySearch'),secs=[...document.querySelectorAll('main .section')],tabs=[...document.querySelectorAll('.tabs a')];function f(){const q=(s?.value||'').trim().toLowerCase();secs.forEach(x=>x.classList.toggle('is-hidden',!!q&&!x.textContent.toLowerCase().includes(q)));}s?.addEventListener('input',f);cl?.addEventListener('click',()=>{s.value='';f();s.focus()});tabs.forEach(t=>t.addEventListener('click',()=>tabs.forEach(x=>x.classList.remove('active'))));document.getElementById('shareGuide')?.addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return;}if(navigator.clipboard){await navigator.clipboard.writeText(location.href);alert('City guide link copied.');return;}throw new Error('share unavailable')}catch(e){if(e&&e.name==='AbortError')return;alert('Sharing is not available here. Please copy the page link from your browser.');}});document.getElementById('printGuide')?.addEventListener('click',()=>window.print());const p=new URLSearchParams(location.search),cat=p.get('category');if(cat&&document.getElementById(cat))setTimeout(()=>document.getElementById(cat).scrollIntoView({behavior:'smooth'}),100)})();</script>
 </body>
 </html>
