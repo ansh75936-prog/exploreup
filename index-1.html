@@ -196,7 +196,7 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
 <nav class="navlinks"><a aria-label="ExploreUP home" href="#top">Home</a><a href="#cities">Cities</a><a href="#places">Places</a><a href="#food">Food</a><a href="#travel">Travel</a><a href="#blogs">Blogs</a><a href="#about">About</a></nav>
-<div class="actions"><button class="lang" id="langBtn" onclick="toggleLanguage()">हिंदी</button><button aria-label="Toggle dark mode" class="circle" onclick="toggleDark()">☾</button><button class="adminbtn" onclick="openAdminPanel()">Admin</button><a class="adminbtn" href="./login.html" aria-label="Login to ExploreUP">Login</a><div class="circle">⌕</div></div>
+<div class="actions"><button class="lang" id="langBtn" onclick="toggleLanguage()">हिंदी</button><button aria-label="Toggle dark mode" class="circle" onclick="toggleDark()">☾</button><button class="adminbtn" onclick="openAdminPanel()">Admin</button><a class="adminbtn" id="accountNav" href="./login.html" aria-label="Login to ExploreUP">Login</a><div class="circle">⌕</div></div>
 </header>
 <section class="hero">
 <div>
@@ -1484,4 +1484,28 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   <script src="./arya-ai-bridge.js?v=20260916"></script>
   <script src="./arya-ai-ui.js?v=20260916"></script>
 <script src="./v21-step3-favorites.js?v=20260916-1"></script>
-</body></html>
+<script>
+/* ExploreUP account navigation: show Login until authenticated, then show Profile. */
+(function(){
+  function setAccountNav(session){
+    const a=document.getElementById('accountNav');
+    if(!a)return;
+    if(session&&session.user){
+      a.textContent='Profile';
+      a.setAttribute('aria-label','Open my ExploreUP profile');
+    }else{
+      a.textContent='Login';
+      a.setAttribute('aria-label','Login to ExploreUP');
+    }
+  }
+  function initAccountNav(){
+    if(!window.supabase?.createClient)return;
+    try{
+      const client=window.supabase.createClient('https://jsfjorthausrepgnsymv.supabase.co','sb_publishable_Lgj3WAOWOny7WQAloGqHcQ_hupjaK-e',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      client.auth.getSession().then(({data})=>setAccountNav(data?.session||null));
+      client.auth.onAuthStateChange((_event,session)=>setAccountNav(session));
+    }catch(e){setAccountNav(null);}
+  }
+  loadSupabaseBackend().then(initAccountNav);
+})();
+</script></body></html>
