@@ -191,7 +191,13 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 /* Arya Trip Plan Maker */
 .plan-modal{display:none;position:fixed;inset:0;z-index:10050;background:rgba(3,15,30,.78);padding:18px;overflow:auto}.plan-modal.show{display:block}.plan-box{width:min(900px,100%);margin:30px auto;background:var(--card);color:var(--text);border-radius:22px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.3)}.plan-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;background:linear-gradient(135deg,#071b35,#123d68);color:#fff}.plan-head h2{margin:0;font-size:21px}.plan-close{border:0;background:#ffffff20;color:#fff;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer}.plan-body{padding:20px}.plan-mode{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}.plan-mode label{display:block;border:2px solid var(--line);border-radius:15px;padding:14px;cursor:pointer;background:var(--card)}.plan-mode label:has(input:checked){border-color:var(--gold);box-shadow:0 5px 18px rgba(255,181,27,.15)}.plan-mode input{margin-right:8px}.plan-form{display:grid;grid-template-columns:1.4fr .7fr .9fr;gap:10px}.plan-form input,.plan-form select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);color:inherit;font:inherit}.plan-generate{margin-top:12px;width:100%;border:0;border-radius:12px;padding:13px;background:var(--gold);color:#13243a;font-weight:900;cursor:pointer}.plan-status{margin-top:12px;padding:11px 13px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px}.plan-result{margin-top:18px;display:grid;gap:12px}.plan-day{border:1px solid var(--line);border-radius:15px;padding:15px;background:var(--bg)}.plan-day h3{margin:0 0 8px}.plan-day ul{margin:7px 0 0 20px;padding:0}.plan-day li{margin:6px 0;line-height:1.5}.plan-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;padding:6px 9px;border-radius:999px;background:#dcfce7;color:#166534;margin-bottom:8px}@media(max-width:650px){.plan-mode,.plan-form{grid-template-columns:1fr}.plan-modal{padding:8px}.plan-box{margin:8px auto}.plan-body{padding:15px}}
 </style>
-</head>
+
+<style id="exploreup-bottom-share-style">
+#exploreupBottomShare{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;border:0;border-radius:999px;padding:12px 20px;background:#071b35;color:#fff;font-weight:850;font-size:14px;box-shadow:0 10px 30px #001b3b45;cursor:pointer;display:flex;align-items:center;gap:8px}
+#exploreupBottomShare:hover{transform:translateX(-50%) translateY(-2px)}
+#exploreupShareStatus{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:81;background:#fff;color:#10233f;border:1px solid #dce6f2;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:750;box-shadow:0 8px 24px #001b3b25;display:none}
+@media(max-width:620px){#exploreupBottomShare{bottom:76px;width:calc(100% - 32px);justify-content:center}#exploreupShareStatus{bottom:128px;max-width:calc(100% - 32px);text-align:center}}
+</style></head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
@@ -1484,4 +1490,44 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   <script src="./arya-ai-bridge.js?v=20260916"></script>
   <script src="./arya-ai-ui.js?v=20260916"></script>
 <script src="./v21-step3-favorites.js?v=20260916-1"></script>
+</script>
+<button id="exploreupBottomShare" type="button" aria-label="Share ExploreUP">🔗 Share ExploreUP</button>
+<div id="exploreupShareStatus" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  const btn=document.getElementById('exploreupBottomShare');
+  const status=document.getElementById('exploreupShareStatus');
+  if(!btn)return;
+  function showStatus(message){
+    if(!status)return;
+    status.textContent=message;
+    status.style.display='block';
+    clearTimeout(window.__exploreUpShareTimer);
+    window.__exploreUpShareTimer=setTimeout(()=>{status.style.display='none'},2200);
+  }
+  btn.addEventListener('click',async()=>{
+    const url=location.href;
+    const data={title:'ExploreUP — Explore Uttar Pradesh',text:'Explore Uttar Pradesh with ExploreUP: cities, places, food, stays and travel information.',url};
+    try{
+      if(navigator.share){
+        await navigator.share(data);
+        showStatus('Share dialog opened.');
+        return;
+      }
+      if(navigator.clipboard&&window.isSecureContext){
+        await navigator.clipboard.writeText(url);
+        showStatus('Link copied. Ab share kar sakte ho.');
+        return;
+      }
+      const ta=document.createElement('textarea');
+      ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');ta.remove();
+      showStatus('Link copied. Ab share kar sakte ho.');
+    }catch(e){
+      if(e&&e.name==='AbortError')return;
+      showStatus('Share nahi ho paya. Link copy karke share kar lo.');
+    }
+  });
+})();
 </script></body></html>
