@@ -193,10 +193,10 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 </style>
 
 <style id="exploreup-bottom-share-style">
-#exploreupBottomShare{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;border:0;border-radius:999px;padding:12px 20px;background:#071b35;color:#fff;font-weight:850;font-size:14px;box-shadow:0 10px 30px #001b3b45;cursor:pointer;display:flex;align-items:center;gap:8px}
-#exploreupBottomShare:hover{transform:translateX(-50%) translateY(-2px)}
-#exploreupShareStatus{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:81;background:#fff;color:#10233f;border:1px solid #dce6f2;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:750;box-shadow:0 8px 24px #001b3b25;display:none}
-@media(max-width:620px){#exploreupBottomShare{bottom:76px;width:calc(100% - 32px);justify-content:center}#exploreupShareStatus{bottom:128px;max-width:calc(100% - 32px);text-align:center}}
+#exploreupBottomShare{display:flex;margin:32px auto 24px;border:0;border-radius:999px;padding:12px 20px;background:#071b35;color:#fff;font-weight:850;font-size:14px;box-shadow:0 10px 30px #001b3b45;cursor:pointer;align-items:center;gap:8px;width:max-content}
+#exploreupBottomShare:hover{transform:translateY(-2px)}
+#exploreupShareStatus{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:81;background:#fff;color:#10233f;border:1px solid #dce6f2;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:750;box-shadow:0 8px 24px #001b3b25;display:none}
+@media(max-width:620px){#exploreupBottomShare{width:calc(100% - 32px);justify-content:center}#exploreupShareStatus{bottom:18px;max-width:calc(100% - 32px);text-align:center}}
 </style></head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -1491,7 +1491,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   <script src="./arya-ai-ui.js?v=20260916"></script>
 <script src="./v21-step3-favorites.js?v=20260916-1"></script>
 </script>
-<button id="exploreupBottomShare" type="button" aria-label="Share ExploreUP">🔗 Share ExploreUP</button>
+<div id="exploreupBottomShareWrap"><button id="exploreupBottomShare" type="button" aria-label="Share ExploreUP">🔗 Share ExploreUP</button></div>
 <div id="exploreupShareStatus" role="status" aria-live="polite"></div>
 <script>
 (function(){
