@@ -3,6 +3,10 @@
   'use strict';
 
   const districtImageMap = {
+    'Aligarh':'./images/district-aligarh.jpg?v=20260920',
+    'Etawah':'./images/district-etawah.jpg?v=20260920',
+    'Agra':'./images/district-agra.jpg?v=20260920',
+    'Azamgarh':'./images/district-azamgarh.jpg?v=20260920',
     'Jhansi':'./images.jpeg?v=20260915',
     'Prayagraj':'./images (1).jpeg?v=20260915',
     'Ayodhya':'./images/ayodhya-gallery-2.jpg?v=20260920',
@@ -32,6 +36,17 @@
       img.setAttribute('loading','eager'); img.setAttribute('decoding','async'); img.setAttribute('fetchpriority',cityName==='Ayodhya'?'high':'auto');
     });
   }
+  function applyMappedProfileImages(){
+    const title=document.getElementById('modalTitle');
+    const hero=document.getElementById('modalHero');
+    if(!title||!hero)return;
+    const name=title.textContent.trim();
+    const src=districtImageMap[name];
+    if(!src)return;
+    hero.style.backgroundImage=`linear-gradient(transparent,#06162dcc),url("${src}")`;
+    hero.setAttribute('data-exploreup-profile-image',name);
+  }
+
   function applyTravelImages(){
     document.querySelectorAll('#travel .trail').forEach(card=>{
       const heading=card.querySelector('h3'); if(!heading)return;
@@ -117,7 +132,7 @@
     });
   }
 
-  function applyAll(){applyDistrictImages();applyTravelImages();applyTravelDetails();connectAyodhyaTravelPage();setupTravelIdeasSlider();applyV20UiFixes()}
+  function applyAll(){applyDistrictImages();applyMappedProfileImages();applyTravelImages();applyTravelDetails();connectAyodhyaTravelPage();setupTravelIdeasSlider();applyV20UiFixes()}
   let observer,queued=false;
   const run=()=>{if(observer)observer.disconnect();try{applyAll()}catch(error){console.warn('ExploreUP enhancement warning:',error)}if(observer)observer.observe(document.documentElement,{childList:true,subtree:true})};
   observer=new MutationObserver(()=>{if(queued)return;queued=true;setTimeout(()=>{queued=false;run()},150)});
