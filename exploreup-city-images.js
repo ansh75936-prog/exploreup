@@ -3,10 +3,10 @@
   'use strict';
 
   const districtImageMap = {
-    'Aligarh':'./images/district-aligarh.jpg?v=20260920',
-    'Etawah':'./images/district-etawah.jpg?v=20260920',
-    'Agra':'./images/district-agra.jpg?v=20260920',
-    'Azamgarh':'./images/district-azamgarh.jpg?v=20260920',
+    'Aligarh':'./images/district-aligarh.jpg',
+    'Etawah':'./images/district-etawah.jpg',
+    'Agra':'./images/district-agra.jpg',
+    'Azamgarh':'./images/district-azamgarh.jpg',
     'Jhansi':'./images.jpeg?v=20260915',
     'Prayagraj':'./images (1).jpeg?v=20260915',
     'Ayodhya':'./images/ayodhya-gallery-2.jpg?v=20260920',
