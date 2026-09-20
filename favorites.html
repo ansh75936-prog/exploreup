@@ -1,2 +1,42 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExploreUP — Favorites</title><style>body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f4f8fc;color:#10233f}.wrap{width:min(900px,92%);margin:40px auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px}.back{color:#0b67d1;font-weight:800;text-decoration:none}.card{background:#fff;border:1px solid #e3ebf5;border-radius:16px;padding:16px;margin:12px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.meta{color:#60708a;font-size:13px}.remove{border:0;border-radius:10px;padding:9px 12px;background:#ffe9e9;color:#a32323;font-weight:800;cursor:pointer}.empty{background:#fff;border-radius:16px;padding:25px;color:#60708a}</style></head><body><main class="wrap"><div class="top"><h1>❤️ My Favorites</h1><a class="back" href="./index-1.html">← ExploreUP</a></div><div id="list"></div></main><script src="./v21-step3-favorites.js?v=20260916-1"></script><script>function render(){const list=document.getElementById('list'),items=window.ExploreUPFavorites?.all()||[];list.innerHTML=items.length?items.map((x,i)=>`<div class="card"><div><strong>${String(x.name).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}</strong><div class="meta">${x.type||'Place'}${x.city?' · '+x.city:''}</div></div><button class="remove" data-i="${i}">Remove</button></div>`).join(''):'<div class="empty">No favorites saved yet. Use the ♡ Save buttons on supported ExploreUP cards.</div>';list.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{const x=items[Number(b.dataset.i)];window.ExploreUPFavorites.remove(x.name,x.city||'');render()})}render();</script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ExploreUP — Favorites & Compare</title>
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f4f8fc;color:#10233f}.wrap{width:min(980px,92%);margin:32px auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.back{color:#0b67d1;font-weight:800;text-decoration:none}.hint{color:#60708a;font-size:13px}.card{background:#fff;border:1px solid #e3ebf5;border-radius:16px;padding:16px;margin:12px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.meta{color:#60708a;font-size:13px}.actions{display:flex;gap:8px;align-items:center}.comparePick{width:18px;height:18px}.remove{border:0;border-radius:10px;padding:9px 12px;background:#ffe9e9;color:#a32323;font-weight:800;cursor:pointer}.compareBtn{border:0;border-radius:10px;padding:10px 14px;background:#0b67d1;color:#fff;font-weight:800;cursor:pointer}.compareBtn:disabled{opacity:.45;cursor:not-allowed}.empty{background:#fff;border-radius:16px;padding:25px;color:#60708a}.compare{margin-top:22px;background:#fff;border:1px solid #d8e3f0;border-radius:18px;padding:18px}.compare h2{margin-top:0}.compareGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.compareItem{border:1px solid #e3ebf5;border-radius:14px;padding:14px;background:#f9fbfe}.compareItem strong{display:block;margin-bottom:7px}.clear{margin-top:12px;border:1px solid #c9d7e8;background:#fff;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}@media(max-width:700px){.compareGrid{grid-template-columns:1fr}.card{align-items:flex-start}.actions{flex-direction:column}.top h1{font-size:25px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><div><h1>❤️ My Favorites</h1><div class="hint">Select up to 3 saved items to compare their type and city.</div></div><a class="back" href="./index-1.html">← ExploreUP</a></div>
+  <div id="list"></div>
+  <section class="compare" aria-live="polite">
+    <h2>⚖️ Compare</h2><div id="compareGrid" class="compareGrid"><div class="empty">Select at least 2 favorites.</div></div>
+    <button id="clearCompare" class="clear" type="button">Clear selection</button>
+  </section>
+</main>
+<script src="./v21-step3-favorites.js?v=20260920-1"></script>
+<script>
+(function(){
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  const selected=new Set();
+  function items(){return window.ExploreUPFavorites?.all()||[]}
+  function render(){
+    const list=document.getElementById('list'), all=items();
+    [...selected].forEach(i=>{if(i>=all.length)selected.delete(i)});
+    list.innerHTML=all.length?all.map((x,i)=>'<div class="card"><div><strong>'+esc(x.name)+'</strong><div class="meta">'+esc(x.type||'Place')+(x.city?' · '+esc(x.city):'')+'</div></div><div class="actions"><label><input class="comparePick" type="checkbox" data-i="'+i+'" '+(selected.has(i)?'checked':'')+'> Compare</label><button class="remove" data-remove="'+i+'" type="button">Remove</button></div></div>').join(''):'<div class="empty">No favorites saved yet. Use the ♡ Save buttons on supported ExploreUP cards.</div>';
+    list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const x=all[Number(b.dataset.remove)];window.ExploreUPFavorites.remove(x.name,x.city||'');selected.clear();render();});
+    list.querySelectorAll('.comparePick').forEach(b=>b.onchange=()=>{const i=Number(b.dataset.i);if(b.checked){if(selected.size>=3){b.checked=false;alert('You can compare up to 3 favorites at a time.');return}selected.add(i)}else selected.delete(i);renderCompare();});
+    renderCompare();
+  }
+  function renderCompare(){
+    const all=items(), picked=[...selected].map(i=>all[i]).filter(Boolean), grid=document.getElementById('compareGrid');
+    grid.innerHTML=picked.length>=2?picked.map(x=>'<article class="compareItem"><strong>'+esc(x.name)+'</strong><div class="meta">Type: '+esc(x.type||'Place')+'</div><div class="meta">City: '+esc(x.city||'Not specified')+'</div></article>').join(''):'<div class="empty">Select at least 2 favorites.</div>';
+  }
+  document.getElementById('clearCompare').onclick=()=>{selected.clear();render();};
+  render();
+})();
+</script>
+</body>
+</html>
