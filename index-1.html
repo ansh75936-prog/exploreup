@@ -197,7 +197,14 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 #exploreupBottomShare:hover{transform:translateY(-2px)}
 #exploreupShareStatus{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:81;background:#fff;color:#10233f;border:1px solid #dce6f2;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:750;box-shadow:0 8px 24px #001b3b25;display:none}
 @media(max-width:620px){#exploreupBottomShare{width:100%;justify-content:center}#exploreupShareStatus{bottom:18px;max-width:calc(100% - 32px);text-align:center}}
-</style></head>
+</style>
+/* ExploreUP polish v1 */
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.skip-link{position:fixed;left:12px;top:-60px;z-index:10000;background:var(--gold);color:#071b35;padding:10px 14px;border-radius:10px;font-weight:800;transition:top .2s}.skip-link:focus{top:12px}
+#backToTop{position:fixed;right:18px;bottom:18px;z-index:28;width:46px;height:46px;border:0;border-radius:50%;background:var(--gold);color:#071b35;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 8px 24px #001b3b35;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}#backToTop.show{opacity:1;transform:none;pointer-events:auto}
+body.dark #backToTop{background:var(--gold);color:#071b35}
+@media(max-width:620px){#backToTop{right:14px;bottom:126px;width:42px;height:42px}}
+</head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
@@ -1529,4 +1536,24 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     }
   });
 })();
-</script></body></html>
+</script>
+<script>
+/* ExploreUP polish v1: accessibility + quick navigation */
+(function(){
+  const main=document.querySelector('main')||document.body;
+  if(!document.querySelector('.skip-link')){
+    const a=document.createElement('a');a.className='skip-link';a.href='#mainContent';a.textContent='Skip to main content';document.body.prepend(a);
+  }
+  if(!document.getElementById('mainContent')){
+    const target=document.querySelector('.wrap')||document.querySelector('.section');
+    if(target)target.id='mainContent';
+  }
+  if(!document.getElementById('backToTop')){
+    const b=document.createElement('button');b.id='backToTop';b.type='button';b.setAttribute('aria-label','Back to top');b.title='Back to top';b.textContent='↑';
+    document.body.appendChild(b);
+    b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+    const sync=()=>b.classList.toggle('show',window.scrollY>500);window.addEventListener('scroll',sync,{passive:true});sync();
+  }
+})();
+</script>
+</body></html>
