@@ -215,6 +215,9 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 #backToTop{position:fixed;right:18px;bottom:18px;z-index:28;width:46px;height:46px;border:0;border-radius:50%;background:var(--gold);color:#071b35;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 8px 24px #001b3b35;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}#backToTop.show{opacity:1;transform:none;pointer-events:auto}
 body.dark #backToTop{background:var(--gold);color:#071b35}
 @media(max-width:620px){#backToTop{right:14px;bottom:126px;width:42px;height:42px}}
+
+/* ExploreUP Phase 1 district discovery + map */
+.district-tools{display:grid;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px #0b24420a}.district-search-main{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:0 14px}.district-search-main input{width:100%;border:0;outline:0;background:transparent;color:var(--text);font:inherit;padding:14px 0;font-size:16px}.region-filters{display:flex;gap:8px;flex-wrap:wrap}.region-btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 14px;border-radius:999px;font-weight:800;cursor:pointer}.region-btn:hover,.region-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}.region-btn span{opacity:.7}.district-filter-status{font-size:13px;color:var(--muted);margin-top:10px}.city.is-hidden{display:none!important}.interactive-map-section{padding-top:10px}.up-map-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;overflow:hidden}.up-map-wrap{min-height:470px;display:grid;place-items:center;background:linear-gradient(145deg,#eef6ff,#f9fbff);border-radius:16px;overflow:auto}.up-map-svg{width:100%;min-width:680px;height:470px}.up-map-base{fill:#dcecfb;stroke:#7ca7cf;stroke-width:3}.map-region{fill:#cfe3f7;stroke:#fff;stroke-width:2;opacity:.55}.map-node{cursor:pointer;outline:none}.map-node circle{stroke:#fff;stroke-width:2}.map-node text{font-size:9px;font-weight:800;fill:#17304f;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;pointer-events:none}.map-node:hover circle,.map-node:focus circle{r:11;stroke:#071b35;stroke-width:3}.map-node.awadh circle{fill:#4f8fd8}.map-node.braj circle{fill:#d79a2b}.map-node.purvanchal circle{fill:#5aa878}.map-node.bundelkhand circle{fill:#b76a55}.up-map-legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 2px 12px;font-size:12px;font-weight:750;color:var(--muted)}.map-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.map-dot.awadh{background:#4f8fd8}.map-dot.braj{background:#d79a2b}.map-dot.purvanchal{background:#5aa878}.map-dot.bundelkhand{background:#b76a55}.map-popover{position:absolute;right:28px;top:60px;max-width:310px;display:none;background:#071b35;color:#fff;padding:14px 16px;border-radius:14px;box-shadow:0 14px 35px #001b3b40;z-index:4}.map-popover.show{display:block}.map-popover b{font-size:16px}.map-popover small{display:block;color:#d8e7f7;line-height:1.5;margin-top:5px}.map-open-btn{margin-top:9px;border:0;border-radius:9px;padding:8px 11px;background:var(--gold);color:#13243a;font-weight:850;cursor:pointer}@media(max-width:700px){.up-map-wrap{min-height:390px}.up-map-svg{min-width:620px;height:390px}.map-popover{left:18px;right:18px;top:58px;max-width:none}.region-filters{overflow:auto;flex-wrap:nowrap;padding-bottom:2px}.region-btn{white-space:nowrap}}
 </style>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
@@ -252,6 +255,24 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 <div class="cat"><div class="ico">☀️</div>Best Time</div><div class="cat"><div class="ico">💡</div>Local Tips</div>
 </div>
 <div class="recent-wrap" id="recentWrap" style="display:none"><div class="sectionhead" style="margin-bottom:8px"><div><h2 style="font-size:20px">🕘 Recently Viewed</h2><p>Quickly return to destinations you explored recently.</p></div></div><div class="recent-strip" id="recentStrip"></div></div>
+<!-- ExploreUP Phase 1: district discovery + interactive map -->
+<section class="section" id="districtDiscovery">
+  <div class="sectionhead"><div><h2>🧭 Find a District</h2><p>Search all 75 districts or filter them by UP region.</p></div></div>
+  <div class="district-tools" role="search">
+    <label class="district-search-main"><span aria-hidden="true">🔎</span><input id="districtLiveSearch" type="search" placeholder="Search district… e.g. Agra, Lucknow, Varanasi" autocomplete="off"></label>
+    <div class="region-filters" role="group" aria-label="Filter districts by region">
+      <button type="button" class="region-btn active" data-region="all">All <span>75</span></button><button type="button" class="region-btn" data-region="awadh">Awadh</button><button type="button" class="region-btn" data-region="braj">Braj</button><button type="button" class="region-btn" data-region="purvanchal">Purvanchal</button><button type="button" class="region-btn" data-region="bundelkhand">Bundelkhand</button>
+    </div>
+  </div>
+  <div id="districtFilterStatus" class="district-filter-status" aria-live="polite">Showing all 75 districts</div>
+</section>
+<section class="section interactive-map-section" id="upMap">
+  <div class="sectionhead"><div><h2>🗺️ Interactive UP District Map</h2><p>Tap a district to open its ExploreUP guide and see its top places.</p></div></div>
+  <div class="up-map-card">
+    <div class="up-map-legend"><span><i class="map-dot awadh"></i>Awadh</span><span><i class="map-dot braj"></i>Braj</span><span><i class="map-dot purvanchal"></i>Purvanchal</span><span><i class="map-dot bundelkhand"></i>Bundelkhand</span></div>
+    <div class="up-map-wrap" id="upMapWrap" aria-label="Interactive Uttar Pradesh district map"></div><div class="map-popover" id="mapPopover" role="status" aria-live="polite"></div>
+  </div>
+</section>
 <section class="section" id="cities">
 <div class="sectionhead"><div><h2>📍 Explore Our Cities</h2><p>Explore Uttar Pradesh city by city, with dedicated guides and useful information.</p></div><a class="view" href="#cities">View All Cities →</a></div>
 <div class="cities" id="cityGrid"></div>
@@ -1588,6 +1609,44 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   function closeMenu(){menu.classList.remove('show');btn.setAttribute('aria-expanded','false');btn.textContent='☰'}
   btn.addEventListener('click',()=>{const open=menu.classList.toggle('show');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'×':'☰'});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+})();
+</script>
+
+<script>
+/* ExploreUP Phase 1: live district search, region filters and SVG district map */
+(function(){
+ 'use strict';
+ const regionLists={
+  awadh:['Lucknow','Barabanki','Ayodhya','Sultanpur','Amethi','Raebareli','Unnao','Lakhimpur Kheri','Sitapur','Hardoi','Bahraich','Shravasti','Gonda','Balrampur','Pratapgarh','Farrukhabad','Kannauj','Kanpur Nagar','Kanpur Dehat','Fatehpur'],
+  braj:['Agra','Mathura','Firozabad','Mainpuri','Etah','Kasganj','Aligarh','Hathras','Budaun','Bareilly','Shahjahanpur','Pilibhit','Moradabad','Rampur','Sambhal'],
+  bundelkhand:['Jhansi','Jalaun','Lalitpur','Hamirpur','Mahoba','Banda','Chitrakoot'],
+  purvanchal:['Varanasi','Jaunpur','Prayagraj','Mirzapur','Sonbhadra','Chandauli','Ghazipur','Azamgarh','Mau','Ballia','Deoria','Gorakhpur','Kushinagar','Maharajganj','Basti','Sant Kabir Nagar','Siddharthnagar','Sant Ravidas Nagar','Kaushambi','Etawah','Auraiya','Gautam Buddh Nagar','Meerut','Ghaziabad','Hapur','Bulandshahr','Baghpat','Muzaffarnagar','Shamli','Saharanpur','Amroha','Bijnor']
+ };
+ const norm=s=>String(s||'').toLowerCase().replace(/buddha nagar/g,'buddh nagar').replace(/[^a-z0-9]+/g,' ').trim();
+ const regionByName={};Object.entries(regionLists).forEach(([r,arr])=>arr.forEach(n=>regionByName[norm(n)]=r));
+ function getList(){return (window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?window.__exploreUpDistrictCities:(window.cities||[]).slice(0,75)}
+ function regionOf(name){return regionByName[norm(name)]||'purvanchal'}
+ function open(name){if(typeof safeOpenCity==='function')safeOpenCity(name);else if(typeof openCity==='function')openCity(name)}
+ function filter(){
+   const q=(document.getElementById('districtLiveSearch')?.value||'').trim().toLowerCase();
+   const active=document.querySelector('.region-btn.active')?.dataset.region||'all';
+   const cards=[...document.querySelectorAll('#cityGrid .city')];let shown=0;
+   cards.forEach(card=>{const name=card.querySelector('.citytext h3')?.textContent?.trim()||'';const ok=(!q||name.toLowerCase().includes(q))&&(active==='all'||regionOf(name)===active);card.classList.toggle('is-hidden',!ok);if(ok)shown++});
+   const status=document.getElementById('districtFilterStatus');if(status)status.textContent=(shown===75&&!q&&active==='all')?'Showing all 75 districts':'Showing '+shown+' of 75 districts'+(active!=='all'?' · '+active.charAt(0).toUpperCase()+active.slice(1):'')+(q?' · matching “'+q+'”':'');
+   buildMap(active,q);
+ }
+ function buildMap(active,q){
+   const host=document.getElementById('upMapWrap');if(!host)return;const list=getList();
+   const shown=list.filter(c=>(active==='all'||regionOf(c.name)===active)&&(!q||c.name.toLowerCase().includes(q)));
+   const visibleNames=new Set(shown.map(c=>c.name));
+   const nodes=list.map((c,i)=>{const col=i%10,row=Math.floor(i/10),x=55+col*70+(row%2)*10,y=50+row*50,r=regionOf(c.name),vis=visibleNames.has(c.name);const label=String(c.name).replace(/&/g,'&amp;').replace(/</g,'&lt;');return '<g class="map-node '+r+'" tabindex="'+(vis?'0':'-1')+'" opacity="'+(vis?'1':'.18')+'" data-name="'+label+'" data-index="'+i+'" role="button" aria-label="Open '+label+'"><circle cx="'+x+'" cy="'+y+'" r="8"></circle><text x="'+x+'" y="'+(y-12)+'" text-anchor="middle">'+label.slice(0,12)+'</text></g>'}).join('');
+   host.innerHTML='<svg class="up-map-svg" viewBox="0 0 760 430" role="img" aria-label="Schematic interactive map of Uttar Pradesh districts"><path class="up-map-base" d="M65 105 L120 45 L230 35 L330 55 L430 35 L535 70 L670 95 L715 170 L690 245 L720 315 L640 375 L520 360 L430 400 L320 375 L225 395 L130 350 L70 280 L90 210 Z"></path><path class="map-region" d="M90 105 L250 50 L330 90 L300 190 L150 205 Z"></path><path class="map-region" d="M300 70 L520 55 L610 120 L500 205 L300 190 Z"></path><path class="map-region" d="M500 205 L700 155 L700 300 L570 340 L470 290 Z"></path><path class="map-region" d="M130 205 L300 190 L470 290 L430 380 L210 370 L90 280 Z"></path>'+nodes+'</svg>';
+   host.querySelectorAll('.map-node').forEach(node=>{const act=()=>showMapInfo(node);node.addEventListener('click',act);node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act()}})});
+ }
+ function showMapInfo(node){const name=node.dataset.name,i=Number(node.dataset.index),c=getList()[i],pop=document.getElementById('mapPopover');if(!pop||!c)return;const text=String(c.places||c.tag||'Explore the district guide.').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').slice(0,180);pop.innerHTML='<b>📍 '+name+'</b><small>Top places: '+text+'</small><button type="button" class="map-open-btn">Open '+name+' →</button>';pop.classList.add('show');pop.querySelector('.map-open-btn').onclick=()=>open(name)}
+ function init(){const input=document.getElementById('districtLiveSearch');if(!input)return;input.addEventListener('input',filter);document.querySelectorAll('.region-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter()}));filter()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ window.exploreUpPhase1Filter=filter;
 })();
 </script>
 </body></html>
