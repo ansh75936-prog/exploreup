@@ -5,7 +5,7 @@
   const districtImageMap = {
     'Aligarh':'./images/district-aligarh.jpg',
     'Etawah':'./images/district-etawah.jpg',
-    'Agra':'./images/agra-photo.svg?v=20260922',
+    'Agra':'./images/agra-card.jpg?v=20260922',
     'Azamgarh':'./images/district-azamgarh.jpg',
     'Jhansi':'./images.jpeg?v=20260915',
     'Prayagraj':'./images (1).jpeg?v=20260915',
