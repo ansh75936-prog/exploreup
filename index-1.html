@@ -158,6 +158,7 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 .plan-advanced{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.plan-advanced input,.plan-advanced select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);color:inherit;font:inherit}.plan-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.plan-checks label{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px;cursor:pointer}.plan-checks input{margin-right:5px}.plan-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.planner-summary{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--bg);line-height:1.6}.planner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.planner-mini{border:1px solid var(--line);border-radius:12px;padding:12px}.planner-badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:5px 8px;background:#eef5ff;margin-bottom:7px}.calc-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.calc-row:last-child{border-bottom:0}.recommend-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.recommend-grid label{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;cursor:pointer;background:var(--bg)}.event-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg)}.event-card small{display:block;color:var(--muted);margin-top:5px}@media(max-width:650px){.plan-advanced,.planner-grid,.plan-tools{grid-template-columns:1fr}.recommend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+<script>
 /* ExploreUP mobile navigation v1 */
 .mobile-menu-btn{display:none;border:1px solid #52708f;background:transparent;color:#fff;border-radius:10px;width:40px;height:40px;font-size:20px;cursor:pointer}
 .mobile-menu{display:none;position:fixed;top:62px;left:0;right:0;background:var(--navy);z-index:40;padding:10px 5%;box-shadow:0 12px 25px #001b3b35}
@@ -207,12 +208,14 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 #exploreupShareStatus{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:81;background:#fff;color:#10233f;border:1px solid #dce6f2;border-radius:12px;padding:9px 13px;font-size:12px;font-weight:750;box-shadow:0 8px 24px #001b3b25;display:none}
 @media(max-width:620px){#exploreupBottomShare{width:100%;justify-content:center}#exploreupShareStatus{bottom:18px;max-width:calc(100% - 32px);text-align:center}}
 </style>
+<style>
 /* ExploreUP polish v1 */
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .skip-link{position:fixed;left:12px;top:-60px;z-index:10000;background:var(--gold);color:#071b35;padding:10px 14px;border-radius:10px;font-weight:800;transition:top .2s}.skip-link:focus{top:12px}
 #backToTop{position:fixed;right:18px;bottom:18px;z-index:28;width:46px;height:46px;border:0;border-radius:50%;background:var(--gold);color:#071b35;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 8px 24px #001b3b35;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}#backToTop.show{opacity:1;transform:none;pointer-events:auto}
 body.dark #backToTop{background:var(--gold);color:#071b35}
 @media(max-width:620px){#backToTop{right:14px;bottom:126px;width:42px;height:42px}}
+</style>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -1585,5 +1588,5 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   btn.addEventListener('click',()=>{const open=menu.classList.toggle('show');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'×':'☰'});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
 })();
-
+</script>
 </body></html>
