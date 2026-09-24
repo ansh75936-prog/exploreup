@@ -72,7 +72,7 @@ body.dark .search input{background:#fff;color:#10233f}
 .city .citymeta{position:absolute;z-index:3;bottom:12px;left:15px;right:15px;display:flex;gap:5px;flex-wrap:wrap}.city .citytext{bottom:54px}.city .meta{background:#ffffffdf}
 .trip-sticky{display:none}.lang{font-size:12px;border:1px solid #52708f;color:#fff;background:transparent;border-radius:18px;padding:8px 11px;cursor:pointer;font-weight:800}
 body.dark .view,body.dark .section h2{color:var(--text)}
-@media(max-width:620px){.trip-sticky{display:block;position:fixed;bottom:0;left:0;right:0;z-index:29;background:var(--navy);padding:10px 14px}.trip-sticky button{width:100%;height:46px;border:0;border-radius:24px;background:var(--gold);font-weight:850}.favbar{bottom:70px}.favpanel{bottom:122px}.nav .lang{display:none}}
+@media(max-width:620px){.trip-sticky{display:block;position:fixed;bottom:0;left:0;right:0;z-index:29;background:var(--navy);padding:10px 14px}.trip-sticky button{width:100%;height:46px;border:0;border-radius:24px;background:var(--gold);font-weight:850}.favbar{bottom:70px}.favpanel{bottom:122px}.nav .lang{display:inline-flex;align-items:center;justify-content:center;min-width:64px}}
 
 /* Full district page */
 .modal{position:fixed;inset:0;z-index:9999;background:#fff;overflow-y:auto;padding:0}
@@ -1390,12 +1390,36 @@ function toggleDark(){
  document.body.classList.toggle('dark');
  exploreStorage.set('exploreup_dark',document.body.classList.contains('dark')?'1':'0');
 }
-function toggleLanguage(){
+const exploreLanguageText={
+ nav:{'Home':'होम','Cities':'शहर','Places':'स्थान','Food':'खाना','Travel':'यात्रा','Blogs':'ब्लॉग','About':'हमारे बारे में'},
+ headings:{
+  '🕘 Recently Viewed':'🕘 हाल ही में देखे गए','🧭 Find a District':'🧭 जिला खोजें','🗺️ Interactive UP District Map':'🗺️ उत्तर प्रदेश जिला मानचित्र',
+  '📍 Explore Our Cities':'📍 हमारे शहर देखें','⭐ Why ExploreUP?':'⭐ ExploreUP क्यों?','💎 Hidden Gems of Uttar Pradesh':'💎 उत्तर प्रदेश के छिपे रत्न',
+  '🧭 District-wise Exploration':'🧭 जिलेवार खोज','🎉 Festivals Calendar':'🎉 त्योहार कैलेंडर','🍴 Food Trails':'🍴 भोजन यात्रा',
+  '🧳 Travel Ideas':'🧳 यात्रा के सुझाव','🌱 Sustainable Travel Tips':'🌱 टिकाऊ यात्रा सुझाव','📝 Featured Blogs':'📝 प्रमुख ब्लॉग',
+  'Emergency & Important Helplines':'आपातकालीन और महत्वपूर्ण हेल्पलाइन','About this city':'इस शहर के बारे में','🏨 Hotels / Stays':'🏨 होटल / ठहरने की जगह',
+  '🏥 Hospitals':'🏥 अस्पताल','📖 District Knowledge':'📖 जिले की जानकारी','🍴 Food & Cuisine Guide':'🍴 भोजन और व्यंजन गाइड',
+  '🚆✈️ Transport Guide — Travel Within Uttar Pradesh':'🚆✈️ परिवहन गाइड — उत्तर प्रदेश में यात्रा','🗓️ Trip Planner':'🗓️ यात्रा योजनाकार',
+  '🛍️ Shopping Malls & Centres':'🛍️ शॉपिंग मॉल और सेंटर','⚠️ Report Incorrect Information':'⚠️ गलत जानकारी रिपोर्ट करें',
+  '💬 Suggest an Update':'💬 अपडेट सुझाएँ','⭐ Share Your Experience':'⭐ अपना अनुभव साझा करें','🧭 Arya Trip Plan Maker':'🧭 Arya ट्रिप प्लान मेकर'
+ }
+};
+function applyLanguage(isHindi){
  const b=document.getElementById('langBtn');
- const hindi=b.textContent==='हिंदी';
- b.textContent=hindi?'English':'हिंदी';
- document.querySelector('.eyebrow').textContent=hindi?'घूमें • खोजें • अनुभव करें':'EXPLORE • DISCOVER • EXPERIENCE';
+ if(b)b.textContent=isHindi?'English':'हिंदी';
+ document.querySelectorAll('.navlinks a').forEach(a=>{const key=a.textContent.trim();if(exploreLanguageText.nav[key])a.textContent=isHindi?exploreLanguageText.nav[key]:Object.keys(exploreLanguageText.nav).find(k=>exploreLanguageText.nav[k]===key)||key});
+ document.querySelectorAll('h2').forEach(h=>{
+   const raw=h.dataset.exploreEn||h.textContent.trim();h.dataset.exploreEn=raw;
+   if(isHindi&&exploreLanguageText.headings[raw])h.textContent=exploreLanguageText.headings[raw];
+   else h.textContent=raw;
+ });
+ const eyebrow=document.querySelector('.eyebrow');if(eyebrow)eyebrow.textContent=isHindi?'घूमें • खोजें • अनुभव करें':'EXPLORE • DISCOVER • EXPERIENCE';
+ const h1=document.querySelector('.hero h1');if(h1)h1.innerHTML=isHindi?'उत्तर प्रदेश <em>घूमें</em>':'Explore <em>Uttar Pradesh</em>';
+ const heroP=document.querySelector('.hero > div > p');if(heroP)heroP.textContent=isHindi?'उत्तर प्रदेश की संस्कृति, विरासत, भोजन, स्थानों, ठहरने की जगहों और उपयोगी यात्रा जानकारी को शहर-दर-शहर जानें।':'Discover the culture, heritage, food, places, stays and useful travel information of Uttar Pradesh — city by city.';
+ try{localStorage.setItem('exploreup_language',isHindi?'hi':'en')}catch(e){}
 }
+function toggleLanguage(){const isHindi=document.documentElement.lang!=='hi';document.documentElement.lang=isHindi?'hi':'en';applyLanguage(isHindi)}
+(function(){let lang='en';try{lang=localStorage.getItem('exploreup_language')||'en'}catch(e){}document.documentElement.lang=lang;const run=()=>applyLanguage(lang==='hi');if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run()})();
 if(exploreStorage.get('exploreup_dark')==='1')document.body.classList.add('dark');
 window.addEventListener('error',e=>{console.warn('ExploreUP runtime warning:',e.error||e.message);});
 window.addEventListener('unhandledrejection',e=>{console.warn('ExploreUP async warning:',e.reason);e.preventDefault();});
