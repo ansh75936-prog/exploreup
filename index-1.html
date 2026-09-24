@@ -222,6 +222,37 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 /* ExploreUP Phase 2: district tabs + itinerary export */
 .district-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0 6px;position:sticky;top:0;z-index:8;background:var(--card)}.district-tab{border:1px solid var(--line);background:var(--bg);color:var(--text);padding:10px 14px;border-radius:12px;font-weight:850;cursor:pointer}.district-tab.active,.district-tab:hover{background:var(--navy);color:#fff;border-color:var(--navy)}.district-tab-hint{font-size:12px;color:var(--muted);margin-bottom:12px}.itinerary-export{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.itinerary-export button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 13px;border-radius:10px;font-weight:800;cursor:pointer}.itinerary-export button:hover{background:var(--navy);color:#fff}.phase2-print{display:none}@media print{body *{visibility:hidden!important}.phase2-print,.phase2-print *{visibility:visible!important}.phase2-print{display:block!important;position:absolute;left:0;top:0;width:100%;padding:25px;background:#fff;color:#111}.phase2-print h1{font-size:26px}.phase2-print .print-meta{margin-bottom:15px}}
 </style>
+<style id="exploreup-installed-mobile-fix">
+/* ExploreUP installed/PWA mobile layout hardening */
+@media (hover:none) and (pointer:coarse){
+  html,body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:hidden!important;-webkit-text-size-adjust:100%!important}
+  .nav{width:100%!important;max-width:100%!important;min-width:0!important;padding:0 14px!important;height:62px!important;overflow:hidden!important;gap:7px!important}
+  .logo{min-width:0!important;flex:1 1 auto!important;max-width:calc(100% - 180px)!important;font-size:19px!important}
+  .logo .tag{display:none!important}
+  .actions{min-width:0!important;flex:0 0 auto!important;gap:6px!important}
+  .actions .adminbtn,.actions .circle:last-child{display:none!important}
+  .actions .lang{min-width:58px!important;padding:7px 10px!important}
+  .mobile-menu-btn{display:grid!important;flex:0 0 40px!important;width:40px!important}
+  .hero{width:100%!important;max-width:100%!important;min-width:0!important;min-height:520px!important;padding:42px 14px 70px!important;overflow:hidden!important}
+  .hero>div:first-child{width:100%!important;max-width:100%!important;min-width:0!important}
+  .hero h1{font-size:42px!important;line-height:1.02!important;overflow-wrap:anywhere!important;word-break:normal!important}
+  .hero p{font-size:15px!important;max-width:100%!important}
+  .search{width:100%!important;max-width:none!important;min-width:0!important;flex-direction:column!important;gap:8px!important;padding:8px!important;border-radius:18px!important}
+  .search input{width:100%!important;min-width:0!important;height:46px!important}
+  .search button{width:100%!important;height:46px!important}
+  .home-trust,.hero-buttons{max-width:100%!important;overflow:hidden!important}
+  .hero-buttons{gap:10px!important}
+  .hero-btn{max-width:100%!important}
+  .wrap{width:calc(100% - 28px)!important;max-width:none!important;min-width:0!important;margin-left:auto!important;margin-right:auto!important}
+  .categories{width:100%!important;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding:16px!important;border-radius:24px!important}
+  .cities,.districts{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .city{height:180px!important;min-width:0!important}
+  .section,.sectionhead,.feature,.feature-row,.blogs,.gems,.calendar,.trails,.sustain{max-width:100%!important;min-width:0!important}
+  .footer{flex-direction:column!important}
+  .favbar{right:10px!important;left:10px!important;width:auto!important;bottom:70px!important}
+  .trip-sticky{left:0!important;right:0!important;width:100%!important}
+}
+</style>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
