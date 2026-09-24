@@ -1167,7 +1167,7 @@ async function getAryaLiveContext(){
  })();
  return aryaLivePromise;
 }
-async function askArya(){const input=document.getElementById('aryaInput');const q=input.value.trim();if(!q)return;aryaAdd(q,'user');input.value='';const lang=aryaDetectLanguage(q);const b=document.getElementById('aryaBody');const temp=document.createElement('div');temp.className='arya-msg bot';temp.textContent='Connecting to Arya AI…';b.appendChild(temp);b.scrollTop=b.scrollHeight;try{const answer=await aryaAnswer(q,lang);temp.remove();aryaAdd(answer,'bot')}catch(e){temp.remove();aryaAdd('Arya could not connect right now. Please try again in a moment.','bot')}}
+async function askArya(){const input=document.getElementById('aryaInput');const q=input.value.trim();if(!q)return;aryaAdd(q,'user');input.value='';const lang=aryaDetectLanguage(q);const b=document.getElementById('aryaBody');const temp=document.createElement('div');temp.className='arya-msg bot';temp.textContent='Checking ExploreUP information…';b.appendChild(temp);b.scrollTop=b.scrollHeight;try{const answer=await aryaAnswer(q,lang);temp.remove();aryaAdd(answer,'bot')}catch(e){temp.remove();aryaAdd('I could not load live ExploreUP data right now. Please try again in a moment.','bot')}}
 const aryaKnowledge={
 "Lucknow":{history:"Capital of Uttar Pradesh, shaped strongly by the Nawabs of Awadh and the events of 1857.",places:"Bara Imambara, Rumi Darwaza, Chhota Imambara, Lucknow Residency, Dilkusha Kothi, British Residency area, Hazratganj and Chowk.",food:"Awadhi biryani, galouti and kakori kebabs, nihari-kulcha, basket chaat, malai makkhan, sheermal and kulfi.",culture:"Known for Awadhi tehzeeb, Urdu literature, music, chikankari and zardozi crafts.",nature:"Gomti River, city parks and landscaped green spaces.",tips:"For heritage, combine Old Lucknow with Chowk; verify monument timings and current traffic before travel."},
 "Ayodhya":{history:"An ancient pilgrimage city on the Sarayu, traditionally associated with the Ramayana and the birthplace of Lord Rama.",places:"Ram Mandir, Hanuman Garhi, Kanak Bhawan, Sita ki Rasoi, Ram ki Paidi and Sarayu ghats.",food:"Chandrakala, peda, balushahi, kachori-sabzi, poori-sabzi, satvik thali, rabri, lassi and thandai.",culture:"Temple traditions, devotional music, Ramayana heritage and major religious festivals.",nature:"Sarayu riverfront and ghats provide the main outdoor experience.",tips:"Expect heavy crowds during major festivals; plan temple visits around current entry and security rules."},
@@ -1271,17 +1271,6 @@ async function aryaLocalizeAnswer(answer,lang){
  }
  return out.join('');
 }
-async function aryaOpenAIAnswer(q,lang){
- try{
-  const r=await fetch('/api/arya',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,city:currentExploreCity||'',language:lang})});
-  const data=await r.json().catch(()=>({}));
-  if(!r.ok||!data.answer) return null;
-  return String(data.answer).trim()||null;
- }catch(e){
-  console.warn('Arya OpenAI connection unavailable; using ExploreUP local knowledge.',e);
-  return null;
- }
-}
 async function aryaAnswer(q,lang){
  const raw=q.trim(), x=raw.toLowerCase();
  const L=aryaLangPack(lang);
@@ -1290,10 +1279,6 @@ async function aryaAnswer(q,lang){
  if(!websiteTerms || outOfScope){
   return aryaLocalizeAnswer(`${L.welcome}\n\nI can help only with information and features available inside ExploreUP — destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip planning, reviews, suggestions and website navigation.\n\nPlease ask me about an ExploreUP destination or section.`,lang);
  }
- // OpenAI is the primary Arya engine. If the API key/quota/network is unavailable,
- // keep the existing ExploreUP knowledge engine as a safe fallback.
- const aiAnswer=await aryaOpenAIAnswer(q,lang);
- if(aiAnswer) return aiAnswer;
  const plannerKnowledge=`Arya Trip Plan Maker knowledge:
 - Quick Plan uses bundled ExploreUP information and is designed to remain usable offline.
 - Smart Plan requires internet and checks available ExploreUP live data before adding live approved updates.
