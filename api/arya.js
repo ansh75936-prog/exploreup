@@ -1,7 +1,8 @@
 const ALLOWED_ORIGINS = new Set([
   'https://exploreup-five.vercel.app',
   'https://ansh75936-prog.github.io',
-  'https://exploreup-ansh75936-prog.vercel.app'
+  'https://exploreup-ansh75936-prog.vercel.app',
+  'https://exploreup-mvue223h8-ansh75936-prog.vercel.app'
 ]);
 
 function send(res, status, body) {
@@ -82,32 +83,55 @@ module.exports = async function handler(req, res) {
     let data = {};
 
     outer: for (const model of modelCandidates) {
+      // Bound every upstream request so Gemini outages cannot hold a Vercel
+      // function until the platform timeout.
       for (let attempt = 0; attempt < 2; attempt++) {
-        response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-            body: JSON.stringify(payload)
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 20000);
+        try {
+          response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+              body: JSON.stringify(payload),
+              signal: controller.signal
+            }
+          );
+        } catch (error) {
+          response = null;
+          data = {};
+          if (attempt === 0) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            continue;
           }
-        );
+          console.error('Arya Gemini fetch:', error?.name || 'Error', error?.message || 'unknown');
+          break;
+        } finally {
+          clearTimeout(timer);
+        }
 
         data = await response.json().catch(() => ({}));
         if (response.ok) break outer;
 
         const status = response.status;
-        const message = String(data?.error?.message || '').toLowerCase();
         const upstreamStatus = String(data?.error?.status || '').toUpperCase();
-        const dailyQuota = status === 429 && (message.includes('daily') || (message.includes('quota') && message.includes('limit')));
-        const temporary = (status === 503 || upstreamStatus === 'UNAVAILABLE' || (status === 429 && !dailyQuota));
+        // Retry only transient 503 errors. Never retry 429 quota/rate-limit
+        // responses because repeated retries make the outage worse.
+        const temporary = status === 503 || upstreamStatus === 'UNAVAILABLE';
         if (!temporary || attempt === 1) break;
 
         const retryAfter = Number(response.headers.get('retry-after'));
         const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
-          ? Math.min(retryAfter * 1000, 6000)
-          : status === 503 ? 700 : 1000;
+          ? Math.min(retryAfter * 1000, 2500)
+          : 700;
         await new Promise(resolve => setTimeout(resolve, waitMs));
       }
+      if (response?.ok) break;
+    }
+
+    if (!response) {
+      return send(res, 504, { error: 'gemini_timeout', detail: 'Gemini did not respond in time. Please try again.' });
     }
 
     if (!response.ok) {
@@ -120,7 +144,11 @@ module.exports = async function handler(req, res) {
       else if (response.status >= 500) code = 'gemini_service_error';
       console.error('Arya Gemini upstream:', response.status, code, upstreamCode || 'no_code');
       const detail = String(data?.error?.message || '').replace(/\s+/g, ' ').trim().slice(0, 300);
-      return send(res, response.status >= 500 ? 502 : response.status, { error: code, detail });
+      const clientStatus = response.status === 429 ? 503 : (response.status >= 500 ? 502 : response.status);
+      const safeDetail = response.status === 429
+        ? 'Gemini is temporarily rate-limited or out of quota. Please try again later.'
+        : detail;
+      return send(res, clientStatus, { error: code, detail: safeDetail });
     }
 
     const text = extractText(data);
