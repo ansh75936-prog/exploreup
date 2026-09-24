@@ -62,7 +62,11 @@ module.exports = async function handler(req, res) {
     context
   ].filter(Boolean).join('\n');
 
-  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+  const modelCandidates = [
+    process.env.GEMINI_MODEL,
+    'gemini-3.8-flash',
+    'gemini-3.5-flash-lite'
+  ].filter(Boolean);
   const payload = {
     system_instruction: {
       parts: [{ text: system }]
@@ -78,10 +82,13 @@ module.exports = async function handler(req, res) {
   try {
     let response;
     let data = {};
+    let model = modelCandidates[0];
 
-    for (let attempt = 0; attempt < 2; attempt++) {
-      response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+    outer: for (const candidateModel of modelCandidates) {
+      model = candidateModel;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
         {
           method: 'POST',
           headers: {
@@ -92,19 +99,20 @@ module.exports = async function handler(req, res) {
         }
       );
 
-      data = await response.json().catch(() => ({}));
-      if (response.ok) break;
+        data = await response.json().catch(() => ({}));
+        if (response.ok) break outer;
 
-      const status = response.status;
-      const upstreamStatus = String(data?.error?.status || '').toUpperCase();
-      const temporary = status === 429 || status === 503 || upstreamStatus === 'UNAVAILABLE' || upstreamStatus === 'RESOURCE_EXHAUSTED';
-      if (!temporary || attempt === 1) break;
+        const status = response.status;
+        const upstreamStatus = String(data?.error?.status || '').toUpperCase();
+        const temporary = status === 429 || status === 503 || upstreamStatus === 'UNAVAILABLE' || upstreamStatus === 'RESOURCE_EXHAUSTED';
+        if (!temporary || attempt === 2) break;
 
-      const retryAfter = Number(response.headers.get('retry-after'));
-      const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
-        ? Math.min(retryAfter * 1000, 8000)
-        : 1200 * (attempt + 1);
-      await new Promise(resolve => setTimeout(resolve, waitMs));
+        const retryAfter = Number(response.headers.get('retry-after'));
+        const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+          ? Math.min(retryAfter * 1000, 10000)
+          : 1200 * (attempt + 1);
+        await new Promise(resolve => setTimeout(resolve, waitMs));
+      }
     }
 
     if (!response.ok) {
