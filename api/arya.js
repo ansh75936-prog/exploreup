@@ -72,11 +72,7 @@ module.exports = async function handler(req, res) {
         role: 'user',
         parts: [{ text: query }]
       }
-    ],
-    generationConfig: {
-      maxOutputTokens: 700,
-      temperature: 0.7
-    }
+    ]
   };
 
   try {
@@ -120,7 +116,7 @@ module.exports = async function handler(req, res) {
       else if (response.status === 429) code = 'gemini_rate_or_quota';
       else if (response.status >= 500) code = 'gemini_service_error';
       console.error('Arya Gemini upstream:', response.status, code, upstreamCode || 'no_code');
-      return send(res, response.status >= 500 ? 502 : response.status, { error: code });
+      const detail = String(data?.error?.message || '').replace(/\s+/g, ' ').trim().slice(0, 300);\n      return send(res, response.status >= 500 ? 502 : response.status, { error: code, detail });
     }
 
     const text = extractText(data);
