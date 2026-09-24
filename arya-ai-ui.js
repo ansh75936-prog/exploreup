@@ -9,7 +9,7 @@
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
   AI.uiBridgeVersion='v20-gemini-direct-v2';
   AI.freeMode=false;
-  const API='/api/arya';
+  const API='https://exploreup-five.vercel.app/api/arya';
 
   function input(){return document.getElementById('aryaInput');}
   function body(){return document.getElementById('aryaBody');}
@@ -30,11 +30,17 @@
   }
 
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260924-gemini-1',{
+    const controller=new AbortController();
+    const timeout=setTimeout(function(){controller.abort();},25000);
+    let response;
+    try {
+      response=await fetch(API+'?v=20260924-gemini-2',{
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=UTF-8'},
-      body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
-    });
+      body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)}),
+        signal:controller.signal
+      });
+    } finally { clearTimeout(timeout); }
     const data=await response.json().catch(function(){return {};});
     if(!response.ok||!data.answer)throw new Error(String(data.error||('http_'+response.status)));
     return String(data.answer).trim();
