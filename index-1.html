@@ -253,7 +253,37 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
   .trip-sticky{left:0!important;right:0!important;width:100%!important}
 }
 </style>
-</head>
+<style id="exploreup-mobile-overlay-fix">
+/* Mobile/PWA layout fix: keep floating controls from covering the open assistant */
+@media (max-width: 620px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body.arya-open{overflow:hidden}
+  body.arya-open .arya-panel{
+    left:10px;
+    right:10px;
+    bottom:10px;
+    width:auto;
+    max-width:none;
+    height:min(700px,calc(100dvh - 20px));
+    max-height:calc(100dvh - 20px);
+    border-radius:18px;
+  }
+  body.arya-open .arya-fab,
+  body.arya-open .favbar,
+  body.arya-open .trip-sticky,
+  body.arya-open #backToTop,
+  body.arya-open #exploreupBottomShare{display:none!important}
+  body.arya-open .arya-body{
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.arya-open .arya-input{
+    flex:0 0 auto;
+    padding-bottom:max(12px,env(safe-area-inset-bottom));
+  }
+}
+</style></head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
@@ -1113,7 +1143,7 @@ const districtCatalogReady=Promise.resolve();
 handleCityUrl();
 
 function heroAryaQuick(q){toggleArya();setTimeout(()=>{const i=document.getElementById('aryaInput');if(i){i.value=q;askArya()}},80)}
-function toggleArya(){const p=document.getElementById('aryaPanel');p.style.display=p.style.display==='block'?'none':'block';if(p.style.display==='block')setTimeout(()=>document.getElementById('aryaInput')?.focus(),50)}
+function toggleArya(){const p=document.getElementById('aryaPanel');const open=p.style.display==='block';p.style.display=open?'none':'block';document.body.classList.toggle('arya-open',!open);if(!open)setTimeout(()=>document.getElementById('aryaInput')?.focus(),50)}
 function aryaAdd(text,type='bot'){const b=document.getElementById('aryaBody');const d=document.createElement('div');d.className='arya-msg '+type;d.textContent=text;b.appendChild(d);b.scrollTop=b.scrollHeight}
 function aryaQuick(q){document.getElementById('aryaInput').value=q;askArya()}
 let aryaLiveCache=null, aryaLiveCacheAt=0, aryaLivePromise=null;
