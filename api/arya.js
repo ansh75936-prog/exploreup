@@ -1,6 +1,8 @@
 const ALLOWED_ORIGINS = new Set([
   'https://exploreup-five.vercel.app',
-  'https://ansh75936-prog.github.io'
+  'https://ansh75936-prog.github.io',
+  'https://exploreup-ansh75936-prog.vercel.app',
+  'https://exploreup-five.vercel.app'
 ]);
 
 function send(res, status, body) {
