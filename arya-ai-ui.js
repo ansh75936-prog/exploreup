@@ -33,7 +33,9 @@
 
   async function askDirect(q,city){
     const controller=new AbortController();
-    const timeout=setTimeout(function(){controller.abort();},25000);
+    // Gemini can legitimately take longer when the backend retries a transient
+    // upstream response. Keep the client timeout above the backend retry window.
+    const timeout=setTimeout(function(){controller.abort();},60000);
     let response;
     try {
       response=await fetch(API+'?v=20260924-gemini-2',{
@@ -78,7 +80,7 @@
       }else if(msg==='gemini_service_error'){
         friendly='Arya is temporarily unavailable. Please try again in a moment.';
       }else if(msg==='AbortError'){
-        friendly='Arya took too long to respond. Please try again.';
+        friendly='Arya took longer than expected to respond. Please try again.';
       }
       add(friendly, 'bot');
     }finally{
