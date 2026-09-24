@@ -176,7 +176,7 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 .mobile-menu-icon{width:50px;height:50px;border-radius:15px;background:#edf4fb;display:grid;place-items:center;text-align:center;font-size:23px;flex:0 0 50px}
 .mobile-menu-copy{min-width:0;flex:1}.mobile-menu-copy b{display:block;font-size:19px}.mobile-menu-copy small{display:block;color:#6b7a8d;font-size:14px;margin-top:3px;line-height:1.35}
 .mobile-menu-badge{font-size:15px;padding:7px 13px;border-radius:999px;background:#fff3d7;border:1px solid #f3dda0;color:#a5740a;white-space:nowrap;font-weight:850}
-.mobile-menu-toggle{width:74px;height:43px;border-radius:999px;background:#cbd5e1;position:relative;flex:0 0 74px}.mobile-menu-toggle:after{content:"";position:absolute;width:34px;height:34px;border-radius:50%;left:4px;top:4px;background:#fff;box-shadow:0 2px 5px #0002}
+.mobile-menu-toggle{width:74px;height:43px;border-radius:999px;background:#cbd5e1;position:relative;flex:0 0 74px;transition:background .2s ease}.mobile-menu-toggle:after{content:"";position:absolute;width:34px;height:34px;border-radius:50%;left:4px;top:4px;background:#fff;box-shadow:0 2px 5px #0002;transition:left .2s ease,right .2s ease}.mobile-menu-toggle.is-on{background:#10233f}.mobile-menu-toggle.is-on:after{left:auto;right:4px}
 .mobile-menu-footer{margin:10px -16px 0;padding:20px 16px 22px;border-top:1px solid #dfe7ef;background:#f8fafc;color:#62738a;font-size:16px;line-height:1.5}.mobile-menu-footer b{color:#60708a}.mobile-menu-footer span{display:block;color:#6d7d90;font-size:14px}
 @media(max-width:620px){.mobile-menu-btn{display:grid!important}.nav{position:relative!important}.mobile-menu-btn{order:-1;margin-right:4px}.navlinks{display:none!important}}
 @media(min-width:621px){.mobile-menu,.mobile-menu-backdrop{display:none!important}}
@@ -1462,9 +1462,17 @@ function makeSmartRecommendations(){const dest=document.getElementById('planDest
 function makeLocalPlan(destination,days,style){const c=cities.find(v=>v.name.toLowerCase()===destination.toLowerCase())||cities.find(v=>v.name.toLowerCase().includes(destination.toLowerCase())),k=(typeof aryaKnowledge!=='undefined'&&c)?(aryaKnowledge[c.name]||{}):{},places=(k.places||c?.places||'Explore the main local attractions').split(',').map(x=>x.trim()).filter(Boolean),food=(k.food||c?.food||'Try local cuisine').split(',').map(x=>x.trim()).filter(Boolean),prefs=planPrefs(),out=[];for(let i=0;i<days;i++){const p1=places[(i*2)%Math.max(1,places.length)]||'Local sightseeing',p2=places[(i*2+1)%Math.max(1,places.length)]||'Local market',f=food[i%Math.max(1,food.length)]||'Local food stop';let evening=prefs.includes('shopping')?'Evening: Explore a local market or shopping area.':prefs.includes('nature')?'Evening: Relax at a park, riverfront or suitable outdoor area.':'Evening: Explore a nearby market, cultural stop or relaxed local area.';out.push({day:i+1,title:'Day '+(i+1),items:['Morning: '+p1,'Afternoon: '+p2,'Food stop: '+f,evening]})}return out}
 async function makeAryaPlan(){const dest=document.getElementById('planDestination')?.value.trim(),days=Math.max(1,Math.min(7,Number(document.getElementById('planDays')?.value||3))),style=document.getElementById('planStyle')?.value||'balanced',people=Math.max(1,Math.min(20,Number(document.getElementById('planPeople')?.value||2))),budget=Number(document.getElementById('planBudget')?.value||0),smart=document.getElementById('planSmart')?.checked,status=document.getElementById('planStatus'),result=document.getElementById('planResult');if(!dest){if(status)status.textContent='Please enter a destination or district.';return}if(result)result.innerHTML='';if(smart){if(status)status.textContent='Checking internet connection and ExploreUP live data…';const ok=await checkExploreUPOnline();if(!ok){if(status)status.textContent='🌐 Smart Plan ke liye internet connection + live ExploreUP data zaroori hai. Internet on karke dobara try karo.';return}if(status)status.textContent='🌐 Online Smart Plan — only available live data is used.'}else if(status)status.textContent='📴 Offline Quick Plan — bundled ExploreUP data se plan ban raha hai.';const live=smart&&typeof getAryaLiveContext==='function'?await getAryaLiveContext():{districts:[],suggestions:[],reviews:[]},plan=makeLocalPlan(dest,days,style),est=calculatePlanEstimate(days,people,document.getElementById('planHotel')?.value||'standard',document.getElementById('planTransport')?.value||'mixed',style),budgetText=budget?'₹'+budget.toLocaleString('en-IN'):'not set',money='₹'+est.total.toLocaleString('en-IN');if(smart&&live.suggestions?.length){const needle=dest.toLowerCase().replace(/\s+/g,'-'),msgs=live.suggestions.filter(x=>(x.district_slug||'').includes(needle)).slice(0,2).map(x=>x.message);if(msgs.length)plan[0].items.push('Verified ExploreUP update: '+msgs.join(' | '))}const header='<div class=\"planner-summary\"><b>🧭 '+escapeHtml(dest)+' • '+days+' days • '+people+' people</b><br>Estimated total: <b>'+money+'</b> <small>(estimate only; budget entered: '+budgetText+')</small><br><small>Style: '+escapeHtml(style)+' • Transport: '+escapeHtml(document.getElementById('planTransport')?.value||'mixed')+' • Stay: '+escapeHtml(document.getElementById('planHotel')?.value||'standard')+'</small></div>',daysHtml=plan.map(d=>'<article class=\"plan-day\"><h3>'+escapeHtml(d.title)+'</h3><ul>'+d.items.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul></article>').join('');if(result)result.innerHTML=header+daysHtml}
 
+function updateMobileDarkStatus(isDark){
+ const toggle=document.querySelector('.mobile-menu-toggle');
+ const text=document.getElementById('mobileDarkText');
+ if(toggle)toggle.classList.toggle('is-on',isDark);
+ if(text)text.textContent=isDark?'Dark Theme Active':'Light Theme Active';
+}
 function toggleDark(){
  document.body.classList.toggle('dark');
- exploreStorage.set('exploreup_dark',document.body.classList.contains('dark')?'1':'0');
+ const isDark=document.body.classList.contains('dark');
+ exploreStorage.set('exploreup_dark',isDark?'1':'0');
+ updateMobileDarkStatus(isDark);
 }
 const exploreLanguageText={
  nav:{'Home':'होम','Cities':'शहर','Places':'स्थान','Food':'खाना','Travel':'यात्रा','Blogs':'ब्लॉग','About':'हमारे बारे में'},
@@ -1508,6 +1516,7 @@ function toggleLanguage(){
 }
 (function(){let lang='en';try{lang=localStorage.getItem('exploreup_language')||'en'}catch(e){}document.documentElement.lang=lang;const run=()=>{const isHindi=lang==='hi';applyLanguage(isHindi);updateMobileLanguageStatus(isHindi)};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run()})();
 if(exploreStorage.get('exploreup_dark')==='1')document.body.classList.add('dark');
+updateMobileDarkStatus(document.body.classList.contains('dark'));
 window.addEventListener('error',e=>{console.warn('ExploreUP runtime warning:',e.error||e.message);});
 window.addEventListener('unhandledrejection',e=>{console.warn('ExploreUP async warning:',e.reason);e.preventDefault();});
 // Keep the page eligible for browser back/forward cache; avoid unload handlers.
