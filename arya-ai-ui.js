@@ -7,9 +7,9 @@
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-gemini-direct-v1';
+  AI.uiBridgeVersion='v20-gemini-direct-v2';
   AI.freeMode=false;
-  const API='https://exploreup-five.vercel.app/api/arya';
+  const API='/api/arya';
 
   function input(){return document.getElementById('aryaInput');}
   function body(){return document.getElementById('aryaBody');}
@@ -67,6 +67,7 @@
   window.askArya=send;
   AI.handleSend=send;
   AI.askOpenAI=askDirect;
+  AI.askInternet=askDirect;
   AI.askInternet=askDirect;
 
   function wire(){
