@@ -64,10 +64,12 @@ module.exports = async function handler(req, res) {
     context
   ].filter(Boolean).join('\n');
 
+  // Prefer the lightweight model for Arya's short travel answers to reduce
+  // latency and token consumption. An explicit Vercel GEMINI_MODEL still wins.
   const modelCandidates = [
     process.env.GEMINI_MODEL,
-    'gemini-3.8-flash',
-    'gemini-3.5-flash-lite'
+    'gemini-3.5-flash-lite',
+    'gemini-3.8-flash'
   ].filter(Boolean);
   const payload = {
     system_instruction: {
@@ -78,7 +80,10 @@ module.exports = async function handler(req, res) {
         role: 'user',
         parts: [{ text: query }]
       }
-    ]
+    ],
+    generationConfig: {
+      maxOutputTokens: 700
+    }
   };
 
   try {
@@ -106,13 +111,24 @@ module.exports = async function handler(req, res) {
 
         const status = response.status;
         const upstreamStatus = String(data?.error?.status || '').toUpperCase();
-        const temporary = status === 429 || status === 503 || upstreamStatus === 'UNAVAILABLE' || upstreamStatus === 'RESOURCE_EXHAUSTED';
+        const upstreamMessage = String(data?.error?.message || '').toLowerCase();
+
+        // Do not hammer Gemini when a daily quota is exhausted. Retry only
+        // transient service failures or short-lived per-minute rate limits.
+        const dailyQuota = status === 429 && (
+          upstreamMessage.includes('daily') ||
+          upstreamMessage.includes('quota') && upstreamMessage.includes('limit')
+        );
+        const shortRateLimit = status === 429 && !dailyQuota;
+        const temporaryService = status === 503 || upstreamStatus === 'UNAVAILABLE';
+        const temporary = shortRateLimit || temporaryService;
         if (!temporary || attempt === 2) break;
 
         const retryAfter = Number(response.headers.get('retry-after'));
         const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
-          ? Math.min(retryAfter * 1000, 10000)
-          : 1200 * (attempt + 1);
+          ? Math.min(retryAfter * 1000, 6000)
+          : temporaryService ? 1500 * (attempt + 1) : 2500;
+
         await new Promise(resolve => setTimeout(resolve, waitMs));
       }
     }
