@@ -1695,4 +1695,19 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
  const mo=new MutationObserver(()=>{addExport();const city=document.getElementById('modalTitle')?.textContent;if(city&&city!=='City')setMapLinks(city)});mo.observe(document.body,{subtree:true,childList:true});
 })();
 </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(reg => {
+          reg.update();
+        }).catch(() => {});
+      });
+      let exploreUpReloading = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (exploreUpReloading) return;
+        exploreUpReloading = true;
+        window.location.reload();
+      });
+    }
+  </script>
 </body></html>
