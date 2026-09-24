@@ -7,7 +7,7 @@
 (function(){
   'use strict';
   const AI=window.ExploreUPAryaAI=window.ExploreUPAryaAI||{};
-  AI.uiBridgeVersion='v20-openai-direct-v8';
+  AI.uiBridgeVersion='v20-gemini-direct-v1';
   AI.freeMode=false;
   const API='https://exploreup-five.vercel.app/api/arya';
 
@@ -30,7 +30,7 @@
   }
 
   async function askDirect(q,city){
-    const response=await fetch(API+'?v=20260916-8',{
+    const response=await fetch(API+'?v=20260924-gemini-1',{
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=UTF-8'},
       body:JSON.stringify({query:String(q||'').trim().slice(0,4000),city:String(city||'').trim().slice(0,120)})
@@ -57,21 +57,9 @@
     }catch(e){
       if(pending?.parentNode)pending.parentNode.removeChild(pending);
       AI.internetConnected=false;
-      console.warn('ExploreUP Arya OpenAI request failed:',e);
-      try{
-        if(typeof window.aryaAnswer==='function'){
-          const lang=(typeof window.aryaDetectLanguage==='function')?window.aryaDetectLanguage(q):'en';
-          const localAnswer=await Promise.resolve(window.aryaAnswer(q,lang));
-          if(localAnswer){
-            add(String(localAnswer),'bot');
-            AI.freeMode=true;
-            return false;
-          }
-        }
-      }catch(localError){
-        console.warn('ExploreUP Arya local fallback failed:',localError);
-      }
-      add('Arya is temporarily offline. Please try again in a moment.','bot');
+      console.warn('ExploreUP Arya Gemini request failed:',e);
+      const msg=String(e?.message||'gemini_connection_failed');
+      add('Arya Gemini connection issue: '+msg+'\nPlease try again.', 'bot');
     }
     return false;
   }
