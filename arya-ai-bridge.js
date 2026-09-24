@@ -9,7 +9,7 @@
   AI.freeMode=false;
   AI.internetConnected=false;
   AI.uiBridgeVersion='openai-client-only-v3';
-  const API='https://exploreup-five.vercel.app/api/arya';
+  const API='/api/arya';
   function currentDistrict(){
     try{return String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||'').trim();}
     catch(e){return '';}
