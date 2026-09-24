@@ -1494,8 +1494,19 @@ function applyLanguage(isHindi){
  const heroP=document.querySelector('.hero > div > p');if(heroP)heroP.textContent=isHindi?'उत्तर प्रदेश की संस्कृति, विरासत, भोजन, स्थानों, ठहरने की जगहों और उपयोगी यात्रा जानकारी को शहर-दर-शहर जानें।':'Discover the culture, heritage, food, places, stays and useful travel information of Uttar Pradesh — city by city.';
  try{localStorage.setItem('exploreup_language',isHindi?'hi':'en')}catch(e){}
 }
-function toggleLanguage(){const isHindi=document.documentElement.lang!=='hi';document.documentElement.lang=isHindi?'hi':'en';applyLanguage(isHindi)}
-(function(){let lang='en';try{lang=localStorage.getItem('exploreup_language')||'en'}catch(e){}document.documentElement.lang=lang;const run=()=>applyLanguage(lang==='hi');if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run()})();
+function updateMobileLanguageStatus(isHindi){
+  const text=document.getElementById('mobileLanguageText');
+  const badge=document.getElementById('mobileLanguageBadge');
+  if(text)text.textContent=isHindi?'Active: हिंदी • Tap to switch':'Active: English • Tap to switch';
+  if(badge)badge.textContent=isHindi?'हिंदी (Active)':'English (Active)';
+}
+function toggleLanguage(){
+  const isHindi=document.documentElement.lang!=='hi';
+  document.documentElement.lang=isHindi?'hi':'en';
+  applyLanguage(isHindi);
+  updateMobileLanguageStatus(isHindi);
+}
+(function(){let lang='en';try{lang=localStorage.getItem('exploreup_language')||'en'}catch(e){}document.documentElement.lang=lang;const run=()=>{const isHindi=lang==='hi';applyLanguage(isHindi);updateMobileLanguageStatus(isHindi)};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run()})();
 if(exploreStorage.get('exploreup_dark')==='1')document.body.classList.add('dark');
 window.addEventListener('error',e=>{console.warn('ExploreUP runtime warning:',e.error||e.message);});
 window.addEventListener('unhandledrejection',e=>{console.warn('ExploreUP async warning:',e.reason);e.preventDefault();});
