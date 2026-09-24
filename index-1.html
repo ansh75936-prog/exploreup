@@ -1685,9 +1685,9 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   const btn=document.createElement('button');
   btn.id='mobileMenuBtn';btn.className='mobile-menu-btn';btn.type='button';
   btn.setAttribute('aria-label','Open menu');btn.setAttribute('title','Menu');btn.setAttribute('aria-expanded','false');btn.textContent='⋮';
-  const actions=nav.querySelector('.actions');
-  if(actions)actions.prepend(btn);
-  else nav.appendChild(btn);
+  const logo=nav.querySelector('.logo');
+  if(logo)nav.insertBefore(btn,logo);
+  else nav.prepend(btn);
   const menu=document.createElement('nav');
   menu.id='mobileMenu';menu.className='mobile-menu';menu.setAttribute('aria-label','Mobile navigation');
   const links=[...nav.querySelectorAll('.navlinks a')];
