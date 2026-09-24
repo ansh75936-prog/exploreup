@@ -309,76 +309,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
     padding-bottom:max(12px,env(safe-area-inset-bottom));
   }
 }
-</style><style id="arya-floating-position-fix">
-/* Keep Arya floating above the page instead of flowing to the document bottom. */
-.arya-fab{
-  position:fixed!important;
-  right:22px!important;
-  bottom:22px!important;
-  left:auto!important;
-  top:auto!important;
-  z-index:10020!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:auto;
-  min-height:48px;
-  padding:13px 18px;
-  border:0;
-  border-radius:999px;
-  background:var(--gold);
-  color:#071b35;
-  font:800 14px/1 system-ui,-apple-system,Segoe UI,sans-serif;
-  cursor:pointer;
-  box-shadow:0 12px 30px rgba(0,27,59,.28);
-}
-.arya-fab:hover{transform:translateY(-2px)}
-.arya-panel{
-  position:fixed!important;
-  right:22px!important;
-  bottom:84px!important;
-  left:auto!important;
-  top:auto!important;
-  width:min(400px,calc(100vw - 32px))!important;
-  height:min(620px,calc(100vh - 110px))!important;
-  max-height:calc(100vh - 110px)!important;
-  z-index:10019!important;
-  display:none;
-  flex-direction:column;
-  overflow:hidden;
-  background:var(--card);
-  color:var(--text);
-  border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:0 22px 70px rgba(0,27,59,.28);
-}
-.arya-panel[style*="display: block"]{display:flex!important}
-.arya-head{flex:0 0 auto}
-.arya-body{flex:1 1 auto;min-height:0;overflow-y:auto}
-.arya-input{flex:0 0 auto}
-@media(max-width:620px){
-  .arya-fab{
-    right:14px!important;
-    bottom:78px!important;
-  }
-  .arya-panel{
-    left:10px!important;
-    right:10px!important;
-    bottom:76px!important;
-    width:auto!important;
-    height:min(680px,calc(100dvh - 92px))!important;
-    max-height:calc(100dvh - 92px)!important;
-  }
-  body.arya-open .arya-panel{
-    left:10px!important;
-    right:10px!important;
-    bottom:10px!important;
-    height:min(700px,calc(100dvh - 20px))!important;
-    max-height:calc(100dvh - 20px)!important;
-  }
-}
-</style>
-</head>
+</style></head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
