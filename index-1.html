@@ -1684,37 +1684,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 })();
 </script>
 
-<script>
-/* ExploreUP mobile navigation v1 */
-(function(){
-  const nav=document.querySelector('.nav');
-  if(!nav||document.getElementById('mobileMenuBtn'))return;
-  const btn=document.createElement('button');
-  btn.id='mobileMenuBtn';btn.className='mobile-menu-btn';btn.type='button';
-  btn.setAttribute('aria-label','Open menu');btn.setAttribute('title','Menu');btn.setAttribute('aria-expanded','false');btn.textContent='⋮';
-  const logo=nav.querySelector('.logo');
-  if(logo)nav.insertBefore(btn,logo);
-  else nav.prepend(btn);
-  const menu=document.createElement('nav');
-  menu.id='mobileMenu';menu.className='mobile-menu';menu.setAttribute('aria-label','Mobile navigation');
-  const links=[...nav.querySelectorAll('.navlinks a')];
-  links.forEach(a=>{const x=a.cloneNode(true);x.addEventListener('click',()=>closeMenu());menu.appendChild(x)});
-  document.body.appendChild(menu);
-  function closeMenu(){menu.classList.remove('show');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Open menu');btn.textContent='⋮';btn.style.position='';btn.style.top='';btn.style.right='';btn.style.left='';btn.style.zIndex=''}
-  btn.addEventListener('click',()=>{
-    const open=menu.classList.toggle('show');
-    btn.setAttribute('aria-expanded',String(open));
-    btn.setAttribute('aria-label',open?'Close menu':'Open menu');
-    btn.textContent=open?'×':'⋮';
-    if(open){
-      btn.style.position='fixed';btn.style.top='11px';btn.style.right='14px';btn.style.left='auto';btn.style.zIndex='10001';
-    }else{
-      btn.style.position='';btn.style.top='';btn.style.right='';btn.style.left='';btn.style.zIndex='';
-    }
-  });
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
-})();
-</script>
+
 
 <script>
 /* ExploreUP Phase 1: live district search, region filters and SVG district map */
@@ -1843,15 +1813,12 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   </script>
 
 <script>
-<style>
-.mobile-menu-back{width:100%;display:flex;align-items:center;gap:8px;border:0;border-bottom:1px solid rgba(255,255,255,.12);background:transparent;color:#dbe9f8;padding:12px 16px;font:inherit;font-weight:800;text-align:left;cursor:pointer}
-.mobile-menu-back:hover{background:rgba(255,255,255,.06);color:#fff}
-</style>
-/* ExploreUP mobile navigation v3 — functional drawer */
+/* ExploreUP mobile navigation v5 — functional screenshot-style drawer */
 (function(){
   function initMobileMenu(){
     const nav=document.querySelector('.nav');
     if(!nav || document.getElementById('mobileMenuBtn')) return;
+
     const btn=document.createElement('button');
     btn.id='mobileMenuBtn';
     btn.className='mobile-menu-btn';
@@ -1860,6 +1827,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     btn.setAttribute('title','Menu');
     btn.setAttribute('aria-expanded','false');
     btn.textContent='⋮';
+
     const logo=nav.querySelector('.logo');
     if(logo) nav.insertBefore(btn,logo); else nav.prepend(btn);
 
@@ -1876,19 +1844,28 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
       <div class="mobile-menu-section">
         <button class="mobile-menu-back" id="mobileBackItem" type="button" aria-label="Go back">← Back</button>
         <div class="mobile-menu-welcome"><div class="mobile-menu-welcome-icon">🎒</div><div><b>Welcome, Explorer!</b><small>Sign in to plan &amp; save your UP journeys</small></div></div>
+
         <div class="mobile-menu-heading">ACCOUNT</div>
-        <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">🔑</span><span class="mobile-menu-copy"><b>Log In</b><small>Access your account &amp; saved trips</small></span><span class="mobile-menu-badge">Sign In</span></button>
-        <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">✨</span><span class="mobile-menu-copy"><b>Create Account</b><small>Join ExploreUP for free</small></span><span class="mobile-menu-badge">Free</span></button>
+        <button class="mobile-menu-item" id="mobileLoginItem" type="button"><span class="mobile-menu-icon">🔑</span><span class="mobile-menu-copy"><b>Log In</b><small>Access your account &amp; saved trips</small></span><span class="mobile-menu-badge">Sign In</span></button>
+        <button class="mobile-menu-item" id="mobileCreateItem" type="button"><span class="mobile-menu-icon">✨</span><span class="mobile-menu-copy"><b>Create Account</b><small>Join ExploreUP for free</small></span><span class="mobile-menu-badge">Free</span></button>
+
         <div class="mobile-menu-heading">PREFERENCES</div>
         <button class="mobile-menu-item" id="mobileLanguageItem" type="button"><span class="mobile-menu-icon">🌐</span><span class="mobile-menu-copy"><b>Language / भाषा</b><small id="mobileLanguageText">Active: English • Tap to switch</small></span><span class="mobile-menu-badge" id="mobileLanguageBadge">English (Active)</span></button>
         <button class="mobile-menu-item" id="mobileDarkItem" type="button"><span class="mobile-menu-icon">☾</span><span class="mobile-menu-copy"><b>Dark Mode</b><small id="mobileDarkText">Light Theme Active</small></span><span class="mobile-menu-toggle" aria-label="Toggle dark mode"></span></button>
+
         <div class="mobile-menu-heading">EXPLORE &amp; SUPPORT</div>
         <button class="mobile-menu-item" type="button" id="mobileAdminItem"><span class="mobile-menu-icon">🛡️</span><span class="mobile-menu-copy"><b>Admin Panel</b><small>Destination controls &amp; portal admin</small></span></button>
         <a class="mobile-menu-item" href="tel:112"><span class="mobile-menu-icon">🚨</span><span class="mobile-menu-copy"><b>Helplines &amp; Emergency</b><small>Police 112 • Ambulance 108 • Tourist 1363</small></span><span class="mobile-menu-badge">24×7</span></a>
         <button class="mobile-menu-item" type="button" id="mobileAboutItem"><span class="mobile-menu-icon">⭐</span><span class="mobile-menu-copy"><b>About ExploreUP</b><small>Why ExploreUP, mission &amp; city directory</small></span></button>
       </div>
-      <div class="mobile-menu-footer"><b>ExploreUP</b> • Uttar Pradesh<br><span>Har Shehar Ki Kahani • Explore • Discover • Experience</span></div>`;
+      <div class="mobile-menu-footer"><b>ExploreUP</b> • Uttar Pradesh<br><span>v2.4 • Har Shehar Ki Kahani • Explore • Discover • Experience</span></div>`;
+
     document.body.appendChild(menu);
+
+    function closeMenu(){
+      menu.classList.remove('show');
+      sync();
+    }
 
     function sync(){
       const open=menu.classList.contains('show');
@@ -1904,23 +1881,63 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
       backdrop.classList.toggle('show',open);
       document.body.style.overflow=open?'hidden':'';
     }
-    function closeMenu(){menu.classList.remove('show');sync();}
-    btn.addEventListener('click',function(){menu.classList.toggle('show');sync();});
+
+    btn.addEventListener('click',function(){
+      menu.classList.toggle('show');
+      sync();
+    });
+
     backdrop.addEventListener('click',closeMenu);
-    menu.addEventListener('click',function(e){if(e.target.closest('a'))closeMenu();});
+
+    menu.addEventListener('click',function(e){
+      if(e.target.closest('a')) closeMenu();
+    });
+
     document.getElementById('mobileBackItem')?.addEventListener('click',function(){
       closeMenu();
       if(window.history.length>1) window.history.back();
       else window.location.href='/';
     });
-    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){if(typeof toggleLanguage==='function')toggleLanguage();});
-    document.getElementById('mobileDarkItem')?.addEventListener('click',function(){if(typeof toggleDark==='function')toggleDark();});
-    document.getElementById('mobileAdminItem')?.addEventListener('click',function(){if(typeof openAdminPanel==='function')openAdminPanel();closeMenu();});
-    document.getElementById('mobileAboutItem')?.addEventListener('click',function(){closeMenu();document.getElementById('about')?.scrollIntoView({behavior:'smooth'});});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});
+
+    document.getElementById('mobileLoginItem')?.addEventListener('click',function(){
+      closeMenu();
+      const target=document.querySelector('[id*="login" i], [class*="login" i]');
+      if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
+      else window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    document.getElementById('mobileCreateItem')?.addEventListener('click',function(){
+      closeMenu();
+      const target=document.querySelector('[id*="account" i], [class*="account" i]');
+      if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
+      else window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){
+      if(typeof toggleLanguage==='function') toggleLanguage();
+    });
+
+    document.getElementById('mobileDarkItem')?.addEventListener('click',function(){
+      if(typeof toggleDark==='function') toggleDark();
+    });
+
+    document.getElementById('mobileAdminItem')?.addEventListener('click',function(){
+      if(typeof openAdminPanel==='function') openAdminPanel();
+      closeMenu();
+    });
+
+    document.getElementById('mobileAboutItem')?.addEventListener('click',function(){
+      closeMenu();
+      document.getElementById('about')?.scrollIntoView({behavior:'smooth'});
+    });
+
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape') closeMenu();
+    });
   }
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMobileMenu,{once:true});
   else initMobileMenu();
 })();
-</script>
+</script></script>
 </body></html>
