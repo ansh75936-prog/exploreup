@@ -56,9 +56,22 @@
       AI.freeMode=false;
     }catch(e){
       if(pending?.parentNode)pending.parentNode.removeChild(pending);
-      add('Arya could not connect to OpenAI right now. Please try again.','bot');
       AI.internetConnected=false;
       console.warn('ExploreUP Arya OpenAI request failed:',e);
+      try{
+        if(typeof window.aryaAnswer==='function'){
+          const lang=(typeof window.aryaDetectLanguage==='function')?window.aryaDetectLanguage(q):'en';
+          const localAnswer=await Promise.resolve(window.aryaAnswer(q,lang));
+          if(localAnswer){
+            add(String(localAnswer),'bot');
+            AI.freeMode=true;
+            return false;
+          }
+        }
+      }catch(localError){
+        console.warn('ExploreUP Arya local fallback failed:',localError);
+      }
+      add('Arya is temporarily offline. Please try again in a moment.','bot');
     }
     return false;
   }
