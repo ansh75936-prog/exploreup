@@ -157,6 +157,17 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 .plan-advanced{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.plan-advanced input,.plan-advanced select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);color:inherit;font:inherit}.plan-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.plan-checks label{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px;cursor:pointer}.plan-checks input{margin-right:5px}.plan-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.planner-summary{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--bg);line-height:1.6}.planner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.planner-mini{border:1px solid var(--line);border-radius:12px;padding:12px}.planner-badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:5px 8px;background:#eef5ff;margin-bottom:7px}.calc-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.calc-row:last-child{border-bottom:0}.recommend-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.recommend-grid label{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;cursor:pointer;background:var(--bg)}.event-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg)}.event-card small{display:block;color:var(--muted);margin-top:5px}@media(max-width:650px){.plan-advanced,.planner-grid,.plan-tools{grid-template-columns:1fr}.recommend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+/* ExploreUP mobile auth modal */
+.mobile-auth-modal{position:fixed;inset:0;z-index:11000;background:rgba(5,18,36,.62);display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box}
+.mobile-auth-modal.show{display:flex}
+.mobile-auth-card{width:min(430px,94vw);background:#fff;color:#10233f;border-radius:22px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mobile-auth-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.mobile-auth-head h3{margin:0;font-size:23px}
+.mobile-auth-close{border:0;background:#eef3f8;color:#10233f;border-radius:50%;width:38px;height:38px;font-size:24px;cursor:pointer}
+.mobile-auth-card input{width:100%;box-sizing:border-box;border:1px solid #d5dfeb;border-radius:12px;padding:13px 14px;margin:7px 0;font:inherit;color:#10233f;background:#fff}
+.mobile-auth-submit{width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;background:#ffb51b;color:#10233f;font:inherit;font-weight:850;cursor:pointer}
+.mobile-auth-switch{width:100%;border:0;background:transparent;color:#35628d;padding:12px 4px 2px;font:inherit;cursor:pointer}
+.mobile-auth-status{min-height:20px;margin:8px 0 0;color:#b42318;font-size:14px}
 /* ExploreUP mobile navigation v4 — screenshot-style drawer */
 .mobile-menu-btn{display:none;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;border-radius:50%;width:44px;height:44px;font-size:29px;line-height:1;cursor:pointer;z-index:10001;padding:0}
 .mobile-menu-btn.is-open{background:#29425f;border-color:rgba(255,255,255,.25);font-weight:300}
@@ -1927,19 +1938,93 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
       else window.location.href='/';
     });
 
-    document.getElementById('mobileLoginItem')?.addEventListener('click',function(){
-      closeMenu();
-      const target=document.querySelector('[id*="login" i], [class*="login" i]');
-      if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
-      else window.scrollTo({top:0,behavior:'smooth'});
-    });
-
-    document.getElementById('mobileCreateItem')?.addEventListener('click',function(){
-      closeMenu();
-      const target=document.querySelector('[id*="account" i], [class*="account" i]');
-      if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
-      else window.scrollTo({top:0,behavior:'smooth'});
-    });
+    function openAuth(mode){
+      let modal=document.getElementById('mobileAuthModal');
+      if(!modal){
+        modal=document.createElement('div');
+        modal.id='mobileAuthModal';
+        modal.className='mobile-auth-modal';
+        modal.innerHTML=`
+          <div class="mobile-auth-card" role="dialog" aria-modal="true" aria-labelledby="mobileAuthTitle">
+            <div class="mobile-auth-head"><h3 id="mobileAuthTitle">Log In</h3><button class="mobile-auth-close" type="button" aria-label="Close">×</button></div>
+            <input id="mobileAuthName" type="text" placeholder="Your name" autocomplete="name" style="display:none">
+            <input id="mobileAuthEmail" type="email" placeholder="Email address" autocomplete="email">
+            <input id="mobileAuthPassword" type="password" placeholder="Password" autocomplete="current-password">
+            <button id="mobileAuthSubmit" class="mobile-auth-submit" type="button">Log In</button>
+            <button id="mobileAuthSwitch" class="mobile-auth-switch" type="button">Create a new account</button>
+            <div id="mobileAuthStatus" class="mobile-auth-status"></div>
+          </div>`;
+        document.body.appendChild(modal);
+        modal.querySelector('.mobile-auth-close').addEventListener('click',()=>modal.classList.remove('show'));
+        modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+        modal.querySelector('#mobileAuthSwitch').addEventListener('click',()=>{
+          openAuth(modal.dataset.mode==='login'?'signup':'login');
+        });
+        modal.querySelector('#mobileAuthSubmit').addEventListener('click',async()=>{
+          const m=modal.dataset.mode;
+          const email=modal.querySelector('#mobileAuthEmail').value.trim();
+          const password=modal.querySelector('#mobileAuthPassword').value;
+          const name=modal.querySelector('#mobileAuthName').value.trim();
+          const status=modal.querySelector('#mobileAuthStatus');
+          status.style.color='#b42318';
+          status.textContent='';
+          if(!email||!password||(m==='signup'&&!name)){status.textContent=m==='signup'?'Name, email and password are required.':'Email and password are required.';return}
+          const client=await loadSupabaseBackend();
+          if(!client){status.textContent='Login service is unavailable right now.';return}
+          const btn=modal.querySelector('#mobileAuthSubmit'); btn.disabled=true; btn.textContent=m==='signup'?'Creating…':'Signing in…';
+          try{
+            let result;
+            if(m==='signup'){
+              result=await client.auth.signUp({email,password,options:{data:{full_name:name}}});
+              if(result.error)throw result.error;
+              if(result.data?.session){
+                status.style.color='#18794e'; status.textContent='Account created and logged in.';
+                modal.classList.remove('show');
+              }else{
+                status.style.color='#8a5a00'; status.textContent='Account created. Check your email if confirmation is required, then log in.';
+              }
+            }else{
+              result=await client.auth.signInWithPassword({email,password});
+              if(result.error)throw result.error;
+              status.style.color='#18794e'; status.textContent='Login successful.';
+              modal.classList.remove('show');
+            }
+            updateMobileAuthState();
+          }catch(err){status.textContent=err?.message||'Authentication failed.'}
+          finally{btn.disabled=false;btn.textContent=m==='signup'?'Create Account':'Log In'}
+        });
+      }
+      const isSignup=mode==='signup';
+      modal.dataset.mode=isSignup?'signup':'login';
+      modal.querySelector('#mobileAuthTitle').textContent=isSignup?'Create Account':'Log In';
+      modal.querySelector('#mobileAuthName').style.display=isSignup?'block':'none';
+      modal.querySelector('#mobileAuthPassword').autocomplete=isSignup?'new-password':'current-password';
+      modal.querySelector('#mobileAuthSubmit').textContent=isSignup?'Create Account':'Log In';
+      modal.querySelector('#mobileAuthSwitch').textContent=isSignup?'Already have an account? Log In':'Create a new account';
+      modal.querySelector('#mobileAuthStatus').textContent='';
+      modal.classList.add('show');
+      setTimeout(()=>modal.querySelector(isSignup?'#mobileAuthName':'#mobileAuthEmail')?.focus(),50);
+    }
+    async function updateMobileAuthState(){
+      const client=await loadSupabaseBackend();
+      if(!client)return;
+      const {data}=await client.auth.getUser();
+      const login=document.getElementById('mobileLoginItem');
+      const create=document.getElementById('mobileCreateItem');
+      if(data?.user){
+        const label=data.user.user_metadata?.full_name||data.user.email||'Account';
+        if(login){
+          login.querySelector('.mobile-menu-copy b').textContent=label;
+          login.querySelector('.mobile-menu-copy small').textContent='Signed in • Open your account';
+          login.querySelector('.mobile-menu-badge').textContent='Active';
+        }
+        if(create) create.style.display='none';
+      }
+    }
+    document.getElementById('mobileLoginItem')?.addEventListener('click',function(){closeMenu();openAuth('login')});
+    document.getElementById('mobileCreateItem')?.addEventListener('click',function(){closeMenu();openAuth('signup')});
+    updateMobileAuthState();
+    loadSupabaseBackend().then(client=>client?.auth?.onAuthStateChange?.(()=>updateMobileAuthState()));
 
     document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){
       if(typeof toggleLanguage==='function') toggleLanguage();
