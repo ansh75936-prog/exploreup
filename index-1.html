@@ -181,13 +181,21 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 @media(max-width:620px){.mobile-menu-btn{display:grid!important}.nav{position:relative!important}.mobile-menu-btn{order:-1;margin-right:4px}.navlinks{display:none!important}}
 @media(min-width:621px){.mobile-menu,.mobile-menu-backdrop{display:none!important}}
 
-<style>.service-subsection{margin-top:22px}.service-subtitle{margin:0 0 12px;font-size:20px}.hospital-subtitle{margin-top:28px}.contact-section .contact-grid{margin-bottom:6px}.contact-section .contact-card{height:100%;display:block!important;visibility:visible!important;opacity:1!important}.contact-section{display:block!important;visibility:visible!important;scroll-margin-top:90px}.service-field{display:block!important}.service-label{font-weight:800;color:var(--text)}.contact-section{scroll-margin-top:80px;background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:22px;margin-top:24px}.contact-section .section-intro{margin-bottom:16px}.contact-card .service-field{display:block;margin:7px 0;color:var(--text)}.contact-card .service-label{font-weight:800;color:var(--text)}</style>
+{margin-top:22px}.service-subtitle{margin:0 0 12px;font-size:20px}.hospital-subtitle{margin-top:28px}.contact-section .contact-grid{margin-bottom:6px}.contact-section .contact-card{height:100%;display:block!important;visibility:visible!important;opacity:1!important}.contact-section{display:block!important;visibility:visible!important;scroll-margin-top:90px}.service-field{display:block!important}.service-label{font-weight:800;color:var(--text)}.contact-section{scroll-margin-top:80px;background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:22px;margin-top:24px}.contact-section .section-intro{margin-bottom:16px}.contact-card .service-field{display:block;margin:7px 0;color:var(--text)}.contact-card .service-label{font-weight:800;color:var(--text)}
 <style id="exploreup-service-visibility-v10">
 #districtStay{scroll-margin-top:80px!important;border:2px solid rgba(212,175,55,.45)!important;border-radius:18px!important;padding:18px!important;background:var(--card,#fff)!important;display:block!important;visibility:visible!important;opacity:1!important}
 #hotelContacts,#hospitalContacts{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;gap:14px!important;min-height:24px!important}
 #hotelContacts .contact-card,#hospitalContacts .contact-card{display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;overflow:visible!important}
 #hotelContacts .service-source,#hospitalContacts .service-source{font-size:11px!important;color:var(--muted)!important;margin-top:10px!important}
 #hotelContacts .service-source a,#hospitalContacts .service-source a{color:inherit!important;text-decoration:underline!important}
+
+/* ExploreUP mobile drawer final override */
+@media (max-width:1000px){
+  .navlinks{display:none!important;visibility:hidden!important}
+}
+@media (max-width:620px){
+  .mobile-menu-btn{display:grid!important}
+}
 </style>
 
 <style id="exploreup-contact-detail-v12">
@@ -1939,5 +1947,5 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMobileMenu,{once:true});
   else initMobileMenu();
 })();
-</script></script>
+</script>
 </body></html>
