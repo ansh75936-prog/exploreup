@@ -157,81 +157,30 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 .plan-advanced{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.plan-advanced input,.plan-advanced select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg);color:inherit;font:inherit}.plan-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.plan-checks label{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px;cursor:pointer}.plan-checks input{margin-right:5px}.plan-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.planner-summary{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--bg);line-height:1.6}.planner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.planner-mini{border:1px solid var(--line);border-radius:12px;padding:12px}.planner-badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:5px 8px;background:#eef5ff;margin-bottom:7px}.calc-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.calc-row:last-child{border-bottom:0}.recommend-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.recommend-grid label{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;cursor:pointer;background:var(--bg)}.event-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg)}.event-card small{display:block;color:var(--muted);margin-top:5px}@media(max-width:650px){.plan-advanced,.planner-grid,.plan-tools{grid-template-columns:1fr}.recommend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-/* ExploreUP mobile navigation v2 — left drawer */
-(function(){
-  const nav=document.querySelector('.nav');
-  if(!nav||document.getElementById('mobileMenuBtn'))return;
-  const btn=document.createElement('button');
-  btn.id='mobileMenuBtn';btn.className='mobile-menu-btn';btn.type='button';
-  btn.setAttribute('aria-label','Open menu');btn.setAttribute('title','Menu');btn.setAttribute('aria-expanded','false');btn.textContent='⋮';
-  const logo=nav.querySelector('.logo');
-  if(logo)nav.insertBefore(btn,logo); else nav.prepend(btn);
-
-  const backdrop=document.createElement('div');
-  backdrop.className='mobile-menu-backdrop';
-  backdrop.setAttribute('aria-hidden','true');
-  document.body.appendChild(backdrop);
-
-  const menu=document.createElement('aside');
-  menu.id='mobileMenu';menu.className='mobile-menu';menu.setAttribute('aria-label','ExploreUP menu');
-  menu.innerHTML=`
-    <div class="mobile-menu-section">
-      <div class="mobile-menu-welcome">
-        <div class="mobile-menu-welcome-icon">🎒</div>
-        <div><b>Welcome, Explorer!</b><small>Sign in to plan &amp; save your UP journeys</small></div>
-      </div>
-
-      <div class="mobile-menu-heading">ACCOUNT</div>
-      <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">🔑</span><span class="mobile-menu-copy"><b>Log In</b><small>Access your account &amp; saved trips</small></span><span class="mobile-menu-badge">Sign In</span></button>
-      <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">✨</span><span class="mobile-menu-copy"><b>Create Account</b><small>Join ExploreUP for free</small></span><span class="mobile-menu-badge">Free</span></button>
-
-      <div class="mobile-menu-heading">PREFERENCES</div>
-      <button class="mobile-menu-item" id="mobileLanguageItem" type="button"><span class="mobile-menu-icon">🌐</span><span class="mobile-menu-copy"><b>Language / भाषा</b><small id="mobileLanguageText">Active: English • Tap to switch</small></span><span class="mobile-menu-badge" id="mobileLanguageBadge">English (Active)</span></button>
-      <button class="mobile-menu-item" id="mobileDarkItem" type="button"><span class="mobile-menu-icon">☾</span><span class="mobile-menu-copy"><b>Dark Mode</b><small id="mobileDarkText">Light Theme Active</small></span><span class="mobile-menu-toggle" aria-label="Toggle dark mode"></span></button>
-
-      <div class="mobile-menu-heading">EXPLORE &amp; SUPPORT</div>
-      <button class="mobile-menu-item" type="button" id="mobileAdminItem"><span class="mobile-menu-icon">🛡️</span><span class="mobile-menu-copy"><b>Admin Panel</b><small>Destination controls &amp; portal admin</small></span></button>
-      <a class="mobile-menu-item" href="tel:112"><span class="mobile-menu-icon">🚨</span><span class="mobile-menu-copy"><b>Helplines &amp; Emergency</b><small>Police 112 • Ambulance 108 • Tourist 1363</small></span><span class="mobile-menu-badge">24×7</span></a>
-      <button class="mobile-menu-item" type="button" id="mobileAboutItem"><span class="mobile-menu-icon">⭐</span><span class="mobile-menu-copy"><b>About ExploreUP</b><small>Why ExploreUP, mission &amp; city directory</small></span></button>
-    </div>
-    <div class="mobile-menu-footer"><b>ExploreUP</b> • Uttar Pradesh<br><span>Har Shehar Ki Kahani • Explore • Discover • Experience</span></div>`;
-  document.body.appendChild(menu);
-
-  function sync(){
-    const open=menu.classList.contains('show');
-    btn.classList.toggle('is-open',open);
-    btn.setAttribute('aria-expanded',String(open));
-    btn.setAttribute('aria-label',open?'Close menu':'Open menu');
-    btn.textContent=open?'×':'⋮';
-    if(open){
-      btn.style.position='fixed';
-      btn.style.top='11px';
-      btn.style.right='14px';
-      btn.style.left='auto';
-      btn.style.zIndex='10001';
-    }else{
-      btn.style.position='';
-      btn.style.top='';
-      btn.style.right='';
-      btn.style.left='';
-      btn.style.zIndex='';
-    }
-    backdrop.classList.toggle('show',open);
-    document.body.style.overflow=open?'hidden':'';
-    const dark=document.body.classList.contains('dark');
-    const dt=document.getElementById('mobileDarkText');
-    if(dt)dt.textContent=dark?'Dark Theme Active':'Light Theme Active';
-  }
-  function closeMenu(){menu.classList.remove('show');sync()}
-  btn.addEventListener('click',()=>{menu.classList.toggle('show');sync()});
-  backdrop.addEventListener('click',closeMenu);
-  menu.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});
-  document.getElementById('mobileLanguageItem')?.addEventListener('click',()=>{if(typeof toggleLanguage==='function')toggleLanguage();sync()});
-  document.getElementById('mobileDarkItem')?.addEventListener('click',()=>{if(typeof toggleDark==='function')toggleDark();sync()});
-  document.getElementById('mobileAdminItem')?.addEventListener('click',()=>{if(typeof openAdminPanel==='function')openAdminPanel();closeMenu()});
-  document.getElementById('mobileAboutItem')?.addEventListener('click',()=>{closeMenu();document.getElementById('about')?.scrollIntoView({behavior:'smooth'})});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
-})();</script>
+/* ExploreUP mobile navigation v3 — left drawer */
+.mobile-menu-btn{display:none;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;border-radius:10px;width:40px;height:40px;font-size:24px;line-height:1;cursor:pointer;z-index:10001;padding:0}
+.mobile-menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.48);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease;z-index:9998}
+.mobile-menu-backdrop.show{opacity:1;visibility:visible;pointer-events:auto}
+.mobile-menu{position:fixed;top:0;left:0;bottom:0;width:min(330px,86vw);background:#071b35;color:#fff;z-index:10000;transform:translateX(-105%);transition:transform .24s ease;overflow:auto;box-shadow:10px 0 35px rgba(0,0,0,.28);padding:86px 16px 24px;box-sizing:border-box}
+.mobile-menu.show{transform:translateX(0)}
+.mobile-menu-section{display:flex;flex-direction:column;gap:8px}
+.mobile-menu-welcome{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.06);margin-bottom:6px}
+.mobile-menu-welcome-icon{font-size:27px}
+.mobile-menu-welcome small,.mobile-menu-copy small{display:block;opacity:.72;font-size:11px;margin-top:3px;line-height:1.35}
+.mobile-menu-heading{font-size:11px;letter-spacing:1.2px;opacity:.6;font-weight:800;margin:13px 4px 2px}
+.mobile-menu-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left;text-decoration:none;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.10);border-radius:13px;padding:11px 10px;box-sizing:border-box;cursor:pointer;font:inherit}
+.mobile-menu-item:hover{background:rgba(255,255,255,.08)}
+.mobile-menu-icon{width:27px;text-align:center;font-size:18px;flex:0 0 27px}
+.mobile-menu-copy{min-width:0;flex:1}
+.mobile-menu-copy b{font-size:13px}
+.mobile-menu-badge{font-size:10px;padding:5px 7px;border-radius:999px;background:rgba(255,255,255,.10);white-space:nowrap}
+.mobile-menu-toggle{width:34px;height:19px;border-radius:999px;background:rgba(255,255,255,.22);position:relative}
+.mobile-menu-toggle:after{content:"";position:absolute;width:15px;height:15px;border-radius:50%;left:2px;top:2px;background:#fff}
+.mobile-menu-footer{margin-top:18px;padding:14px 4px;border-top:1px solid rgba(255,255,255,.12);font-size:13px;line-height:1.5}
+.mobile-menu-footer span{opacity:.6;font-size:10px}
+@media(max-width:620px){.mobile-menu-btn{display:grid!important}.nav{position:relative!important}.mobile-menu-btn{order:-1;margin-right:4px}.navlinks{display:none!important}}
+@media(min-width:621px){.mobile-menu,.mobile-menu-backdrop{display:none!important}}
+</script>
 <style>.service-subsection{margin-top:22px}.service-subtitle{margin:0 0 12px;font-size:20px}.hospital-subtitle{margin-top:28px}.contact-section .contact-grid{margin-bottom:6px}.contact-section .contact-card{height:100%;display:block!important;visibility:visible!important;opacity:1!important}.contact-section{display:block!important;visibility:visible!important;scroll-margin-top:90px}.service-field{display:block!important}.service-label{font-weight:800;color:var(--text)}.contact-section{scroll-margin-top:80px;background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:22px;margin-top:24px}.contact-section .section-intro{margin-bottom:16px}.contact-card .service-field{display:block;margin:7px 0;color:var(--text)}.contact-card .service-label{font-weight:800;color:var(--text)}</style>
 <style id="exploreup-service-visibility-v10">
 #districtStay{scroll-margin-top:80px!important;border:2px solid rgba(212,175,55,.45)!important;border-radius:18px!important;padding:18px!important;background:var(--card,#fff)!important;display:block!important;visibility:visible!important;opacity:1!important}
@@ -1892,4 +1841,76 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
       window.addEventListener('pageshow',checkForUpdate);
     })();
   </script>
+
+<script>
+/* ExploreUP mobile navigation v3 — functional drawer */
+(function(){
+  function initMobileMenu(){
+    const nav=document.querySelector('.nav');
+    if(!nav || document.getElementById('mobileMenuBtn')) return;
+    const btn=document.createElement('button');
+    btn.id='mobileMenuBtn';
+    btn.className='mobile-menu-btn';
+    btn.type='button';
+    btn.setAttribute('aria-label','Open menu');
+    btn.setAttribute('title','Menu');
+    btn.setAttribute('aria-expanded','false');
+    btn.textContent='⋮';
+    const logo=nav.querySelector('.logo');
+    if(logo) nav.insertBefore(btn,logo); else nav.prepend(btn);
+
+    const backdrop=document.createElement('div');
+    backdrop.className='mobile-menu-backdrop';
+    backdrop.setAttribute('aria-hidden','true');
+    document.body.appendChild(backdrop);
+
+    const menu=document.createElement('aside');
+    menu.id='mobileMenu';
+    menu.className='mobile-menu';
+    menu.setAttribute('aria-label','ExploreUP menu');
+    menu.innerHTML=`
+      <div class="mobile-menu-section">
+        <div class="mobile-menu-welcome"><div class="mobile-menu-welcome-icon">🎒</div><div><b>Welcome, Explorer!</b><small>Sign in to plan &amp; save your UP journeys</small></div></div>
+        <div class="mobile-menu-heading">ACCOUNT</div>
+        <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">🔑</span><span class="mobile-menu-copy"><b>Log In</b><small>Access your account &amp; saved trips</small></span><span class="mobile-menu-badge">Sign In</span></button>
+        <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">✨</span><span class="mobile-menu-copy"><b>Create Account</b><small>Join ExploreUP for free</small></span><span class="mobile-menu-badge">Free</span></button>
+        <div class="mobile-menu-heading">PREFERENCES</div>
+        <button class="mobile-menu-item" id="mobileLanguageItem" type="button"><span class="mobile-menu-icon">🌐</span><span class="mobile-menu-copy"><b>Language / भाषा</b><small id="mobileLanguageText">Active: English • Tap to switch</small></span><span class="mobile-menu-badge" id="mobileLanguageBadge">English (Active)</span></button>
+        <button class="mobile-menu-item" id="mobileDarkItem" type="button"><span class="mobile-menu-icon">☾</span><span class="mobile-menu-copy"><b>Dark Mode</b><small id="mobileDarkText">Light Theme Active</small></span><span class="mobile-menu-toggle" aria-label="Toggle dark mode"></span></button>
+        <div class="mobile-menu-heading">EXPLORE &amp; SUPPORT</div>
+        <button class="mobile-menu-item" type="button" id="mobileAdminItem"><span class="mobile-menu-icon">🛡️</span><span class="mobile-menu-copy"><b>Admin Panel</b><small>Destination controls &amp; portal admin</small></span></button>
+        <a class="mobile-menu-item" href="tel:112"><span class="mobile-menu-icon">🚨</span><span class="mobile-menu-copy"><b>Helplines &amp; Emergency</b><small>Police 112 • Ambulance 108 • Tourist 1363</small></span><span class="mobile-menu-badge">24×7</span></a>
+        <button class="mobile-menu-item" type="button" id="mobileAboutItem"><span class="mobile-menu-icon">⭐</span><span class="mobile-menu-copy"><b>About ExploreUP</b><small>Why ExploreUP, mission &amp; city directory</small></span></button>
+      </div>
+      <div class="mobile-menu-footer"><b>ExploreUP</b> • Uttar Pradesh<br><span>Har Shehar Ki Kahani • Explore • Discover • Experience</span></div>`;
+    document.body.appendChild(menu);
+
+    function sync(){
+      const open=menu.classList.contains('show');
+      btn.classList.toggle('is-open',open);
+      btn.setAttribute('aria-expanded',String(open));
+      btn.setAttribute('aria-label',open?'Close menu':'Open menu');
+      btn.textContent=open?'×':'⋮';
+      btn.style.position=open?'fixed':'';
+      btn.style.top=open?'11px':'';
+      btn.style.right=open?'14px':'';
+      btn.style.left=open?'auto':'';
+      btn.style.zIndex=open?'10001':'';
+      backdrop.classList.toggle('show',open);
+      document.body.style.overflow=open?'hidden':'';
+    }
+    function closeMenu(){menu.classList.remove('show');sync();}
+    btn.addEventListener('click',function(){menu.classList.toggle('show');sync();});
+    backdrop.addEventListener('click',closeMenu);
+    menu.addEventListener('click',function(e){if(e.target.closest('a'))closeMenu();});
+    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){if(typeof toggleLanguage==='function')toggleLanguage();});
+    document.getElementById('mobileDarkItem')?.addEventListener('click',function(){if(typeof toggleDark==='function')toggleDark();});
+    document.getElementById('mobileAdminItem')?.addEventListener('click',function(){if(typeof openAdminPanel==='function')openAdminPanel();closeMenu();});
+    document.getElementById('mobileAboutItem')?.addEventListener('click',function(){closeMenu();document.getElementById('about')?.scrollIntoView({behavior:'smooth'});});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu();});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMobileMenu,{once:true});
+  else initMobileMenu();
+})();
+</script>
 </body></html>
