@@ -1,4 +1,4 @@
-const CACHE_NAME='exploreup-runtime-v1';
+const CACHE_NAME='exploreup-runtime-v2';
 
 self.addEventListener('install',()=>self.skipWaiting());
 
@@ -17,10 +17,29 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==self.location.origin) return;
 
+  // Always fetch HTML fresh so a new deployment is available on the next navigation.
+  if(request.mode==='navigate' || request.destination==='document'){
+    event.respondWith(
+      fetch(new Request(request,{cache:'no-store'}))
+        .then(response=>{
+          if(response&&response.ok){
+            const copy=response.clone();
+            caches.open(CACHE_NAME).then(cache=>cache.put(request,copy));
+          }
+          return response;
+        })
+        .catch(()=>caches.match(request).then(cached=>cached||new Response('Offline',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}})))
+    );
+    return;
+  }
+
+  // Do not cache the deployment version endpoint.
+  if(url.pathname==='/api/version') return;
+
   event.respondWith(
     fetch(request)
       .then(response=>{
-        if(response && response.ok){
+        if(response&&response.ok){
           const copy=response.clone();
           caches.open(CACHE_NAME).then(cache=>cache.put(request,copy));
         }
