@@ -1843,6 +1843,10 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   </script>
 
 <script>
+<style>
+.mobile-menu-back{width:100%;display:flex;align-items:center;gap:8px;border:0;border-bottom:1px solid rgba(255,255,255,.12);background:transparent;color:#dbe9f8;padding:12px 16px;font:inherit;font-weight:800;text-align:left;cursor:pointer}
+.mobile-menu-back:hover{background:rgba(255,255,255,.06);color:#fff}
+</style>
 /* ExploreUP mobile navigation v3 — functional drawer */
 (function(){
   function initMobileMenu(){
@@ -1870,6 +1874,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     menu.setAttribute('aria-label','ExploreUP menu');
     menu.innerHTML=`
       <div class="mobile-menu-section">
+        <button class="mobile-menu-back" id="mobileBackItem" type="button" aria-label="Go back">← Back</button>
         <div class="mobile-menu-welcome"><div class="mobile-menu-welcome-icon">🎒</div><div><b>Welcome, Explorer!</b><small>Sign in to plan &amp; save your UP journeys</small></div></div>
         <div class="mobile-menu-heading">ACCOUNT</div>
         <button class="mobile-menu-item" type="button"><span class="mobile-menu-icon">🔑</span><span class="mobile-menu-copy"><b>Log In</b><small>Access your account &amp; saved trips</small></span><span class="mobile-menu-badge">Sign In</span></button>
@@ -1903,6 +1908,11 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     btn.addEventListener('click',function(){menu.classList.toggle('show');sync();});
     backdrop.addEventListener('click',closeMenu);
     menu.addEventListener('click',function(e){if(e.target.closest('a'))closeMenu();});
+    document.getElementById('mobileBackItem')?.addEventListener('click',function(){
+      closeMenu();
+      if(window.history.length>1) window.history.back();
+      else window.location.href='/';
+    });
     document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){if(typeof toggleLanguage==='function')toggleLanguage();});
     document.getElementById('mobileDarkItem')?.addEventListener('click',function(){if(typeof toggleDark==='function')toggleDark();});
     document.getElementById('mobileAdminItem')?.addEventListener('click',function(){if(typeof openAdminPanel==='function')openAdminPanel();closeMenu();});
