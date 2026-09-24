@@ -67,30 +67,62 @@ module.exports = async function handler(req, res) {
   ].filter(Boolean).join('\n');
 
   try {
-    const response = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${key}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-5.6-luna',
-        store: false,
-        input: [
-          { role: 'system', content: [{ type: 'input_text', text: system }] },
-          { role: 'user', content: [{ type: 'input_text', text: query }] }
-        ]
-      })
-    });
+    const payload = {
+      model: 'gpt-5.6-luna',
+      store: false,
+      max_output_tokens: 700,
+      input: [
+        { role: 'system', content: [{ type: 'input_text', text: system }] },
+        { role: 'user', content: [{ type: 'input_text', text: query }] }
+      ]
+    };
 
-    const data = await response.json().catch(() => ({}));
+    let response;
+    let data = {};
+    for (let attempt = 0; attempt < 2; attempt++) {
+      response = await fetch('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${key}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      data = await response.json().catch(() => ({}));
+      if (response.ok) break;
+
+      const upstreamCode = String(data?.error?.code || data?.error?.type || '').toLowerCase();
+      const temporary429 = response.status === 429 &&
+        (upstreamCode === 'rate_limit_exceeded' ||
+         upstreamCode === 'slow_down' ||
+         upstreamCode === 'rate_limit_error' ||
+         upstreamCode === '');
+      const temporary503 = response.status === 503;
+      if (!(temporary429 || temporary503) || attempt === 1) break;
+
+      const retryAfter = Number(response.headers.get('retry-after'));
+      const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+        ? Math.min(retryAfter * 1000, 8000)
+        : 1200 * (attempt + 1);
+      await new Promise(resolve => setTimeout(resolve, waitMs));
+    }
+
     if (!response.ok) {
       let code = 'openai_request_failed';
+      const upstreamCode = String(data?.error?.code || data?.error?.type || '').trim();
       if (response.status === 401) code = 'openai_key_invalid';
       else if (response.status === 403) code = 'openai_access_denied';
-      else if (response.status === 429) code = 'openai_rate_or_quota';
+      else if (response.status === 429) {
+        code = upstreamCode === 'credit_balance_exhausted' ? 'openai_credit_balance_exhausted'
+          : upstreamCode === 'organization_spend_limit_exceeded' ? 'openai_org_spend_limit'
+          : upstreamCode === 'project_spend_limit_exceeded' ? 'openai_project_spend_limit'
+          : upstreamCode === 'organization_usage_limit_exceeded' ? 'openai_org_usage_limit'
+          : upstreamCode === 'slow_down' || upstreamCode === 'rate_limit_exceeded' ? 'openai_rate_limited'
+          : 'openai_rate_or_quota';
+      }
       else if (response.status >= 500) code = 'openai_service_error';
-      console.error('Arya OpenAI upstream:', response.status, code);
+      console.error('Arya OpenAI upstream:', response.status, code, upstreamCode || 'no_code');
       return send(res, response.status >= 500 ? 502 : response.status, { error: code });
     }
 
