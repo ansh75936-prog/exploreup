@@ -29,6 +29,8 @@
     return el;
   }
 
+  let sending=false;
+
   async function askDirect(q,city){
     const controller=new AbortController();
     const timeout=setTimeout(function(){controller.abort();},25000);
@@ -52,6 +54,11 @@
     if(!q)return false;
     if(i)i.value='';
     add(q,'user');
+    if(sending){
+      add('Please wait for Arya to finish the previous request.', 'bot');
+      return false;
+    }
+    sending=true;
     const pending=add('Arya is thinking…','bot');
     try{
       const city=String(window.currentExploreCity||document.getElementById('modalTitle')?.textContent||'').trim();
@@ -65,7 +72,17 @@
       AI.internetConnected=false;
       console.warn('ExploreUP Arya Gemini request failed:',e);
       const msg=String(e?.message||'gemini_connection_failed');
-      add('Arya Gemini connection issue: '+msg+'\nPlease try again.', 'bot');
+      let friendly='Arya Gemini connection issue: '+msg+'\nPlease try again.';
+      if(msg==='gemini_rate_or_quota'){
+        friendly='Arya is temporarily unavailable because the Gemini request limit/quota was reached. Please try again later.';
+      }else if(msg==='gemini_service_error'){
+        friendly='Arya is temporarily unavailable. Please try again in a moment.';
+      }else if(msg==='AbortError'){
+        friendly='Arya took too long to respond. Please try again.';
+      }
+      add(friendly, 'bot');
+    }finally{
+      sending=false;
     }
     return false;
   }
@@ -73,7 +90,6 @@
   window.askArya=send;
   AI.handleSend=send;
   AI.askOpenAI=askDirect;
-  AI.askInternet=askDirect;
   AI.askInternet=askDirect;
 
   function wire(){
