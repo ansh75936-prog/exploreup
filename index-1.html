@@ -377,7 +377,112 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
     max-height:calc(100dvh - 20px)!important;
   }
 }
-</style></head>
+</style>
+<style id="arya-input-layout-fix">
+/* Arya AI — clean chat/input layout */
+.arya-panel{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.arya-body{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:16px !important;
+  scroll-behavior:smooth;
+}
+.arya-input{
+  flex:0 0 auto !important;
+  display:flex !important;
+  align-items:flex-end !important;
+  gap:8px !important;
+  width:100% !important;
+  padding:10px !important;
+  margin:0 !important;
+  background:var(--card) !important;
+  border-top:1px solid var(--line,#e2eaf3) !important;
+  box-sizing:border-box !important;
+  position:relative !important;
+  z-index:2 !important;
+}
+.arya-input input,
+.arya-input textarea,
+#aryaInput{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  width:auto !important;
+  max-width:none !important;
+  min-height:44px !important;
+  max-height:120px !important;
+  height:44px;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:11px 13px !important;
+  border:1px solid var(--line,#dbe5f0) !important;
+  border-radius:14px !important;
+  outline:none !important;
+  background:var(--bg,#f4f8fc) !important;
+  color:var(--text,#10233f) !important;
+  font:inherit !important;
+  line-height:1.35 !important;
+  resize:none !important;
+  overflow-y:auto !important;
+}
+.arya-input input:focus,
+.arya-input textarea:focus,
+#aryaInput:focus{
+  border-color:var(--blue,#0b67d1) !important;
+  box-shadow:0 0 0 3px rgba(11,103,209,.12) !important;
+}
+.arya-input button,
+#aryaSend{
+  flex:0 0 44px !important;
+  width:44px !important;
+  min-width:44px !important;
+  height:44px !important;
+  min-height:44px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:14px !important;
+  display:grid !important;
+  place-items:center !important;
+  cursor:pointer !important;
+  background:var(--gold,#ffb51b) !important;
+  color:#071b35 !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+}
+.arya-input button:disabled,
+#aryaSend:disabled{opacity:.55;cursor:not-allowed}
+.arya-msg{max-width:88%;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap}
+.arya-msg.user{margin-left:auto}
+.arya-msg.bot{margin-right:auto}
+@media(max-width:620px){
+  .arya-input{
+    padding:9px !important;
+    gap:7px !important;
+  }
+  .arya-input input,
+  .arya-input textarea,
+  #aryaInput{
+    min-height:44px !important;
+    height:44px;
+    font-size:16px !important;
+  }
+  .arya-input button,
+  #aryaSend{
+    flex-basis:44px !important;
+    width:44px !important;
+    min-width:44px !important;
+    height:44px !important;
+  }
+  .arya-body{padding:12px !important}
+}
+</style>
+</head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
