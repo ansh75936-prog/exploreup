@@ -1528,6 +1528,11 @@ async function openCity(name, options={}){
    btn.textContent=video.muted?'🔇':'🔊';
    btn.setAttribute('aria-label',video.muted?'Turn sound on':'Turn sound off');
  });
+ video.addEventListener('error',()=>{
+   const hero=document.getElementById('modalHero');
+   if(hero)hero.classList.remove('has-district-video');
+   if(btn)btn.hidden=true;
+ });
 })();
 function searchSite(){
  const q=document.getElementById('searchInput').value.trim().toLowerCase(), box=document.getElementById('results');
