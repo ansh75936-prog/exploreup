@@ -2500,4 +2500,28 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   .arya-head{border-radius:18px 18px 0 0!important}
 }
 </style>
+
+<style id="arya-message-colour-separation">
+/* Arya AI — separate colours for user questions and Arya answers */
+.arya-msg.user{
+  background:linear-gradient(135deg,#0b67d1 0%,#2454e8 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:18px 18px 5px 18px!important;
+  margin-left:auto!important;
+  box-shadow:0 7px 20px rgba(38,76,210,.28)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#fff7df 0%,#fffaf0 45%,#eaf4ff 100%)!important;
+  color:#17385f!important;
+  border:1px solid #d7e5f5!important;
+  border-left:4px solid #ffb51b!important;
+  border-radius:18px 18px 18px 5px!important;
+  margin-right:auto!important;
+  box-shadow:0 6px 18px rgba(24,66,120,.10)!important;
+}
+.arya-msg.user *{color:#fff!important}
+.arya-msg.bot *{color:#17385f!important}
+</style>
+
 </body></html>
