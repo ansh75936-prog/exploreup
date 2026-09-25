@@ -2494,25 +2494,31 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 </style>
 <script id="arya-open-state-fix-script">
 (function(){
+  'use strict';
+  const getPanel=()=>document.getElementById('aryaPanel');
   const close=()=>{
-    const p=document.getElementById('aryaPanel');
-    if(p){p.hidden=true;p.classList.remove('arya-visible');p.style.removeProperty('display');}
+    const p=getPanel();
+    if(p){p.hidden=true;p.classList.remove('arya-visible');}
     document.body.classList.remove('arya-open');
   };
   const open=()=>{
-    const p=document.getElementById('aryaPanel');
-    if(p){p.hidden=false;p.classList.add('arya-visible');}
+    const p=getPanel();
+    if(!p)return;
+    p.hidden=false;
+    p.classList.add('arya-visible');
     document.body.classList.add('arya-open');
     setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
   };
   window.aryaBackHome=()=>{close();window.scrollTo({top:0,behavior:'smooth'});};
   window.toggleArya=()=>{
-    const p=document.getElementById('aryaPanel');
-    if(!p || !p.hidden){close();}else{open();}
+    const p=getPanel();
+    if(!p)return;
+    if(p.hidden)open();else close();
   };
+  // Keep Arya closed on a fresh page load. Do not close it from pageshow,
+  // because pageshow can fire after the UI has been restored from bfcache.
   const init=()=>close();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  window.addEventListener('pageshow',init);
 })();
 </script>
 
