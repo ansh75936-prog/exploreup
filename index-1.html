@@ -1901,7 +1901,7 @@ loadSupabaseBackend().then(client=>{
 });
 </script>
 <div class="plan-modal" id="planMakerModal" aria-hidden="true"><div class="plan-box" role="dialog" aria-modal="true" aria-labelledby="planTitle"><div class="plan-head"><h2 id="planTitle">🧭 Arya Trip Plan Maker</h2><button class="plan-close" onclick="closePlanMaker()" aria-label="Close plan maker">×</button></div><div class="plan-body"><div class="plan-mode"><label><input type="radio" name="planMode" id="planQuick" checked onchange="setPlanMode('quick')"> 📴 Quick Plan <small>Offline available</small></label><label><input type="radio" name="planMode" id="planSmart" onchange="setPlanMode('smart')"> 🌐 Smart Plan <small>Internet required</small></label></div><div class="plan-form"><input id="planDestination" placeholder="Destination / district (e.g. Varanasi)" autocomplete="off"><select id="planDays"><option value="1">1 day</option><option value="2">2 days</option><option value="3" selected>3 days</option><option value="4">4 days</option><option value="5">5 days</option><option value="6">6 days</option><option value="7">7 days</option></select><select id="planStyle"><option value="balanced">Balanced</option><option value="heritage">Heritage</option><option value="food">Food focused</option><option value="nature">Nature</option><option value="religion">Religion</option><option value="family">Family</option><option value="shopping">Shopping</option><option value="photography">Photography</option></select></div><div class="plan-advanced"><input id="planPeople" type="number" min="1" max="20" value="2" placeholder="Number of people"><input id="planBudget" type="number" min="0" step="500" placeholder="Approx. budget (₹)"><select id="planTransport"><option value="mixed">Mixed transport</option><option value="train">Train</option><option value="bus">Bus</option><option value="flight">Flight</option><option value="car">Car / cab</option><option value="local">Local transport</option></select><select id="planHotel"><option value="budget">Budget stay</option><option value="standard" selected>Standard stay</option><option value="premium">Premium stay</option></select></div><div class="plan-checks" id="planPrefs"><label><input type="checkbox" value="history">History</label><label><input type="checkbox" value="religion">Religion</label><label><input type="checkbox" value="nature">Nature</label><label><input type="checkbox" value="shopping">Shopping</label><label><input type="checkbox" value="photography">Photography</label><label><input type="checkbox" value="family">Family</label><label><input type="checkbox" value="food">Food</label></div><button class="plan-generate" onclick="makeAryaPlan()">✨ Make My Plan</button><div class="plan-tools"><button class="plan-generate" style="margin-top:0;background:var(--card);color:var(--text);border:1px solid var(--line)" onclick="calculateTripBudget()">💰 Calculate Budget</button><button class="plan-generate" style="margin-top:0;background:var(--card);color:var(--text);border:1px solid var(--line)" onclick="makeSmartRecommendations()">🎯 Recommendations</button></div><div class="plan-status" id="planStatus">Choose Quick Plan or Smart Plan, then generate your itinerary.</div><div class="plan-result" id="planResult"></div></div></div></div><button aria-label="Open Arya AI Assistant" class="arya-fab" onclick="toggleArya()">✨ Ask Arya</button>
-<div aria-label="Arya AI Assistant" class="arya-panel" id="aryaPanel" role="dialog">
+<div aria-label="Arya AI Assistant" class="arya-panel" id="aryaPanel" role="dialog" hidden>
 <div class="arya-head"><div style="display:flex;align-items:center;gap:9px"><button aria-label="Back to ExploreUP home" class="arya-back" onclick="aryaBackHome()">‹</button><div><b>✨ Arya AI</b><small>Your ExploreUP travel assistant</small></div></div><div style="display:flex;gap:7px;align-items:center"><button class="arya-close" style="width:auto;padding:0 10px;border-radius:10px;font-size:12px" onclick="openPlanMaker()">🧭 Plan</button><button aria-label="Close Arya" class="arya-close" onclick="toggleArya()">×</button></div></div>
 <div class="arya-body" id="aryaBody"><div class="arya-msg bot">Namaste! I’m Arya. I only answer questions about ExploreUP. Ask about destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans, reviews or website features.</div><div class="arya-suggest"><button onclick="aryaQuick('Lucknow ke baare mein batao')">Lucknow</button><button onclick="aryaQuick('Varanasi ka food batao')">Varanasi food</button><button onclick="aryaQuick('2 day trip plan Agra')">2-day Agra</button><button onclick="openPlanMaker()">🧭 Plan Maker</button><button onclick="aryaQuick('hotels in Ayodhya')">Ayodhya hotels</button></div></div>
 <div class="arya-input"><input autocomplete="off" id="aryaInput" placeholder="Ask Arya about ExploreUP..."/><button onclick="askArya()">Ask</button></div>
@@ -2388,40 +2388,30 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 </script>
 
 <style id="arya-open-state-fix">
-/* Arya: closed by default; only the explicit open class may show it. */
-.arya-panel{display:none!important}
+.arya-panel[hidden]{display:none!important}
 .arya-panel.arya-visible{display:flex!important}
 </style>
 <script id="arya-open-state-fix-script">
 (function(){
-  function closeAryaToHome(){
+  const close=()=>{
     const p=document.getElementById('aryaPanel');
-    if(p)p.classList.remove('arya-visible');
+    if(p){p.hidden=true;p.classList.remove('arya-visible');p.style.removeProperty('display');}
     document.body.classList.remove('arya-open');
-    if(p)p.style.removeProperty('display');
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  window.aryaBackHome=closeAryaToHome;
-  window.toggleArya=function(){
-    const p=document.getElementById('aryaPanel');
-    if(!p)return;
-    const open=p.classList.contains('arya-visible');
-    if(open){
-      closeAryaToHome();
-    }else{
-      p.classList.add('arya-visible');
-      document.body.classList.add('arya-open');
-      setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
-    }
   };
-  function forceAryaClosedOnLoad(){
+  const open=()=>{
     const p=document.getElementById('aryaPanel');
-    if(p){p.classList.remove('arya-visible');p.style.removeProperty('display');}
-    document.body.classList.remove('arya-open');
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',forceAryaClosedOnLoad,{once:true});
-  else forceAryaClosedOnLoad();
-  window.addEventListener('pageshow',forceAryaClosedOnLoad);
+    if(p){p.hidden=false;p.classList.add('arya-visible');}
+    document.body.classList.add('arya-open');
+    setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
+  };
+  window.aryaBackHome=()=>{close();window.scrollTo({top:0,behavior:'smooth'});};
+  window.toggleArya=()=>{
+    const p=document.getElementById('aryaPanel');
+    if(!p || !p.hidden){close();}else{open();}
+  };
+  const init=()=>close();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.addEventListener('pageshow',init);
 })();
 </script>
 </body></html>
