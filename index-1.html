@@ -688,7 +688,6 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 <section class="section" id="districtDiscovery">
   <div class="sectionhead"><div><h2>🧭 Find a District</h2><p>Search all 75 districts or filter them by UP region.</p></div></div>
   <div class="district-tools" role="search">
-    <label class="district-search-main"><span aria-hidden="true">🔎</span><input id="districtLiveSearch" type="search" placeholder="Search district… e.g. Agra, Lucknow, Varanasi" autocomplete="off"></label>
     <div class="region-filters" role="group" aria-label="Filter districts by region">
       <button type="button" class="region-btn active" data-region="all">All <span>75</span></button><button type="button" class="region-btn" data-region="awadh">Awadh</button><button type="button" class="region-btn" data-region="braj">Braj</button><button type="button" class="region-btn" data-region="purvanchal">Purvanchal</button><button type="button" class="region-btn" data-region="bundelkhand">Bundelkhand</button>
     </div>
@@ -2176,7 +2175,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
  function regionOf(name){return regionByName[norm(name)]||'purvanchal'}
  function open(name){if(typeof safeOpenCity==='function')safeOpenCity(name);else if(typeof openCity==='function')openCity(name)}
  function filter(){
-   const q=(document.getElementById('districtLiveSearch')?.value||'').trim().toLowerCase();
+   const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
    const active=document.querySelector('.region-btn.active')?.dataset.region||'all';
    const cards=[...document.querySelectorAll('#cityGrid .city')];let shown=0;
    cards.forEach(card=>{const name=card.querySelector('.citytext h3')?.textContent?.trim()||'';const ok=(!q||name.toLowerCase().includes(q))&&(active==='all'||regionOf(name)===active);card.classList.toggle('is-hidden',!ok);if(ok)shown++});
@@ -2192,7 +2191,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
    host.querySelectorAll('.map-node').forEach(node=>{const act=()=>showMapInfo(node);node.addEventListener('click',act);node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act()}})});
  }
  function showMapInfo(node){const name=node.dataset.name,i=Number(node.dataset.index),c=getList()[i],pop=document.getElementById('mapPopover');if(!pop||!c)return;const text=String(c.places||c.tag||'Explore the district guide.').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').slice(0,180);pop.innerHTML='<b>📍 '+name+'</b><small>Top places: '+text+'</small><button type="button" class="map-open-btn">Open '+name+' →</button>';pop.classList.add('show');pop.querySelector('.map-open-btn').onclick=()=>open(name)}
- function init(){const input=document.getElementById('districtLiveSearch');if(!input)return;input.addEventListener('input',filter);document.querySelectorAll('.region-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter()}));filter()}
+ function init(){const input=document.getElementById('searchInput');if(!input)return;input.addEventListener('input',filter);document.querySelectorAll('.region-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.region-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter()}));filter()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
  window.exploreUpPhase1Filter=filter;
 })();
