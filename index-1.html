@@ -2386,4 +2386,42 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   else initMobileMenu();
 })();
 </script>
+
+<style id="arya-open-state-fix">
+/* Arya: closed by default; only the explicit open class may show it. */
+.arya-panel{display:none!important}
+.arya-panel.arya-visible{display:flex!important}
+</style>
+<script id="arya-open-state-fix-script">
+(function(){
+  function closeAryaToHome(){
+    const p=document.getElementById('aryaPanel');
+    if(p)p.classList.remove('arya-visible');
+    document.body.classList.remove('arya-open');
+    if(p)p.style.removeProperty('display');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  window.aryaBackHome=closeAryaToHome;
+  window.toggleArya=function(){
+    const p=document.getElementById('aryaPanel');
+    if(!p)return;
+    const open=p.classList.contains('arya-visible');
+    if(open){
+      closeAryaToHome();
+    }else{
+      p.classList.add('arya-visible');
+      document.body.classList.add('arya-open');
+      setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
+    }
+  };
+  function forceAryaClosedOnLoad(){
+    const p=document.getElementById('aryaPanel');
+    if(p){p.classList.remove('arya-visible');p.style.removeProperty('display');}
+    document.body.classList.remove('arya-open');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',forceAryaClosedOnLoad,{once:true});
+  else forceAryaClosedOnLoad();
+  window.addEventListener('pageshow',forceAryaClosedOnLoad);
+})();
+</script>
 </body></html>
