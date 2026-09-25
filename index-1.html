@@ -78,6 +78,13 @@ body.dark .view,body.dark .section h2{color:var(--text)}
 .modal{position:fixed;inset:0;z-index:9999;background:#fff;overflow-y:auto;padding:0}
 .modalbox{width:100%;max-width:none;min-height:100vh;margin:0;border-radius:0;box-shadow:none;background:var(--bg);overflow:visible}
 .modalhero{min-height:360px;border-radius:0;display:flex;align-items:flex-end;padding:48px max(5vw,24px) 42px;position:relative;background-size:cover;background-position:center}
+.district-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:0}
+.district-hero-video-overlay{position:absolute;inset:0;background:linear-gradient(transparent,#06162d88);display:none;z-index:1;pointer-events:none}
+.district-hero-sound{position:absolute;right:82px;top:22px;z-index:6;width:44px;height:44px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(3,20,41,.72);color:#fff;font-size:19px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.district-hero-sound:hover{background:rgba(3,20,41,.9);transform:scale(1.04)}
+.modalhero.has-district-video .district-hero-video,.modalhero.has-district-video .district-hero-video-overlay{display:block}
+.modalhero.has-district-video{background-image:none!important}
+@media(max-width:700px){.district-hero-sound{right:78px;top:22px}}
 .modalhero .close{position:absolute;right:24px;top:22px;width:44px;height:44px;border-radius:50%;font-size:28px;background:rgba(255,255,255,.92);z-index:2}
 .modal-back{position:absolute;left:24px;top:22px;z-index:3;border:1px solid rgba(255,255,255,.7);background:rgba(3,20,41,.72);color:#fff;border-radius:24px;padding:10px 16px;font-weight:800;cursor:pointer;backdrop-filter:blur(6px)}.modal-back:hover{background:rgba(3,20,41,.9);transform:translateY(-1px)}
 .modalcontent{max-width:1180px;margin:0 auto;padding:30px max(5vw,20px) 70px}
@@ -858,7 +865,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 <div class="trip-sticky"><button onclick="planTrip()">🧳 Plan Trip</button></div>
 <button class="favbar" onclick="toggleFavPanel()">♡ My Favourites <span id="favCount">0</span></button>
 <div class="favpanel" id="favPanel"><h3>❤️ Saved Places</h3><div id="favList"><div class="empty">No favourite places saved yet.</div></div></div><button class="comparebar" id="compareBar" onclick="toggleComparePanel()">⚖️ Compare <span id="compareCount">0</span></button><div class="comparepanel" id="comparePanel"><div class="admin-head"><div><h3 style="margin:0">⚖️ Compare Destinations</h3><small style="color:var(--muted)">Choose up to 3 ExploreUP destinations.</small></div><button class="admin-close" onclick="toggleComparePanel()">×</button></div><div id="compareBody"></div></div>
-<div aria-hidden="true" class="modal" id="modal"><div class="modalbox"><div class="modalhero" id="modalHero"><button class="modal-back" onclick="goBackNavigation()" type="button">← Back to ExploreUP</button><button class="close" onclick="closeModal()">×</button><div><div class="eyebrow" id="modalState">WELCOME TO</div><h1 id="modalTitle" style="font-size:44px;margin:5px 0">City</h1><div id="modalSubtitle"></div></div></div><div class="modalcontent"><div class="district-tabs" role="tablist" aria-label="District guide tabs"><button class="district-tab active" type="button" role="tab" aria-selected="true" data-tab="places">🏛️ Places</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="food">🍴 Food</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="reach">🧭 How to Reach</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="stays">🏨 Stays</button></div><div class="district-tab-hint">Tap a tab to jump directly to that part of the district guide.</div><div class="district-search"><div class="district-searchbox">🔎 <input autocomplete="off" id="districtSearchInput" placeholder="Search this district: places, food, hotels, hospitals, shopping..."/><button onclick="clearDistrictSearch()" style="border:0;background:none;cursor:pointer;font-size:18px">×</button></div><div class="district-search-results" id="districtSearchResults"></div></div><div class="cardmeta" style="margin:15px 0"><span class="meta">📍 <span id="mDistance"></span></span><span class="meta">₹ <span id="mFee"></span></span><span class="meta">🕐 <span id="mTime"></span></span><span class="meta rating">★ <span id="mRating"></span> Google</span></div><div class="chips"><span class="chip">Famous Places</span><span class="chip">Food &amp; Cuisine</span><span class="chip">Shopping</span><span class="chip">Culture &amp; History</span><span class="chip">Festivals</span><span class="chip">Hotels &amp; Stays</span><span class="chip">Hospitals</span><span class="chip">Transport</span><span class="chip">Emergency Services</span><span class="chip">Theatres &amp; Cinemas</span><span class="chip">Maps</span><span class="chip">Useful Online Services</span></div><div class="servicebar"><a id="mapBtn" rel="noopener" target="_blank">🗺️ Open in Google Maps</a><a id="foodMapBtn" rel="noopener" target="_blank">🍴 Food on Google Maps</a><a id="stayMapBtn" rel="noopener" target="_blank">🏨 Stays on Google Maps</a><a id="placeMapBtn" rel="noopener" target="_blank">📍 Places on Google Maps</a></div><h2 id="districtOverview">About <span id="aboutCityName">this city</span></h2><p id="dAbout" style="line-height:1.7;color:var(--muted)"></p><div class="detailgrid"><div class="detail"><b>🏛️ Famous Places</b><small id="dPlaces"></small></div><div class="detail"><b>🍛 Food &amp; Cuisine</b><small id="dFood"></small></div><div class="detail"><b>🛍️ Shopping &amp; Local Products</b><small id="dShop"></small></div><div class="detail"><b>🏺 Culture &amp; History</b><small>Heritage, traditions, local communities and stories of the destination.</small></div><div class="detail"><b>🎉 Festivals &amp; Events</b><small>Seasonal festivals and local events. Check official schedules before travelling.</small></div><div class="detail"><b>☀️ Best Time to Visit</b><small id="dTime"></small></div><div class="detail"><b>🏨 Hotels &amp; Stays</b><small>Explore accommodation options near the city centre, attractions and transport hubs. See verified hotel contacts below.</small></div><div class="detail"><b>🏥 Hospitals &amp; Pharmacies</b><small>Government and private healthcare information with verified contact details is listed below.</small></div><div class="detail"><b>🚉 Transport</b><small>Railway stations, bus stands, local transport and airport access.</small></div><div class="detail"><b>🚑 Emergency Services</b><small>Police, fire, ambulance and other essential services can be listed here with verified numbers.</small></div><div class="detail"><b>🎬 Entertainment</b><small>Theatres, cinemas, malls, parks and family entertainment options.</small></div><div class="detail"><b>💰 Approx. Budget</b><small id="dBudget"></small></div></div>
+<div aria-hidden="true" class="modal" id="modal"><div class="modalbox"><div class="modalhero" id="modalHero"><video id="districtHeroVideo" class="district-hero-video" playsinline muted loop preload="metadata" aria-hidden="true"></video><div id="districtHeroVideoOverlay" class="district-hero-video-overlay" aria-hidden="true"></div><button id="districtHeroSound" class="district-hero-sound" type="button" aria-label="Turn sound on" title="Turn sound on" hidden>🔇</button><button class="modal-back" onclick="goBackNavigation()" type="button">← Back to ExploreUP</button><button class="close" onclick="closeModal()">×</button><div><div class="eyebrow" id="modalState">WELCOME TO</div><h1 id="modalTitle" style="font-size:44px;margin:5px 0">City</h1><div id="modalSubtitle"></div></div></div><div class="modalcontent"><div class="district-tabs" role="tablist" aria-label="District guide tabs"><button class="district-tab active" type="button" role="tab" aria-selected="true" data-tab="places">🏛️ Places</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="food">🍴 Food</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="reach">🧭 How to Reach</button><button class="district-tab" type="button" role="tab" aria-selected="false" data-tab="stays">🏨 Stays</button></div><div class="district-tab-hint">Tap a tab to jump directly to that part of the district guide.</div><div class="district-search"><div class="district-searchbox">🔎 <input autocomplete="off" id="districtSearchInput" placeholder="Search this district: places, food, hotels, hospitals, shopping..."/><button onclick="clearDistrictSearch()" style="border:0;background:none;cursor:pointer;font-size:18px">×</button></div><div class="district-search-results" id="districtSearchResults"></div></div><div class="cardmeta" style="margin:15px 0"><span class="meta">📍 <span id="mDistance"></span></span><span class="meta">₹ <span id="mFee"></span></span><span class="meta">🕐 <span id="mTime"></span></span><span class="meta rating">★ <span id="mRating"></span> Google</span></div><div class="chips"><span class="chip">Famous Places</span><span class="chip">Food &amp; Cuisine</span><span class="chip">Shopping</span><span class="chip">Culture &amp; History</span><span class="chip">Festivals</span><span class="chip">Hotels &amp; Stays</span><span class="chip">Hospitals</span><span class="chip">Transport</span><span class="chip">Emergency Services</span><span class="chip">Theatres &amp; Cinemas</span><span class="chip">Maps</span><span class="chip">Useful Online Services</span></div><div class="servicebar"><a id="mapBtn" rel="noopener" target="_blank">🗺️ Open in Google Maps</a><a id="foodMapBtn" rel="noopener" target="_blank">🍴 Food on Google Maps</a><a id="stayMapBtn" rel="noopener" target="_blank">🏨 Stays on Google Maps</a><a id="placeMapBtn" rel="noopener" target="_blank">📍 Places on Google Maps</a></div><h2 id="districtOverview">About <span id="aboutCityName">this city</span></h2><p id="dAbout" style="line-height:1.7;color:var(--muted)"></p><div class="detailgrid"><div class="detail"><b>🏛️ Famous Places</b><small id="dPlaces"></small></div><div class="detail"><b>🍛 Food &amp; Cuisine</b><small id="dFood"></small></div><div class="detail"><b>🛍️ Shopping &amp; Local Products</b><small id="dShop"></small></div><div class="detail"><b>🏺 Culture &amp; History</b><small>Heritage, traditions, local communities and stories of the destination.</small></div><div class="detail"><b>🎉 Festivals &amp; Events</b><small>Seasonal festivals and local events. Check official schedules before travelling.</small></div><div class="detail"><b>☀️ Best Time to Visit</b><small id="dTime"></small></div><div class="detail"><b>🏨 Hotels &amp; Stays</b><small>Explore accommodation options near the city centre, attractions and transport hubs. See verified hotel contacts below.</small></div><div class="detail"><b>🏥 Hospitals &amp; Pharmacies</b><small>Government and private healthcare information with verified contact details is listed below.</small></div><div class="detail"><b>🚉 Transport</b><small>Railway stations, bus stands, local transport and airport access.</small></div><div class="detail"><b>🚑 Emergency Services</b><small>Police, fire, ambulance and other essential services can be listed here with verified numbers.</small></div><div class="detail"><b>🎬 Entertainment</b><small>Theatres, cinemas, malls, parks and family entertainment options.</small></div><div class="detail"><b>💰 Approx. Budget</b><small id="dBudget"></small></div></div>
 <section class="district-section contact-section" data-search="hotels hotel stays accommodation contact phone email hospital healthcare emergency medical" id="districtStay">
 <h2 class="section-title">🏨 Hotels / Stays</h2>
 
@@ -1425,7 +1432,29 @@ async function openCity(name, options={}){
  document.getElementById('mTime').textContent=c.time; document.getElementById('mRating').textContent=c.rating;
  document.getElementById('breadcrumb').innerHTML=`Home <span>›</span> <b>Cities</b> <span>›</span> <b>${c.name}</b>`;
  document.getElementById('modalSubtitle').textContent=c.tag;
- document.getElementById('modalHero').style.backgroundImage=`linear-gradient(transparent,#06162d88),url('${c.img}')`;
+ const hero=document.getElementById('modalHero');
+ const heroVideo=document.getElementById('districtHeroVideo');
+ const heroSound=document.getElementById('districtHeroSound');
+ if(heroVideo&&heroSound){
+   const isVaranasi=normalizeCityQuery(c.name)==='varanasi';
+   hero.classList.toggle('has-district-video',isVaranasi);
+   heroSound.hidden=!isVaranasi;
+   heroSound.textContent='🔇';
+   heroSound.setAttribute('aria-label','Turn sound on');
+   heroSound.title='Turn sound on';
+   heroVideo.muted=true;
+   heroVideo.currentTime=0;
+   heroVideo.pause();
+   if(isVaranasi){
+     heroVideo.src='./images/varanasi.mp4';
+     heroVideo.load();
+     const playPromise=heroVideo.play();
+     if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
+   }else{
+     heroVideo.removeAttribute('src');
+     heroVideo.load();
+   }
+ }
  // Render Hotels and Hospitals immediately, before any optional district renderer can fail.
  try{renderContacts(c.name)}catch(e){console.error('ExploreUP services renderer failed:',e);}
  document.getElementById('dPlaces').textContent=c.places; document.getElementById('dFood').textContent=c.food;
@@ -1484,6 +1513,22 @@ async function openCity(name, options={}){
   document.getElementById('districtLastUpdated').textContent=liveContent.content_status==='verified' ? `Verified content • ${liveContent.source_name||'Official source'}${liveContent.verified_at?` • ${new Date(liveContent.verified_at).toLocaleDateString()}`:''}` : (liveContent.content_status==='partial' ? `Partially verified • ${liveContent.source_name||'Official source'} • Last database update: ${liveContent.updated_at?new Date(liveContent.updated_at).toLocaleDateString():'—'}` : `Information not verified yet • Official source: ${liveContent.source_name||'District Administration'}`);
  }));
 }
+(function setupDistrictHeroVideoControls(){
+ const btn=document.getElementById('districtHeroSound');
+ const video=document.getElementById('districtHeroVideo');
+ if(!btn||!video||btn.dataset.bound==='1')return;
+ btn.dataset.bound='1';
+ btn.addEventListener('click',()=>{
+   video.muted=!video.muted;
+   btn.textContent=video.muted?'🔇':'🔊';
+   btn.setAttribute('aria-label',video.muted?'Turn sound on':'Turn sound off');
+   btn.title=video.muted?'Turn sound on':'Turn sound off';
+ });
+ video.addEventListener('volumechange',()=>{
+   btn.textContent=video.muted?'🔇':'🔊';
+   btn.setAttribute('aria-label',video.muted?'Turn sound on':'Turn sound off');
+ });
+})();
 function searchSite(){
  const q=document.getElementById('searchInput').value.trim().toLowerCase(), box=document.getElementById('results');
  if(!q){box.style.display='none';return}
