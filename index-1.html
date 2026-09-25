@@ -379,107 +379,135 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 }
 </style>
 <style id="arya-input-layout-fix">
-/* Arya AI — clean chat/input layout */
+/* Arya V20/Tau-style layout: compact header, full chat body, fixed bottom composer */
 .arya-panel{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  display:flex!important;
+  flex-direction:column!important;
+  position:fixed!important;
+  right:20px!important;
+  bottom:78px!important;
+  left:auto!important;
+  top:auto!important;
+  width:min(390px,calc(100vw - 28px))!important;
+  height:min(560px,calc(100vh - 110px))!important;
+  max-height:calc(100vh - 110px)!important;
+  overflow:hidden!important;
+  background:var(--card)!important;
+}
+.arya-head{
+  flex:0 0 auto!important;
+  min-height:62px;
 }
 .arya-body{
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-  padding:16px !important;
+  flex:1 1 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  padding:14px!important;
   scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.arya-msg{
+  max-width:88%!important;
+  margin-top:8px!important;
+  margin-bottom:8px!important;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+.arya-suggest{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  margin:8px 0!important;
 }
 .arya-input{
-  flex:0 0 auto !important;
-  display:flex !important;
-  align-items:flex-end !important;
-  gap:8px !important;
-  width:100% !important;
-  padding:10px !important;
-  margin:0 !important;
-  background:var(--card) !important;
-  border-top:1px solid var(--line,#e2eaf3) !important;
-  box-sizing:border-box !important;
-  position:relative !important;
-  z-index:2 !important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  min-height:68px!important;
+  padding:12px!important;
+  margin:0!important;
+  background:var(--card)!important;
+  border-top:1px solid var(--line)!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  z-index:3!important;
 }
 .arya-input input,
-.arya-input textarea,
 #aryaInput{
-  flex:1 1 auto !important;
-  min-width:0 !important;
-  width:auto !important;
-  max-width:none !important;
-  min-height:44px !important;
-  max-height:120px !important;
-  height:44px;
-  box-sizing:border-box !important;
-  margin:0 !important;
-  padding:11px 13px !important;
-  border:1px solid var(--line,#dbe5f0) !important;
-  border-radius:14px !important;
-  outline:none !important;
-  background:var(--bg,#f4f8fc) !important;
-  color:var(--text,#10233f) !important;
-  font:inherit !important;
-  line-height:1.35 !important;
-  resize:none !important;
-  overflow-y:auto !important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  margin:0!important;
+  padding:11px 12px!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  background:var(--bg)!important;
+  color:inherit!important;
+  outline:0!important;
+  font:inherit!important;
+  line-height:1.25!important;
+  box-sizing:border-box!important;
 }
 .arya-input input:focus,
-.arya-input textarea:focus,
 #aryaInput:focus{
-  border-color:var(--blue,#0b67d1) !important;
-  box-shadow:0 0 0 3px rgba(11,103,209,.12) !important;
+  border-color:var(--blue,#0b67d1)!important;
+  box-shadow:0 0 0 3px rgba(11,103,209,.10)!important;
 }
 .arya-input button,
 #aryaSend{
-  flex:0 0 44px !important;
-  width:44px !important;
-  min-width:44px !important;
-  height:44px !important;
-  min-height:44px !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  border-radius:14px !important;
-  display:grid !important;
-  place-items:center !important;
-  cursor:pointer !important;
-  background:var(--gold,#ffb51b) !important;
-  color:#071b35 !important;
-  font-weight:900 !important;
-  line-height:1 !important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:62px!important;
+  height:42px!important;
+  min-height:42px!important;
+  margin:0!important;
+  padding:0 15px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:var(--gold)!important;
+  color:#13243a!important;
+  font-weight:900!important;
+  line-height:1!important;
+  cursor:pointer!important;
 }
 .arya-input button:disabled,
 #aryaSend:disabled{opacity:.55;cursor:not-allowed}
-.arya-msg{max-width:88%;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap}
-.arya-msg.user{margin-left:auto}
-.arya-msg.bot{margin-right:auto}
 @media(max-width:620px){
+  .arya-panel{
+    right:10px!important;
+    bottom:66px!important;
+    left:10px!important;
+    width:auto!important;
+    height:min(600px,calc(100vh - 90px))!important;
+    max-height:calc(100vh - 90px)!important;
+    border-radius:18px!important;
+  }
+  .arya-fab{
+    right:12px!important;
+    bottom:12px!important;
+  }
   .arya-input{
-    padding:9px !important;
-    gap:7px !important;
+    min-height:64px!important;
+    padding:10px!important;
   }
   .arya-input input,
-  .arya-input textarea,
   #aryaInput{
-    min-height:44px !important;
-    height:44px;
-    font-size:16px !important;
+    height:42px!important;
+    min-height:42px!important;
+    font-size:16px!important;
   }
   .arya-input button,
   #aryaSend{
-    flex-basis:44px !important;
-    width:44px !important;
-    min-width:44px !important;
-    height:44px !important;
+    min-width:58px!important;
+    height:42px!important;
   }
-  .arya-body{padding:12px !important}
 }
 </style>
 </head>
