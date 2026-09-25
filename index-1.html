@@ -2414,4 +2414,90 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
   window.addEventListener('pageshow',init);
 })();
 </script>
+
+<style id="arya-colourful-chat">
+/* Arya AI — colourful chat theme */
+.arya-panel{
+  border:1px solid rgba(77,144,255,.28)!important;
+  background:linear-gradient(145deg,#ffffff 0%,#f5f9ff 48%,#fff7e8 100%)!important;
+  box-shadow:0 24px 80px rgba(19,64,125,.30),0 0 0 1px rgba(255,181,27,.08)!important;
+}
+.arya-head{
+  background:linear-gradient(135deg,#071b35 0%,#1559a5 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border-bottom:0!important;
+  position:relative;
+  overflow:hidden;
+}
+.arya-head:after{
+  content:"";position:absolute;right:-35px;top:-55px;width:145px;height:145px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,181,27,.48),rgba(255,181,27,0) 68%);pointer-events:none;
+}
+.arya-head>div{position:relative;z-index:1}
+.arya-head b{color:#fff!important}
+.arya-head small{color:#dceaff!important}
+.arya-back,.arya-close{color:#fff!important}
+.arya-back:hover,.arya-close:hover{background:rgba(255,255,255,.16)!important}
+.arya-body{
+  background:radial-gradient(circle at 100% 0,rgba(123,63,242,.08),transparent 32%),radial-gradient(circle at 0 100%,rgba(11,103,209,.07),transparent 34%),#f8fbff!important;
+}
+.arya-msg{
+  border-radius:18px!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(40,91,160,.10)!important;
+  box-shadow:0 5px 16px rgba(24,66,120,.08)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#ffffff,#eaf4ff)!important;
+  color:#17385f!important;
+  border-left:4px solid #0b67d1!important;
+}
+.arya-msg.user{
+  margin-left:auto!important;
+  background:linear-gradient(135deg,#7b3ff2,#0b67d1)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 20px rgba(64,75,190,.24)!important;
+}
+.arya-suggest button{
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  padding:8px 11px!important;
+  font-weight:800!important;
+  color:#17385f!important;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#0b67d1,#7b3ff2,#ffb51b) border-box!important;
+  box-shadow:0 4px 12px rgba(40,80,140,.10)!important;
+  transition:transform .18s ease,box-shadow .18s ease!important;
+}
+.arya-suggest button:nth-child(3n+1){background:linear-gradient(#eef7ff,#eef7ff) padding-box,linear-gradient(135deg,#0b67d1,#31b7ff) border-box!important}
+.arya-suggest button:nth-child(3n+2){background:linear-gradient(#f6efff,#f6efff) padding-box,linear-gradient(135deg,#7b3ff2,#e14cff) border-box!important}
+.arya-suggest button:nth-child(3n){background:linear-gradient(#fff7df,#fff7df) padding-box,linear-gradient(135deg,#ff9f1c,#ffcf33) border-box!important}
+.arya-suggest button:hover{transform:translateY(-2px)!important;box-shadow:0 7px 16px rgba(40,80,140,.16)!important}
+.arya-input{
+  background:rgba(255,255,255,.96)!important;
+  border-top:1px solid #dce8f6!important;
+}
+.arya-input input,#aryaInput{
+  background:#f4f8ff!important;
+  border:1px solid #cbdcf1!important;
+}
+.arya-input input:focus,#aryaInput:focus{
+  border-color:#7b3ff2!important;
+  box-shadow:0 0 0 3px rgba(123,63,242,.13)!important;
+}
+.arya-input button,#aryaSend{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00)!important;
+  color:#10233f!important;
+  box-shadow:0 5px 14px rgba(255,145,0,.25)!important;
+}
+.arya-fab{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00,#7b3ff2)!important;
+  color:#fff!important;
+  box-shadow:0 12px 30px rgba(84,57,160,.30)!important;
+}
+@media(max-width:620px){
+  .arya-panel{background:#f8fbff!important}
+  .arya-head{border-radius:18px 18px 0 0!important}
+}
+</style>
 </body></html>
