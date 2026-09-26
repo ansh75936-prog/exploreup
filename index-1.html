@@ -37,7 +37,7 @@ a{text-decoration:none;color:inherit}.nav{height:70px;background:var(--navy);col
 .blogs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.blog{background:#fff;border-radius:15px;overflow:hidden}.blog img{height:145px;width:100%;object-fit:cover}.blog div{padding:14px}.blog h3{font-size:16px;margin:0 0 8px}.blog small{color:var(--muted)}
 .footer{background:var(--navy);color:#cddbf0;padding:35px 5%;display:flex;justify-content:space-between;gap:20px}.footer strong{color:white;font-size:20px}.footer span{color:var(--gold)}
 #results{display:none;background:#fff;padding:8px;border-radius:16px;margin:10px 0 0;box-shadow:0 12px 30px #001b3b20;position:relative;width:100%;max-width:700px;z-index:10;color:var(--text);border:1px solid #e3eaf3;overflow:hidden}.result{padding:13px 14px;border-bottom:1px solid #e8eef5;cursor:pointer;display:block;text-align:left}.result:last-child{border:0}.result:hover{background:#f4f8fc}.result b{font-size:15px}.result small{color:var(--muted)}#results .result,#results .result *{color:#10233f !important}#results .result small{color:#52657f !important}#results .result{background:#fff !important}
-.modal{display:none;position:fixed;inset:0;background:#06162dcc;z-index:50;padding:30px;overflow:auto}.modalbox{background:#fff;max-width:1000px;margin:auto;border-radius:22px;overflow:hidden}.modalhero{height:280px;color:#fff;padding:30px;display:flex;align-items:end;background-size:cover;background-position:center;position:relative}.modalhero:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#06162d88)}.modalhero>*{position:relative;z-index:2}.modalhero .district-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:0}.modalhero .district-hero-video-overlay{position:absolute;inset:0;z-index:1;pointer-events:none}.close{position:absolute;right:20px;top:18px;background:#fff2;color:white;border:1px solid #fff8;border-radius:50%;width:38px;height:38px;z-index:5;cursor:pointer}.modalcontent{padding:24px}.district-subnav{position:sticky;top:0;z-index:8;display:flex;gap:8px;overflow:auto;padding:10px 0 12px;margin:-4px 0 18px;background:var(--bg);border-bottom:1px solid #e7edf5}.district-subnav a{white-space:nowrap;text-decoration:none;background:#fff;border:1px solid #dfe7f1;color:var(--navy);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}.district-subnav a:hover{border-color:var(--gold);transform:translateY(-1px)}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:#eef5ff;color:#1559a5;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700}.detailgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}.mallgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}.mallcard{background:#f6f9fd;border:1px solid #e4ebf4;border-radius:14px;padding:14px}.mallcard b{display:block;margin-bottom:6px}.mallcard small{display:block;color:var(--muted);line-height:1.5}.mallcard a{display:inline-block;margin-top:9px;color:var(--blue);font-weight:800;font-size:12px}.mallnote{color:var(--muted);font-size:12px;margin-top:8px}@media(max-width:700px){.mallgrid{grid-template-columns:1fr}}
+.modal{display:none;position:fixed;inset:0;background:#06162dcc;z-index:50;padding:30px;overflow:auto}.modalbox{background:#fff;max-width:1000px;margin:auto;border-radius:22px;overflow:hidden}.modalhero{height:280px;color:#fff;padding:30px;display:flex;align-items:end;background-size:cover;background-position:center;position:relative}.modalhero:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#06162d88)}.modalhero>*{position:relative;z-index:2}.modalhero .district-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;z-index:0;pointer-events:none;background:#06162d}.modalhero.has-district-video .district-hero-video{opacity:1}.modalhero .district-hero-video-overlay{position:absolute;inset:0;z-index:1;pointer-events:none}.close{position:absolute;right:20px;top:18px;background:#fff2;color:white;border:1px solid #fff8;border-radius:50%;width:38px;height:38px;z-index:5;cursor:pointer}.modalcontent{padding:24px}.district-subnav{position:sticky;top:0;z-index:8;display:flex;gap:8px;overflow:auto;padding:10px 0 12px;margin:-4px 0 18px;background:var(--bg);border-bottom:1px solid #e7edf5}.district-subnav a{white-space:nowrap;text-decoration:none;background:#fff;border:1px solid #dfe7f1;color:var(--navy);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}.district-subnav a:hover{border-color:var(--gold);transform:translateY(-1px)}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:#eef5ff;color:#1559a5;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700}.detailgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}.mallgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}.mallcard{background:#f6f9fd;border:1px solid #e4ebf4;border-radius:14px;padding:14px}.mallcard b{display:block;margin-bottom:6px}.mallcard small{display:block;color:var(--muted);line-height:1.5}.mallcard a{display:inline-block;margin-top:9px;color:var(--blue);font-weight:800;font-size:12px}.mallnote{color:var(--muted);font-size:12px;margin-top:8px}@media(max-width:700px){.mallgrid{grid-template-columns:1fr}}
 .detail{background:#f6f9fd;border-radius:13px;padding:16px}.detail b{display:block;margin-bottom:5px}.detail small{color:var(--muted)}
 @media(max-width:1000px){.navlinks{display:none}.categories{grid-template-columns:repeat(5,1fr)}.cities{grid-template-columns:repeat(3,1fr)}.feature{grid-template-columns:1fr}.blogs{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.nav{padding:0 4%;height:62px}.logo{font-size:19px}.hero{min-height:470px;padding:35px 5%}.hero h1{font-size:45px}.search{border-radius:20px;flex-direction:column}.search button{height:48px}.categories{grid-template-columns:repeat(2,1fr);border-radius:24px;padding:20px}.cities{grid-template-columns:repeat(2,1fr)}.city{height:190px}.featurebanner h2{font-size:30px}.checks,.detailgrid,.blogs{grid-template-columns:1fr}.footer{flex-direction:column}}
@@ -1479,25 +1479,42 @@ async function openCity(name, options={}){
      if(videoSource)videoSource.src='/images/varanasi-under-25mb.mp4';
      heroVideo.src='/images/varanasi-under-25mb.mp4';
      heroVideo.muted=true;
+     heroVideo.defaultMuted=true;
      heroVideo.autoplay=true;
      heroVideo.playsInline=true;
+     heroVideo.setAttribute('muted','');
+     heroVideo.setAttribute('autoplay','');
+     heroVideo.setAttribute('playsinline','');
      heroVideo.preload='auto';
+     heroVideo.poster=c.img;
+     heroVideo.src='/images/varanasi-under-25mb.mp4?v=20260926';
      heroVideo.load();
      const activateVideo=()=>{
        hero.classList.add('has-district-video');
        heroSound.hidden=false;
        heroVideo.muted=true;
+       heroVideo.defaultMuted=true;
        const playPromise=heroVideo.play();
        if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
      };
-     heroVideo.onloadeddata=activateVideo;
-     heroVideo.oncanplay=activateVideo;
+     const videoReady=()=>{
+       activateVideo();
+       if(heroVideo.paused){
+         const p=heroVideo.play();
+         if(p&&typeof p.catch==='function')p.catch(()=>{});
+       }
+     };
+     heroVideo.onloadedmetadata=videoReady;
+     heroVideo.onloadeddata=videoReady;
+     heroVideo.oncanplay=videoReady;
+     heroVideo.onplaying=activateVideo;
      heroVideo.onerror=()=>{
-       hero.classList.remove('has-district-video');
+       console.warn('ExploreUP Varanasi hero video could not be decoded or loaded:',heroVideo.error);
        heroSound.hidden=true;
+       hero.classList.remove('has-district-video');
        hero.style.backgroundImage=`linear-gradient(transparent,#06162d88),url('${c.img}')`;
      };
-     if(heroVideo.readyState>=2)activateVideo();
+     if(heroVideo.readyState>=1)videoReady();
    }else{
      heroVideo.onloadeddata=null;
      heroVideo.onerror=null;
