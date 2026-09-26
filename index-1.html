@@ -1461,10 +1461,11 @@ async function openCity(name, options={}){
  const hero=document.getElementById('modalHero');
  const heroVideo=document.getElementById('districtHeroVideo');
  const heroSound=document.getElementById('districtHeroSound');
+ if(hero)hero.style.backgroundImage=`linear-gradient(transparent,#06162d88),url('${c.img}')`;
  if(heroVideo&&heroSound){
    const isVaranasi=normalizeCityQuery(c.name)==='varanasi';
-   hero.classList.toggle('has-district-video',isVaranasi);
-   heroSound.hidden=!isVaranasi;
+   hero.classList.toggle('has-district-video',false);
+   heroSound.hidden=true;
    heroSound.textContent='🔇';
    heroSound.setAttribute('aria-label','Turn sound on');
    heroSound.title='Turn sound on';
@@ -1474,9 +1475,22 @@ async function openCity(name, options={}){
    if(isVaranasi){
      heroVideo.src='./images/varanasi.mp4';
      heroVideo.load();
-     const playPromise=heroVideo.play();
-     if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
+     const activateVideo=()=>{
+       hero.classList.add('has-district-video');
+       heroSound.hidden=false;
+       const playPromise=heroVideo.play();
+       if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
+     };
+     heroVideo.onloadeddata=activateVideo;
+     heroVideo.onerror=()=>{
+       hero.classList.remove('has-district-video');
+       heroSound.hidden=true;
+       hero.style.backgroundImage=`linear-gradient(transparent,#06162d88),url('${c.img}')`;
+     };
+     if(heroVideo.readyState>=2)activateVideo();
    }else{
+     heroVideo.onloadeddata=null;
+     heroVideo.onerror=null;
      heroVideo.removeAttribute('src');
      heroVideo.load();
    }
