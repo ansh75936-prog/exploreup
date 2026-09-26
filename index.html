@@ -707,8 +707,8 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
   </div>
 </section>
 <section class="section" id="cities">
-<div class="sectionhead"><div><h2>📍 Explore Our Cities</h2><p>Explore Uttar Pradesh city by city, with dedicated guides and useful information.</p></div><a class="view" href="#cities">View All Cities →</a></div>
-<div class="cities" id="cityGrid"></div>
+<div class="sectionhead"><div><h2>📍 Explore Our Cities</h2><p>Explore Uttar Pradesh city by city, with dedicated guides and useful information.</p></div><button class="view" id="viewAllDistrictsBtn" type="button" onclick="toggleAllDistricts()" aria-expanded="false" aria-controls="cityGrid">View All 75 Districts →</button></div>
+<div class="cities" id="cityGrid" hidden></div>
 </section>
 <section class="section" id="places">
 <div class="feature">
@@ -1266,6 +1266,16 @@ function safeOpenCity(name){
   }catch(e){ console.warn('ExploreUP static 75-district catalog setup failed:',e); }
 })();
 
+function toggleAllDistricts(){
+ const grid=document.getElementById('cityGrid');
+ const btn=document.getElementById('viewAllDistrictsBtn');
+ if(!grid||!btn)return;
+ const willOpen=grid.hidden;
+ grid.hidden=!willOpen;
+ btn.setAttribute('aria-expanded',String(willOpen));
+ btn.textContent=willOpen?'Hide 75 Districts ↑':'View All 75 Districts →';
+ if(willOpen) grid.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function renderCities(){
  const grid=document.getElementById('cityGrid'); if(!grid)return;
  const list=(window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?window.__exploreUpDistrictCities:cities;
