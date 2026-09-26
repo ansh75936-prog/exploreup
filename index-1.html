@@ -648,6 +648,11 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
   .arya-input{flex-basis:64px!important;min-height:64px!important;padding:9px!important}
 }
 </style>
+<style id="arya-initial-hidden-fix">
+/* Hidden must win over the older always-flex visual overrides. */
+.arya-panel[hidden]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.arya-panel.arya-visible:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+</style>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
