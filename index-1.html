@@ -1470,8 +1470,8 @@ async function openCity(name, options={}){
    heroSound.setAttribute('aria-label','Turn sound on');
    heroSound.title='Turn sound on';
    heroVideo.muted=true;
-   heroVideo.currentTime=0;
-   heroVideo.pause();
+   try{heroVideo.pause();}catch(e){}
+   try{if(heroVideo.readyState>0)heroVideo.currentTime=0;}catch(e){}
    if(isVaranasi){
      hero.classList.add('has-district-video');
      heroSound.hidden=false;
