@@ -1,0 +1,3 @@
+// ExploreUP district data: Bhadohi
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Bhadohi","tag":"Carpet city & craft traditions","img":"https://loremflickr.com/900/600/Bhadohi%2C%20Uttar%20Pradesh%2C%20India?lock=24","places":"Carpet weaving centres, local craft markets, nearby heritage","food":"Local North Indian cuisine & sweets","shop":"Handmade carpets & textiles","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Bhadohi is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
