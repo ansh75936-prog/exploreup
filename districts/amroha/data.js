@@ -1,0 +1,3 @@
+// ExploreUP district data: Amroha
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Amroha","tag":"Dholak craft & local heritage","img":"https://loremflickr.com/900/600/Amroha%2C%20Uttar%20Pradesh%2C%20India?lock=32","places":"Local craft centres, historic mosques, markets","food":"Mango products, kebabs & sweets","shop":"Dholaks & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Amroha is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
