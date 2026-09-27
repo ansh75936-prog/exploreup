@@ -35,7 +35,6 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
     video.loop=true;
     video.playsInline=true;
     video.preload='auto';
-    video.poster='https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=85';
     const load=()=>{
       if(sourceIndex>=SOURCES.length) return;
       video.src=SOURCES[sourceIndex];
