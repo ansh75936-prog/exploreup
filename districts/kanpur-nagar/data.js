@@ -1,0 +1,3 @@
+// ExploreUP district data: Kanpur Nagar
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Kanpur Nagar","tag":"History, industry & local food","img":"https://loremflickr.com/900/600/Kanpur%2C%20Uttar%20Pradesh%2C%20India?lock=8","places":"JK Temple, Moti Jheel, Allen Forest","food":"Thaggu Ke Laddu, Chaat, North Indian food","shop":"Leather goods & local sweets","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Kanpur is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
