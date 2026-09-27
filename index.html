@@ -1553,10 +1553,15 @@ async function openCity(name, options={}){
      };
      if(heroVideo.readyState>=1)videoReady();
    }else{
+     // Keep the Varanasi asset attached so later navigation cannot make the video source disappear.
+     // Only stop/hide playback when viewing another district.
+     heroVideo.pause();
+     heroVideo.muted=true;
+     heroVideo.onloadedmetadata=null;
      heroVideo.onloadeddata=null;
+     heroVideo.oncanplay=null;
+     heroVideo.onplaying=null;
      heroVideo.onerror=null;
-     heroVideo.removeAttribute('src');
-     heroVideo.load();
    }
  }
  // Render Hotels and Hospitals immediately, before any optional district renderer can fail.
