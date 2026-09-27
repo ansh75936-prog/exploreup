@@ -1,0 +1,3 @@
+// ExploreUP district data: Pratapgarh
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Pratapgarh","tag":"Amla, temples & rural heritage","img":"https://loremflickr.com/900/600/Pratapgarh%2C%20Uttar%20Pradesh%2C%20India?lock=25","places":"Belha Devi, local temples, countryside attractions","food":"Amla products, sweets, North Indian food","shop":"Amla products & local crafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Pratapgarh is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
