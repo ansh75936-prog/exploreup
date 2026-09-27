@@ -1,0 +1,3 @@
+// ExploreUP district data: Sonbhadra
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Sonbhadra","tag":"Fort heritage, dams & nature","img":"https://loremflickr.com/900/600/Sonbhadra%2C%20Uttar%20Pradesh%2C%20India?lock=23","places":"Robertsganj area, Vijaygarh Fort, eco-tourism sites","food":"Local tribal-influenced cuisine & North Indian food","shop":"Handicrafts & local products","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Sonbhadra is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
