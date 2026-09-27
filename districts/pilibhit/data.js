@@ -1,0 +1,3 @@
+// ExploreUP district data: Pilibhit
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Pilibhit","tag":"Tiger reserve & forest landscapes","img":"https://loremflickr.com/900/600/Pilibhit%2C%20Uttar%20Pradesh%2C%20India?lock=31","places":"Pilibhit Tiger Reserve, Chuka Beach, forest areas","food":"North Indian & local rural cuisine","shop":"Bamboo crafts & local products","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Pilibhit is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
