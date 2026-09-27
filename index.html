@@ -1407,6 +1407,21 @@ function goBackNavigation(){
 
 function closeModal(options={}){
  const m=document.getElementById('modal'); if(!m)return;
+ // Stop and reset any district hero video before returning to the home page.
+ const heroVideo=document.getElementById('districtHeroVideo');
+ const hero=document.getElementById('modalHero');
+ if(heroVideo){
+   try{heroVideo.pause();}catch(e){}
+   try{heroVideo.currentTime=0;}catch(e){}
+   heroVideo.onloadedmetadata=null;
+   heroVideo.onloadeddata=null;
+   heroVideo.oncanplay=null;
+   heroVideo.onplaying=null;
+   heroVideo.onerror=null;
+ }
+ if(hero)hero.classList.remove('has-district-video');
+ const heroSound=document.getElementById('districtHeroSound');
+ if(heroSound)heroSound.hidden=true;
  m.style.display='none'; m.setAttribute('aria-hidden','true'); document.body.style.overflow='';
  currentExploreCity='';
  document.title='ExploreUP — Explore Uttar Pradesh | Cities, Places, Food & Travel';
