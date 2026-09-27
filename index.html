@@ -2781,4 +2781,125 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 .arya-msg.bot *{color:#17385f!important}
 </style>
 
+<!-- ExploreUP final interaction recovery layer -->
+<script id="exploreup-final-interaction-recovery">
+(function(){
+  'use strict';
+  const ready=fn=>{
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn,{once:true});
+    else fn();
+  };
+
+  ready(()=>{
+    // Mobile-safe district/city opening. Prefer the explicit city name.
+    const openDestination=(el)=>{
+      const card=el?.closest?.('.district,.city,[data-open-city],[data-city-index]');
+      if(!card)return false;
+      const name=card.getAttribute('data-open-city');
+      if(name && typeof window.safeOpenCity==='function'){
+        window.safeOpenCity(name);
+        return true;
+      }
+      const idx=card.getAttribute('data-city-index');
+      if(idx!==null && idx!=='' && typeof window.safeOpenCityByIndex==='function'){
+        window.safeOpenCityByIndex(idx);
+        return true;
+      }
+      return false;
+    };
+
+    document.addEventListener('click',e=>{
+      if(openDestination(e.target)) e.stopImmediatePropagation();
+    },true);
+
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){
+        if(openDestination(e.target)){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      }
+    },true);
+
+    // Make View All Cities deterministic.
+    const view=document.getElementById('viewAllDistrictsBtn');
+    if(view && !view.dataset.recoveryBound){
+      view.dataset.recoveryBound='1';
+      view.addEventListener('click',()=>{
+        const grid=document.getElementById('cityGrid');
+        if(!grid)return;
+        const opening=grid.hidden;
+        grid.hidden=!opening;
+        view.setAttribute('aria-expanded',String(opening));
+        view.textContent=opening?'Hide All Cities ↑':'View All Cities ↓';
+        if(opening) setTimeout(()=>grid.scrollIntoView({behavior:'smooth',block:'start'}),0);
+      },true);
+    }
+
+    // One authoritative Arya open/close state. Existing Arya answer logic is preserved.
+    const panel=()=>document.getElementById('aryaPanel');
+    const setAryaOpen=open=>{
+      const p=panel();
+      if(!p)return;
+      if(open){
+        p.hidden=false;
+        p.classList.add('arya-visible');
+        p.style.display='flex';
+        document.body.classList.add('arya-open');
+        setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
+      }else{
+        p.hidden=true;
+        p.classList.remove('arya-visible');
+        p.style.display='none';
+        document.body.classList.remove('arya-open');
+      }
+    };
+
+    window.toggleArya=()=>{
+      const p=panel();
+      if(!p)return;
+      setAryaOpen(p.hidden || !p.classList.contains('arya-visible'));
+    };
+    window.aryaBackHome=()=>{
+      setAryaOpen(false);
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+
+    document.querySelectorAll('.arya-fab,.hero-arya-cta').forEach(btn=>{
+      if(btn.dataset.recoveryBound)return;
+      btn.dataset.recoveryBound='1';
+      btn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.toggleArya();
+      },true);
+    });
+
+    document.querySelectorAll('.arya-close').forEach(btn=>{
+      if(btn.dataset.recoveryBound)return;
+      if((btn.getAttribute('aria-label')||'').toLowerCase().includes('close')){
+        btn.dataset.recoveryBound='1';
+        btn.addEventListener('click',e=>{
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          setAryaOpen(false);
+        },true);
+      }
+    });
+
+    const back=document.querySelector('.arya-back');
+    if(back && !back.dataset.recoveryBound){
+      back.dataset.recoveryBound='1';
+      back.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.aryaBackHome();
+      },true);
+    }
+
+    // Keep Arya closed after a fresh load.
+    setAryaOpen(false);
+  });
+})();
+</script>
 </body></html>
