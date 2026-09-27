@@ -1,0 +1,3 @@
+// ExploreUP district data: Lucknow
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Lucknow","tag":"Nawabi heritage & Awadhi cuisine","img":"https://loremflickr.com/900/600/Lucknow%2C%20Uttar%20Pradesh%2C%20India?lock=1","places":"Bara Imambara, Rumi Darwaza, Residency","food":"Tunday Kababi, Galawati Kebab, Basket Chaat","shop":"Chikankari & Zardozi","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Lucknow is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
