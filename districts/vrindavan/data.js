@@ -1,0 +1,3 @@
+// ExploreUP district data: Vrindavan
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Vrindavan","tag":"Temples, ghats & Braj traditions","img":"https://loremflickr.com/900/600/Vrindavan%2C%20Uttar%20Pradesh%2C%20India?lock=6","places":"Banke Bihari Temple, Prem Mandir, ISKCON","food":"Peda, Lassi, vegetarian snacks","shop":"Religious souvenirs & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Vrindavan is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
