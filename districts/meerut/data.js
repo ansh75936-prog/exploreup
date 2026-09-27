@@ -1,0 +1,3 @@
+// ExploreUP district data: Meerut
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Meerut","tag":"History, sports & local markets","img":"https://loremflickr.com/900/600/Meerut%2C%20Uttar%20Pradesh%2C%20India?lock=11","places":"Augarnath Temple, Gandhi Bagh, Hastinapur nearby","food":"Chaat, sweets, North Indian food","shop":"Sports goods & local products","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Meerut is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
