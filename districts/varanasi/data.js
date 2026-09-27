@@ -6,54 +6,82 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
 (function(){
   'use strict';
   const SOURCES=[
-    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4',
     'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4',
+    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4',
     './images/varanasi-under-25mb-faststart-1.mp4'
   ];
-  let sourceIndex=0;
   let lastVideo=null;
+  let sourceIndex=0;
+
   function isVaranasi(){
     return String(window.currentExploreCity||window.currentExploreCityName||'').trim().toLowerCase()==='varanasi';
   }
+
   function attach(){
     if(!isVaranasi()) return false;
+
     const hero=document.getElementById('modalHero');
     const video=document.getElementById('districtHeroVideo');
     const sound=document.getElementById('districtHeroSound');
     if(!hero||!video) return false;
-    if(video===lastVideo && video.dataset.exploreupVideoReady==='1') return true;
+
+    if(video===lastVideo && video.dataset.exploreupVideoState) return true;
+
     lastVideo=video;
-    video.dataset.exploreupVideoReady='1';
-    hero.classList.add('has-district-video');
-    if(sound) sound.hidden=false;
+    sourceIndex=0;
+    video.dataset.exploreupVideoState='loading';
+
+    hero.classList.remove('has-district-video');
+    if(sound) sound.hidden=true;
+
     video.style.display='block';
     video.style.visibility='visible';
-    video.style.opacity='1';
+    video.style.opacity='0';
     video.muted=true;
     video.defaultMuted=true;
     video.autoplay=true;
     video.loop=true;
     video.playsInline=true;
     video.preload='auto';
+    video.disablePictureInPicture=true;
+    video.disableRemotePlayback=true;
+
+    const showVideo=()=>{
+      if(!isVaranasi()) return;
+      video.dataset.exploreupVideoState='ready';
+      video.style.opacity='1';
+      hero.classList.add('has-district-video');
+      if(sound) sound.hidden=false;
+      const p=video.play();
+      if(p&&typeof p.catch==='function') p.catch(function(){});
+    };
+
     const load=()=>{
-      if(sourceIndex>=SOURCES.length) return;
+      if(sourceIndex>=SOURCES.length){
+        video.dataset.exploreupVideoState='failed';
+        video.style.opacity='0';
+        hero.classList.remove('has-district-video');
+        if(sound) sound.hidden=true;
+        return;
+      }
       video.src=SOURCES[sourceIndex];
       video.load();
       const p=video.play();
       if(p&&typeof p.catch==='function') p.catch(function(){});
     };
+
     video.onerror=()=>{
       sourceIndex++;
-      if(sourceIndex<SOURCES.length) load();
+      load();
     };
-    video.onloadeddata=()=>{
-      hero.classList.add('has-district-video');
-      const p=video.play();
-      if(p&&typeof p.catch==='function') p.catch(function(){});
-    };
+    video.onloadeddata=showVideo;
+    video.oncanplay=showVideo;
+    video.onplaying=showVideo;
+
     load();
     return true;
   }
+
   function start(){
     let tries=0;
     const timer=setInterval(()=>{
@@ -62,6 +90,7 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
     },250);
     attach();
   }
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
-})();
+})();\n
