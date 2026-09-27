@@ -1,0 +1,3 @@
+// ExploreUP district data: Firozabad
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Firozabad","tag":"Glass bangles & Jain heritage","img":"https://loremflickr.com/900/600/Firozabad%2C%20Uttar%20Pradesh%2C%20India?lock=16","places":"Jain temples, local glass markets, Chandravar area","food":"Local sweets & North Indian food","shop":"Glass bangles & glassware","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Firozabad is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
