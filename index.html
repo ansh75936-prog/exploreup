@@ -1541,7 +1541,6 @@ async function openCity(name, options={}){
      heroVideo.onloadeddata=videoReady;
      heroVideo.oncanplay=videoReady;
      heroVideo.onplaying=activateVideo;
-     let videoFallbackTried=false;
      heroVideo.onerror=()=>{
        console.warn('ExploreUP Varanasi hero video source failed:',heroVideo.error);
        if(videoSourceIndex<videoSources.length-1){
@@ -2309,7 +2308,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(reg => {
           reg.update();
-          setInterval(() => reg.update().catch(() => {}), 15000);
+          setInterval(() => reg.update().catch(() => {}), 60000);
         }).catch(() => {});
       });
       let exploreUpReloading = false;
@@ -2326,7 +2325,7 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     (function(){
       'use strict';
       const KEY='exploreup-deployment-version-v1';
-      const CHECK_EVERY=15000;
+      const CHECK_EVERY=60000;
       let checking=false;
 
       async function checkForUpdate(){
