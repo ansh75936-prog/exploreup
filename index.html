@@ -976,6 +976,7 @@ function trackSuggestion(){const a=getAnalytics();a.suggestions=(a.suggestions||
 function totalSuggestionCount(){let n=0;for(const c of cities||[]){try{n+=JSON.parse(exploreStorage.get(suggestionKey(c.name))||'[]').length}catch(e){}}return n}
 try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)}
 <!-- District data is maintained in separate files under /districts. -->
+<!-- District structure synced: 77 existing destination records are file-backed. -->
 <script src="./districts/lucknow/data.js"></script>
 <script src="./districts/ayodhya/data.js"></script>
 <script src="./districts/varanasi/data.js"></script>
