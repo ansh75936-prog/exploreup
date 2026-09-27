@@ -1,0 +1,3 @@
+// ExploreUP district data: Kannauj
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Kannauj","tag":"Perfume capital of India","img":"https://loremflickr.com/900/600/Kannauj%2C%20Uttar%20Pradesh%2C%20India?lock=17","places":"Perfume distilleries, archaeological sites, local markets","food":"Traditional sweets & North Indian food","shop":"Attar, perfumes & aromatic products","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Kannauj is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
