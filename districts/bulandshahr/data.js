@@ -1,0 +1,3 @@
+// ExploreUP district data: Bulandshahr
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Bulandshahr","tag":"Historic towns & religious sites","img":"https://loremflickr.com/900/600/Bulandshahr%2C%20Uttar%20Pradesh%2C%20India?lock=28","places":"Sikandrabad area, Belon, local temples","food":"Local sweets & North Indian cuisine","shop":"Pottery & local handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Bulandshahr is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
