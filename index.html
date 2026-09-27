@@ -2392,3 +2392,304 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
         <a class="mobile-menu-item" href="tel:112"><span class="mobile-menu-icon">🚨</span><span class="mobile-menu-copy"><b>Helplines &amp; Emergency</b><small>Police 112 • Ambulance 108 • Tourist 1363</small></span><span class="mobile-menu-badge">24×7</span></a>
         <button class="mobile-menu-item" type="button" id="mobileAboutItem"><span class="mobile-menu-icon">⭐</span><span class="mobile-menu-copy"><b>About ExploreUP</b><small>Why ExploreUP, mission &amp; city directory</small></span></button>
       </div>
+      <div class="mobile-menu-footer"><b>ExploreUP</b> • Uttar Pradesh<br><span>v2.4 • Har Shehar Ki Kahani • Explore • Discover • Experience</span></div>`;
+
+    document.body.appendChild(menu);
+
+    function closeMenu(){
+      menu.classList.remove('show');
+      sync();
+    }
+
+    function sync(){
+      const open=menu.classList.contains('show');
+      btn.classList.toggle('is-open',open);
+      btn.setAttribute('aria-expanded',String(open));
+      btn.setAttribute('aria-label',open?'Close menu':'Open menu');
+      btn.textContent=open?'×':'⋮';
+      btn.style.position=open?'fixed':'';
+      btn.style.top=open?'11px':'';
+      btn.style.right=open?'14px':'';
+      btn.style.left=open?'auto':'';
+      btn.style.zIndex=open?'10001':'';
+      backdrop.classList.toggle('show',open);
+      document.body.style.overflow=open?'hidden':'';
+    }
+
+    btn.addEventListener('click',function(){
+      menu.classList.toggle('show');
+      sync();
+    });
+
+    backdrop.addEventListener('click',closeMenu);
+
+    menu.addEventListener('click',function(e){
+      if(e.target.closest('a')) closeMenu();
+    });
+
+    document.getElementById('mobileBackItem')?.addEventListener('click',function(){
+      closeMenu();
+      if(window.history.length>1) window.history.back();
+      else window.location.href='/';
+    });
+
+    function openAuth(mode){
+      let modal=document.getElementById('mobileAuthModal');
+      if(!modal){
+        modal=document.createElement('div');
+        modal.id='mobileAuthModal';
+        modal.className='mobile-auth-modal';
+        modal.innerHTML=`
+          <div class="mobile-auth-card" role="dialog" aria-modal="true" aria-labelledby="mobileAuthTitle">
+            <div class="mobile-auth-head"><h3 id="mobileAuthTitle">Log In</h3><button class="mobile-auth-close" type="button" aria-label="Close">×</button></div>
+            <input id="mobileAuthName" type="text" placeholder="Your name" autocomplete="name" style="display:none">
+            <input id="mobileAuthEmail" type="email" placeholder="Email address" autocomplete="email">
+            <input id="mobileAuthPassword" type="password" placeholder="Password" autocomplete="current-password">
+            <button id="mobileAuthSubmit" class="mobile-auth-submit" type="button">Log In</button>
+            <button id="mobileAuthSwitch" class="mobile-auth-switch" type="button">Create a new account</button>
+            <div id="mobileAuthStatus" class="mobile-auth-status"></div>
+          </div>`;
+        document.body.appendChild(modal);
+        modal.querySelector('.mobile-auth-close').addEventListener('click',()=>modal.classList.remove('show'));
+        modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+        modal.querySelector('#mobileAuthSwitch').addEventListener('click',()=>{
+          openAuth(modal.dataset.mode==='login'?'signup':'login');
+        });
+        modal.querySelector('#mobileAuthSubmit').addEventListener('click',async()=>{
+          const m=modal.dataset.mode;
+          const email=modal.querySelector('#mobileAuthEmail').value.trim();
+          const password=modal.querySelector('#mobileAuthPassword').value;
+          const name=modal.querySelector('#mobileAuthName').value.trim();
+          const status=modal.querySelector('#mobileAuthStatus');
+          status.style.color='#b42318';
+          status.textContent='';
+          if(!email||!password||(m==='signup'&&!name)){status.textContent=m==='signup'?'Name, email and password are required.':'Email and password are required.';return}
+          const client=await loadSupabaseBackend();
+          if(!client){status.textContent='Login service is unavailable right now.';return}
+          const btn=modal.querySelector('#mobileAuthSubmit'); btn.disabled=true; btn.textContent=m==='signup'?'Creating…':'Signing in…';
+          try{
+            let result;
+            if(m==='signup'){
+              result=await client.auth.signUp({email,password,options:{data:{full_name:name}}});
+              if(result.error)throw result.error;
+              if(result.data?.session){
+                status.style.color='#18794e'; status.textContent='Account created and logged in.';
+                modal.classList.remove('show');
+              }else{
+                status.style.color='#8a5a00'; status.textContent='Account created. Check your email if confirmation is required, then log in.';
+              }
+            }else{
+              result=await client.auth.signInWithPassword({email,password});
+              if(result.error)throw result.error;
+              status.style.color='#18794e'; status.textContent='Login successful.';
+              modal.classList.remove('show');
+            }
+            updateMobileAuthState();
+          }catch(err){status.textContent=err?.message||'Authentication failed.'}
+          finally{btn.disabled=false;btn.textContent=m==='signup'?'Create Account':'Log In'}
+        });
+      }
+      const isSignup=mode==='signup';
+      modal.dataset.mode=isSignup?'signup':'login';
+      modal.querySelector('#mobileAuthTitle').textContent=isSignup?'Create Account':'Log In';
+      modal.querySelector('#mobileAuthName').style.display=isSignup?'block':'none';
+      modal.querySelector('#mobileAuthPassword').autocomplete=isSignup?'new-password':'current-password';
+      modal.querySelector('#mobileAuthSubmit').textContent=isSignup?'Create Account':'Log In';
+      modal.querySelector('#mobileAuthSwitch').textContent=isSignup?'Already have an account? Log In':'Create a new account';
+      modal.querySelector('#mobileAuthStatus').textContent='';
+      modal.classList.add('show');
+      setTimeout(()=>modal.querySelector(isSignup?'#mobileAuthName':'#mobileAuthEmail')?.focus(),50);
+    }
+    async function updateMobileAuthState(){
+      const client=await loadSupabaseBackend();
+      if(!client)return;
+      const {data}=await client.auth.getUser();
+      const login=document.getElementById('mobileLoginItem');
+      const create=document.getElementById('mobileCreateItem');
+      if(data?.user){
+        const label=data.user.user_metadata?.full_name||data.user.email||'Account';
+        if(login){
+          login.querySelector('.mobile-menu-copy b').textContent=label;
+          login.querySelector('.mobile-menu-copy small').textContent='Signed in • Open your account';
+          login.querySelector('.mobile-menu-badge').textContent='Active';
+        }
+        if(create) create.style.display='none';
+      }
+    }
+    document.getElementById('mobileLoginItem')?.addEventListener('click',function(){closeMenu();openAuth('login')});
+    document.getElementById('mobileCreateItem')?.addEventListener('click',function(){closeMenu();openAuth('signup')});
+    updateMobileAuthState();
+    loadSupabaseBackend().then(client=>client?.auth?.onAuthStateChange?.(()=>updateMobileAuthState()));
+
+    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){
+      if(typeof toggleLanguage==='function') toggleLanguage();
+    });
+
+    document.getElementById('mobileDarkItem')?.addEventListener('click',function(){
+      if(typeof toggleDark==='function') toggleDark();
+    });
+
+    document.getElementById('mobileAdminItem')?.addEventListener('click',function(){
+      if(typeof openAdminPanel==='function') openAdminPanel();
+      closeMenu();
+    });
+
+    document.getElementById('mobileAboutItem')?.addEventListener('click',function(){
+      closeMenu();
+      document.getElementById('about')?.scrollIntoView({behavior:'smooth'});
+    });
+
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape') closeMenu();
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMobileMenu,{once:true});
+  else initMobileMenu();
+})();
+</script>
+
+<style id="arya-open-state-fix">
+.arya-panel[hidden]{display:none!important}
+.arya-panel.arya-visible{display:flex!important}
+</style>
+<script id="arya-open-state-fix-script">
+(function(){
+  'use strict';
+  const getPanel=()=>document.getElementById('aryaPanel');
+  const close=()=>{
+    const p=getPanel();
+    if(p){p.hidden=true;p.classList.remove('arya-visible');}
+    document.body.classList.remove('arya-open');
+  };
+  const open=()=>{
+    const p=getPanel();
+    if(!p)return;
+    p.hidden=false;
+    p.classList.add('arya-visible');
+    document.body.classList.add('arya-open');
+    setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
+  };
+  window.aryaBackHome=()=>{close();window.scrollTo({top:0,behavior:'smooth'});};
+  window.toggleArya=()=>{
+    const p=getPanel();
+    if(!p)return;
+    if(p.hidden)open();else close();
+  };
+  // Keep Arya closed on a fresh page load. Do not close it from pageshow,
+  // because pageshow can fire after the UI has been restored from bfcache.
+  const init=()=>close();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+<style id="arya-colourful-chat">
+/* Arya AI — colourful chat theme */
+.arya-panel{
+  border:1px solid rgba(77,144,255,.28)!important;
+  background:linear-gradient(145deg,#ffffff 0%,#f5f9ff 48%,#fff7e8 100%)!important;
+  box-shadow:0 24px 80px rgba(19,64,125,.30),0 0 0 1px rgba(255,181,27,.08)!important;
+}
+.arya-head{
+  background:linear-gradient(135deg,#071b35 0%,#1559a5 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border-bottom:0!important;
+  position:relative;
+  overflow:hidden;
+}
+.arya-head:after{
+  content:"";position:absolute;right:-35px;top:-55px;width:145px;height:145px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,181,27,.48),rgba(255,181,27,0) 68%);pointer-events:none;
+}
+.arya-head>div{position:relative;z-index:1}
+.arya-head b{color:#fff!important}
+.arya-head small{color:#dceaff!important}
+.arya-back,.arya-close{color:#fff!important}
+.arya-back:hover,.arya-close:hover{background:rgba(255,255,255,.16)!important}
+.arya-body{
+  background:radial-gradient(circle at 100% 0,rgba(123,63,242,.08),transparent 32%),radial-gradient(circle at 0 100%,rgba(11,103,209,.07),transparent 34%),#f8fbff!important;
+}
+.arya-msg{
+  border-radius:18px!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(40,91,160,.10)!important;
+  box-shadow:0 5px 16px rgba(24,66,120,.08)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#ffffff,#eaf4ff)!important;
+  color:#17385f!important;
+  border-left:4px solid #0b67d1!important;
+}
+.arya-msg.user{
+  margin-left:auto!important;
+  background:linear-gradient(135deg,#7b3ff2,#0b67d1)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 20px rgba(64,75,190,.24)!important;
+}
+.arya-suggest button{
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  padding:8px 11px!important;
+  font-weight:800!important;
+  color:#17385f!important;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#0b67d1,#7b3ff2,#ffb51b) border-box!important;
+  box-shadow:0 4px 12px rgba(40,80,140,.10)!important;
+  transition:transform .18s ease,box-shadow .18s ease!important;
+}
+.arya-suggest button:nth-child(3n+1){background:linear-gradient(#eef7ff,#eef7ff) padding-box,linear-gradient(135deg,#0b67d1,#31b7ff) border-box!important}
+.arya-suggest button:nth-child(3n+2){background:linear-gradient(#f6efff,#f6efff) padding-box,linear-gradient(135deg,#7b3ff2,#e14cff) border-box!important}
+.arya-suggest button:nth-child(3n){background:linear-gradient(#fff7df,#fff7df) padding-box,linear-gradient(135deg,#ff9f1c,#ffcf33) border-box!important}
+.arya-suggest button:hover{transform:translateY(-2px)!important;box-shadow:0 7px 16px rgba(40,80,140,.16)!important}
+.arya-input{
+  background:rgba(255,255,255,.96)!important;
+  border-top:1px solid #dce8f6!important;
+}
+.arya-input input,#aryaInput{
+  background:#f4f8ff!important;
+  border:1px solid #cbdcf1!important;
+}
+.arya-input input:focus,#aryaInput:focus{
+  border-color:#7b3ff2!important;
+  box-shadow:0 0 0 3px rgba(123,63,242,.13)!important;
+}
+.arya-input button,#aryaSend{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00)!important;
+  color:#10233f!important;
+  box-shadow:0 5px 14px rgba(255,145,0,.25)!important;
+}
+.arya-fab{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00,#7b3ff2)!important;
+  color:#fff!important;
+  box-shadow:0 12px 30px rgba(84,57,160,.30)!important;
+}
+@media(max-width:620px){
+  .arya-panel{background:#f8fbff!important}
+  .arya-head{border-radius:18px 18px 0 0!important}
+}
+</style>
+
+<style id="arya-message-colour-separation">
+/* Arya AI — separate colours for user questions and Arya answers */
+.arya-msg.user{
+  background:linear-gradient(135deg,#0b67d1 0%,#2454e8 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:18px 18px 5px 18px!important;
+  margin-left:auto!important;
+  box-shadow:0 7px 20px rgba(38,76,210,.28)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#fff7df 0%,#fffaf0 45%,#eaf4ff 100%)!important;
+  color:#17385f!important;
+  border:1px solid #d7e5f5!important;
+  border-left:4px solid #ffb51b!important;
+  border-radius:18px 18px 18px 5px!important;
+  margin-right:auto!important;
+  box-shadow:0 6px 18px rgba(24,66,120,.10)!important;
+}
+.arya-msg.user *{color:#fff!important}
+.arya-msg.bot *{color:#17385f!important}
+</style>
+
+</body></html>
