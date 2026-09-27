@@ -1,0 +1,3 @@
+// ExploreUP district data: Aligarh
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Aligarh","tag":"Fort, university culture & locks","img":"https://loremflickr.com/900/600/Aligarh%2C%20Uttar%20Pradesh%2C%20India?lock=27","places":"Aligarh Fort, Sir Syed Academy, local markets","food":"Local sweets, chaat, North Indian food","shop":"Locks, hardware & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Aligarh is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
