@@ -1,0 +1,3 @@
+// ExploreUP district data: Prayagraj
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Prayagraj","tag":"Sangam & historic landmarks","img":"https://loremflickr.com/900/600/Prayagraj%2C%20Uttar%20Pradesh%2C%20India?lock=7","places":"Triveni Sangam, Anand Bhavan, Allahabad Fort","food":"Kachori-Sabzi, Jalebi, local chaat","shop":"Books & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Prayagraj is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
