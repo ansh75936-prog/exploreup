@@ -1,0 +1,3 @@
+// ExploreUP district data: Saharanpur
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Saharanpur","tag":"Wood carving & gateway to the hills","img":"https://loremflickr.com/900/600/Saharanpur%2C%20Uttar%20Pradesh%2C%20India?lock=15","places":"Shakumbhari Devi, local woodcraft markets, nearby heritage","food":"North Indian cuisine, sweets","shop":"Wood carving & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Saharanpur is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
