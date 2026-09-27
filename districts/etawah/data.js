@@ -1,0 +1,3 @@
+// ExploreUP district data: Etawah
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Etawah","tag":"Chambal region & wildlife gateway","img":"https://loremflickr.com/900/600/Etawah%2C%20Uttar%20Pradesh%2C%20India?lock=26","places":"National Chambal Sanctuary nearby, Etawah Safari Park","food":"North Indian food & local sweets","shop":"Local crafts & products","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Etawah is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
