@@ -1,0 +1,3 @@
+// ExploreUP district data: Kushinagar
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Kushinagar","tag":"Buddhist heritage & international pilgrimage","img":"https://loremflickr.com/900/600/Kushinagar%2C%20Uttar%20Pradesh%2C%20India?lock=21","places":"Mahaparinirvana Temple, Ramabhar Stupa, Buddhist temples","food":"Local vegetarian food & sweets","shop":"Buddhist souvenirs & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Kushinagar is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
