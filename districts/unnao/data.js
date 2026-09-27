@@ -1,0 +1,3 @@
+// ExploreUP district data: Unnao
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Unnao","tag":"Awadh heritage & local crafts","img":"https://loremflickr.com/900/600/Unnao%2C%20Uttar%20Pradesh%2C%20India?lock=36","places":"Chandrika Devi, local heritage sites, markets","food":"North Indian food & sweets","shop":"Local crafts & textiles","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Unnao is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
