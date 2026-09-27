@@ -1,0 +1,3 @@
+// ExploreUP district data: Bareilly
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Bareilly","tag":"Zardozi, temples & local culture","img":"https://loremflickr.com/900/600/Bareilly%2C%20Uttar%20Pradesh%2C%20India?lock=14","places":"Alakhnath Temple, Dhopeshwar Nath, local markets","food":"Local chaat, sweets, North Indian dishes","shop":"Zardozi & handicrafts","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Bareilly is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
