@@ -1567,7 +1567,7 @@ async function openCity(name, options={}){
  const hero=document.getElementById('modalHero');
  const heroVideo=document.getElementById('districtHeroVideo');
  const heroSound=document.getElementById('districtHeroSound');
- if(hero)hero.style.backgroundImage=`linear-gradient(transparent,#06162d88),url('${c.img}')`;
+ if(hero){ const isVaranasi=normalizeCityQuery(c.name)==='varanasi'; hero.style.backgroundImage=isVaranasi?'none':`linear-gradient(transparent,#06162d88),url('${c.img}')`; hero.style.backgroundColor=isVaranasi?'#06162d':'transparent'; }
  if(heroVideo&&heroSound){
    const isVaranasi=normalizeCityQuery(c.name)==='varanasi';
    hero.classList.remove('has-district-video');
