@@ -1,0 +1,3 @@
+// ExploreUP district data: Budaun
+window.ExploreUPDistricts=window.ExploreUPDistricts||[];
+window.ExploreUPDistricts.push({"name":"Budaun","tag":"Historic mosques & cultural heritage","img":"https://loremflickr.com/900/600/Budaun%2C%20Uttar%20Pradesh%2C%20India?lock=33","places":"Jama Masjid, local shrines, historic sites","food":"Local sweets & North Indian food","shop":"Local crafts & textiles","time":"Oct – Mar","budget":"₹1,000 – ₹3,500/day","tip":"Check local timings, transport and seasonal conditions before visiting.","about":"Budaun is one of the destinations covered by ExploreUP, with local heritage, food, culture and practical travel information.","distance":"Local guide","fee":"Varies","rating":"—"});
