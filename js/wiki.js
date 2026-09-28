@@ -132,12 +132,10 @@
     if (!image || !city) return;
     queuedCards.add(card);
 
-    fetchCitySummary(city).then(async summary => {
+    fetchCitySummary(city).then(summary => {
       if (!summary) return;
-      const details = await fetchArticleDetails(summary);
-      const source = summary.content_urls && summary.content_urls.desktop && summary.content_urls.desktop.page ||
-        details && details.pageUrl;
-      const imageUrl = imageFor(summary, details);
+      const source = summary.content_urls && summary.content_urls.desktop && summary.content_urls.desktop.page;
+      const imageUrl = imageFor(summary, null);
       if (imageUrl && image.isConnected) {
         image.src = imageUrl;
         image.alt = (summary.title || city) + " — photo from Wikipedia";
