@@ -1,71 +1,130 @@
 /**
- * ExploreUP - Wikipedia API Integration
- * City ka real-time summary aur thumbnail fetch karne ke liye
+ * ExploreUP — Wikipedia API integration.
+ * Fetches a short public summary when a district guide opens and credits Wikipedia.
+ * This file is independent of Arya AI.
  */
-
 (function () {
   "use strict";
 
-  // Wikipedia REST API se summary nikalne ka function
+  const summaryCache = new Map();
+  const pending = new Map();
+
   async function fetchCitySummary(cityName) {
-    if (!cityName) return null;
+    const city = String(cityName || "").trim();
+    if (!city) return null;
+    if (summaryCache.has(city)) return summaryCache.get(city);
+    if (pending.has(city)) return pending.get(city);
 
-    try {
-      const cleanCity = encodeURIComponent(cityName.trim());
-      const endpoint = `https://en.wikipedia.org/api/rest_v1/page/summary/${cleanCity}`;
+    const request = (async () => {
+      // Try common article-title formats so district names are more likely to resolve.
+      const candidates = [...new Set([
+        city,
+        city + " district",
+        city + ", Uttar Pradesh"
+      ])];
 
-      const res = await fetch(endpoint, {
-        headers: {
-          "Accept": "application/json"
+      for (const title of candidates) {
+        try {
+          const endpoint = "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+            encodeURIComponent(title.replace(/ /g, "_"));
+          const response = await fetch(endpoint, {
+            headers: { "Accept": "application/json" }
+          });
+          if (!response.ok) continue;
+
+          const data = await response.json();
+          if (data && data.extract && data.type !== "disambiguation") {
+            summaryCache.set(city, data);
+            return data;
+          }
+        } catch (error) {
+          console.warn("ExploreUP Wikipedia request failed:", error);
         }
-      });
-
-      if (!res.ok) {
-        // Agar simple naam se na mile, toh state tag add karke retry
-        const fallbackEndpoint = `https://en.wikipedia.org/api/rest_v1/page/summary/${cleanCity},_Uttar_Pradesh`;
-        const fallbackRes = await fetch(fallbackEndpoint);
-        if (!fallbackRes.ok) return null;
-        return await fallbackRes.json();
       }
-
-      return await res.json();
-    } catch (err) {
-      console.warn("Wikipedia fetch error:", err);
       return null;
+    })();
+
+    pending.set(city, request);
+    try {
+      return await request;
+    } finally {
+      pending.delete(city);
     }
   }
 
-  // Modal open hone par details inject karne ka function
+  function addWikipediaAttribution(target, data) {
+    if (!target || !data || !data.content_urls || !data.content_urls.desktop ||
+        !data.content_urls.desktop.page) return;
+
+    let attribution = document.getElementById("exploreupWikiAttribution");
+    if (!attribution) {
+      attribution = document.createElement("div");
+      attribution.id = "exploreupWikiAttribution";
+      attribution.style.cssText = "margin:6px 0 14px;font-size:12px;color:#60708a";
+      target.insertAdjacentElement("afterend", attribution);
+    }
+    attribution.replaceChildren();
+    const link = document.createElement("a");
+    link.href = data.content_urls.desktop.page;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Source: Wikipedia · Read more";
+    link.style.cssText = "color:#0b67d1;text-decoration:underline";
+    attribution.appendChild(link);
+  }
+
   async function syncCityWikipedia(cityName) {
-    const data = await fetchCitySummary(cityName);
-    if (!data) return;
+    const city = String(cityName || "").trim();
+    if (!city) return null;
 
-    // 1. Text description inject karein
-    const descTarget = document.getElementById("districtWikiSummary") || 
-                       document.querySelector("#modalHero .hero-description") ||
-                       document.querySelector(".modal-description");
-    if (descTarget && data.extract) {
-      descTarget.textContent = data.extract;
-    }
+    const data = await fetchCitySummary(city);
+    if (!data || !data.extract) return null;
 
-    // 2. Agar hero video load na ho, toh fallback poster/image set karein
-    const fallbackImg = document.getElementById("districtHeroFallbackImg");
-    if (fallbackImg && data.thumbnail && data.thumbnail.source) {
-      fallbackImg.src = data.thumbnail.source;
-    }
+    const target = document.getElementById("dAbout") ||
+      document.getElementById("districtWikiSummary") ||
+      document.querySelector("#modalHero .hero-description") ||
+      document.querySelector(".modal-description");
+
+    // Only replace the existing city overview when a real summary was returned.
+    if (target) target.textContent = data.extract;
+    addWikipediaAttribution(target, data);
+    return data;
   }
 
-  // Window object par function expose karein
   window.ExploreUPWiki = {
     fetchSummary: fetchCitySummary,
     syncModal: syncCityWikipedia
   };
 
-  // Jab bhi district modal change ho, auto-run karein
-  window.addEventListener("exploreup:citychange", function (e) {
-    const city = window.currentExploreCity || (e.detail && e.detail.cityName);
-    if (city) {
-      syncCityWikipedia(city);
-    }
+  window.addEventListener("exploreup:citychange", function (event) {
+    const city = (event.detail && event.detail.cityName) ||
+      window.currentExploreCity ||
+      document.getElementById("modalTitle")?.textContent;
+    if (city) syncCityWikipedia(city);
   });
+
+  // The existing homepage does not emit a city-change event yet. Observe its
+  // existing modal title so the uploaded API file actually runs when a guide opens.
+  function attachModalObserver() {
+    const modal = document.getElementById("modal");
+    const title = document.getElementById("modalTitle");
+    if (!modal || !title || typeof MutationObserver === "undefined") return;
+
+    const syncIfOpen = () => {
+      if (modal.getAttribute("aria-hidden") === "true") return;
+      const city = (title.textContent || "").trim();
+      if (!city || city === "City") return;
+      syncCityWikipedia(city);
+    };
+
+    const observer = new MutationObserver(syncIfOpen);
+    observer.observe(title, { childList: true, subtree: true, characterData: true });
+    observer.observe(modal, { attributes: true, attributeFilter: ["style", "aria-hidden"] });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", attachModalObserver, { once: true });
+  } else {
+    attachModalObserver();
+  }
 })();
