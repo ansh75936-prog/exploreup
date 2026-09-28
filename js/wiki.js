@@ -159,6 +159,7 @@
       if (!summary || !image.isConnected) return;
       const imageUrl = imageFor(summary, null);
       if (imageUrl) {
+        delete image.dataset.fallbackDone;
         image.onerror = function () {
           image.onerror = null;
           // Keep the site's existing image fallback if Wikipedia's image is unavailable.
@@ -309,6 +310,31 @@
     if (tourismText) document.getElementById("districtWhy") && (document.getElementById("districtWhy").textContent = tourismText);
     if (tourismText) document.getElementById("dPlaces") && (document.getElementById("dPlaces").textContent = tourismText);
     if (foodText) document.getElementById("dFood") && (document.getElementById("dFood").textContent = foodText);
+
+    // If a district has no local food list, replace the empty-state message with a useful article-backed card.
+    const foodGrid = document.getElementById("foodGrid");
+    if (foodGrid && /no matching food item/i.test(foodGrid.textContent || "")) {
+      const card = document.createElement("article");
+      card.className = "foodcard";
+      const type = document.createElement("div");
+      type.className = "foodtype";
+      type.textContent = "LOCAL CUISINE";
+      const heading = document.createElement("h3");
+      heading.textContent = city + " food and cuisine";
+      const paragraph = document.createElement("p");
+      paragraph.textContent = foodText || "Explore local eateries and regional dishes; specialities vary by neighbourhood. Check current options before travelling.";
+      const chips = document.createElement("div");
+      chips.className = "foodchips";
+      const cityChip = document.createElement("span");
+      cityChip.className = "foodchip";
+      cityChip.textContent = city;
+      const sourceChip = document.createElement("span");
+      sourceChip.className = "foodchip";
+      sourceChip.textContent = foodText ? "Wikipedia article" : "ExploreUP Food Guide";
+      chips.append(cityChip, sourceChip);
+      card.append(type, heading, paragraph, chips);
+      foodGrid.replaceChildren(card);
+    }
 
     // Never leave these key city-guide cards blank when a district data record is incomplete.
     fillIfBlank("dPlaces", "Explore local landmarks, heritage sites and nearby attractions. Check current opening hours before visiting.");
