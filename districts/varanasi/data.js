@@ -6,9 +6,10 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
 (function(){
   'use strict';
   const SOURCES=[
-    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+    'https://exploreup-five.vercel.app/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+    './images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
     'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
-    './images/varanasi-under-25mb-faststart-1.mp4?v=20260928'
+    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928'
   ];
   let lastVideo=null;
   let sourceIndex=0;
