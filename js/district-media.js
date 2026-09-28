@@ -1,10 +1,21 @@
-/* ExploreUP verified-video policy.
-   Do not auto-play search results: only manually verified city-specific videos may be embedded.
-   The existing Varanasi hero video in index.html is intentionally preserved. */
+/* ExploreUP district videos.
+   Curated embed: a published Uttar Pradesh travel compilation whose description lists
+   Varanasi, Agra, Lucknow, Mathura/Vrindavan, Ayodhya/Faizabad, Fatehpur Sikri and Kushinagar.
+   Do not use unrelated or automatically searched clips. Arya AI files are not touched. */
 (function () {
   "use strict";
   const GALLERY = "https://upstdc.co.in/website/gallery.aspx";
   const COMMONS = "https://commons.wikimedia.org/wiki/Special:MediaSearch?type=video&search=";
+  const VIDEO = {
+    id: "5yOAVBk2r38",
+    title: "Uttar Pradesh — travel highlights",
+    source: "https://www.youtube.com/watch?v=5yOAVBk2r38",
+    credit: "Explore with Love · published 3 April 2020",
+    places: [
+      "varanasi", "banaras", "kashi", "agra", "lucknow", "mathura",
+      "vrindavan", "ayodhya", "faizabad", "fatehpur sikri", "kushinagar"
+    ]
+  };
   const clean = v => String(v || "").replace(/\s+/g, " ").trim();
   const byId = id => document.getElementById(id);
   function node(tag, cls, value) {
@@ -20,25 +31,51 @@
     a.rel = "noopener noreferrer";
     return a;
   }
+  function matchesCity(city) {
+    const name = city.toLowerCase();
+    return VIDEO.places.some(place => {
+      const escaped = place.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp("(^|[^a-z])" + escaped + "([^a-z]|$)", "i").test(name);
+    });
+  }
   function render(city) {
     const title = byId("districtMediaTitle");
     const intro = byId("districtMediaIntro");
     const content = byId("districtMediaContent");
     const section = byId("districtMediaSection");
     if (!title || !content || !section || !city) return;
-    title.textContent = "🎬 Verified videos — " + city;
-    if (intro) intro.textContent = "Only videos confirmed to show this district should be embedded here. Unverified search results are not played automatically.";
+    title.textContent = "🎬 City videos — " + city;
+    if (intro) intro.textContent = "Videos are embedded only when the source description names this city. Check the source link for full context.";
     content.replaceChildren();
     const card = node("article", "district-official-video-card");
-    const badge = node("span", "district-video-badge", "✓ NO UNVERIFIED CLIPS");
-    const heading = node("h3", "", "No verified video added for " + city + " yet");
-    const body = node("p", "", "We removed automatic video results because file titles and search matches can be misleading. To keep ExploreUP accurate, this section will show an in-site player only after the video’s location and source are checked.");
-    const sourceNote = node("p", "district-official-source-name", "The existing Varanasi hero video is preserved. Other districts will not show random or unrelated clips.");
-    const actions = node("div", "district-official-video-actions");
-    const official = makeLink(GALLERY, "Official UP Tourism gallery ↗");
-    const commons = makeLink(COMMONS + encodeURIComponent(city + " Uttar Pradesh"), "Browse video sources ↗");
-    actions.append(official, commons);
-    card.append(badge, heading, body, sourceNote, actions);
+    if (matchesCity(city)) {
+      const badge = node("span", "district-video-badge", "SOURCE LINK INCLUDED");
+      const heading = node("h3", "", VIDEO.title);
+      const frame = node("div", "district-playable-video-frame");
+      const player = node("iframe", "district-playable-video");
+      player.src = "https://www.youtube-nocookie.com/embed/" + VIDEO.id;
+      player.title = VIDEO.title + " — includes " + city;
+      player.loading = "lazy";
+      player.referrerPolicy = "strict-origin-when-cross-origin";
+      player.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      player.allowFullscreen = true;
+      player.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-popups");
+      frame.appendChild(player);
+      const body = node("p", "", "This is a multi-destination Uttar Pradesh travel compilation; it includes this place but is not an exclusive film about " + city + ".");
+      const credit = node("p", "district-official-source-name", VIDEO.credit);
+      const actions = node("div", "district-official-video-actions");
+      actions.append(makeLink(VIDEO.source, "Open original YouTube source ↗"));
+      actions.append(makeLink(GALLERY, "Official UP Tourism gallery ↗"));
+      card.append(badge, heading, frame, body, credit, actions);
+    } else {
+      const badge = node("span", "district-video-badge", "NO UNVERIFIED CLIPS");
+      const heading = node("h3", "", "No verified video added for " + city + " yet");
+      const body = node("p", "", "We will not insert a random clip just because its title matches. Add a city-specific video here only after checking that the footage actually shows " + city + " and recording its original source.");
+      const actions = node("div", "district-official-video-actions");
+      actions.append(makeLink(GALLERY, "Official UP Tourism gallery ↗"));
+      actions.append(makeLink(COMMONS + encodeURIComponent(city + " Uttar Pradesh"), "Browse video sources ↗"));
+      card.append(badge, heading, body, actions);
+    }
     content.appendChild(card);
     section.dataset.loaded = "true";
     section.dataset.city = city;
