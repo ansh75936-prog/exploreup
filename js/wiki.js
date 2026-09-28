@@ -221,7 +221,9 @@
         { key: "history", terms: ["history"] },
         { key: "culture", terms: ["culture", "tradition", "arts"] },
         { key: "nature", terms: ["geography", "climate", "environment"] },
-        { key: "tourism", terms: ["tourism", "attractions", "landmarks", "places of interest"] }
+        { key: "tourism", terms: ["tourism", "attractions", "landmarks", "places of interest"] },
+        { key: "places", terms: ["tourist attractions", "places of interest", "sights", "landmarks"] },
+        { key: "food", terms: ["cuisine", "food", "gastronomy", "culinary"] }
       ];
       await Promise.all(wanted.map(async item => {
         const section = sections.find(entry => item.terms.some(term =>
@@ -268,8 +270,8 @@
         summary.content_urls && summary.content_urls.desktop && summary.content_urls.desktop.page);
     }
 
-    // The longer article is displayed in the existing knowledge overview, while
-    // the local district dataset remains in place for places, food, prices and tips.
+    // Wikipedia supplies article-backed overviews and matching sections. The local
+    // dataset remains the fallback for prices, timing and practical travel tips.
     const knowledge = document.getElementById("districtKnowledge");
     if (knowledge && extract) {
       const paragraphs = extract.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
@@ -285,11 +287,16 @@
     const historyText = sections && sections.history || "";
     const cultureText = sections && sections.culture || "";
     const natureText = sections && sections.nature || "";
-    const tourismText = sections && sections.tourism || "";
+    const tourismText = sections && (sections.tourism || sections.places) || "";
+    const foodText = sections && sections.food || "";
+    const places = document.getElementById("dPlaces");
+    const food = document.getElementById("dFood");
     if (history && historyText) history.textContent = historyText;
     if (culture && cultureText) culture.textContent = cultureText;
     if (nature && natureText) nature.textContent = natureText;
     if (why && tourismText) why.textContent = tourismText;
+    if (places && tourismText) places.textContent = tourismText;
+    if (food && foodText) food.textContent = foodText;
 
     const hero = document.getElementById("modalHero");
     if (hero) {
