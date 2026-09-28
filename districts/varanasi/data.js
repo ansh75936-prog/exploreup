@@ -6,9 +6,9 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
 (function(){
   'use strict';
   const SOURCES=[
-    'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4',
-    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4',
-    './images/varanasi-under-25mb-faststart-1.mp4'
+    'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+    'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+    './images/varanasi-under-25mb-faststart-1.mp4?v=20260928'
   ];
   let lastVideo=null;
   let sourceIndex=0;
@@ -65,6 +65,7 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
         return;
       }
       video.src=SOURCES[sourceIndex];
+      video.removeAttribute('poster');
       video.load();
       const p=video.play();
       if(p&&typeof p.catch==='function') p.catch(function(){});
@@ -72,6 +73,7 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
 
     video.onerror=()=>{
       sourceIndex++;
+      video.dataset.exploreupVideoState='retrying';
       load();
     };
     video.onloadeddata=showVideo;
