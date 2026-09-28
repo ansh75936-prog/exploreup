@@ -1587,9 +1587,10 @@ async function openCity(name, options={}){
      heroVideo.load();
    }else{
      const videoSources=[
-       c.video || './images/varanasi-under-25mb-faststart-1.mp4',
-       'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4',
-       'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4'
+       'https://exploreup-five.vercel.app/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+       './images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+       c.video || 'https://cdn.jsdelivr.net/gh/ansh75936-prog/exploreup@main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928',
+       'https://raw.githubusercontent.com/ansh75936-prog/exploreup/main/images/varanasi-under-25mb-faststart-1.mp4?v=20260928'
      ];
      let videoSourceIndex=0;
      const session=Date.now();
@@ -1603,7 +1604,7 @@ async function openCity(name, options={}){
      };
      const loadVideoSource=()=>{
        heroVideo.src=videoSources[videoSourceIndex];
-       heroVideo.poster=c.img;
+       heroVideo.removeAttribute('poster');
        heroVideo.load();
        const p=heroVideo.play();
        if(p&&typeof p.catch==='function')p.catch(()=>{});
