@@ -1,104 +1,140 @@
-/* ExploreUP: verified official Uttar Pradesh Tourism video sources only. */
+/* ExploreUP district video finder: transparent source, language and quality controls.
+   Never invent video IDs or auto-play unrelated clips. */
 (function () {
   "use strict";
-  const loaded = new Set();
-  const sources = [
-    {
-      matches: ["mathura", "vrindavan", "gokul", "barsana", "govardhan"],
-      title: "Mathura–Vrindavan through Lens",
-      description: "Official Uttar Pradesh Tourism destination page with a city-specific video player and verified destination information.",
-      url: "https://www.upstdc.co.in/website/Mathura_Tourism.aspx",
-      sourceLabel: "Official UP Tourism · Mathura–Vrindavan"
-    },
-    {
-      matches: ["prayagraj", "allahabad"],
-      title: "Prayagraj Catamaran Boat",
-      description: "The official UP Tourism gallery lists Prayagraj catamaran boat video content. Open the source to watch the original.",
-      url: "https://upstdc.co.in/website/gallery.aspx",
-      sourceLabel: "Official UP Tourism · Prayagraj"
-    },
-    {
-      matches: ["lucknow"],
-      title: "Lucknow Tourism Event",
-      description: "The official UP Tourism gallery includes World Tourism Day celebration and Tourism Conclave content from Lucknow.",
-      url: "https://upstdc.co.in/website/gallery.aspx",
-      sourceLabel: "Official UP Tourism · Lucknow"
-    },
-    {
-      matches: ["jhansi"],
-      title: "Jhansi Tourism & Culture",
-      description: "The official UP Tourism gallery lists World Tourism Day and local food festival coverage from Jhansi.",
-      url: "https://upstdc.co.in/website/gallery.aspx",
-      sourceLabel: "Official UP Tourism · Jhansi"
-    }
+  const officialGallery = "https://upstdc.co.in/website/gallery.aspx";
+  const cityAliases = {
+    "varanasi": ["Banaras", "Kashi"],
+    "prayagraj": ["Allahabad"],
+    "ayodhya": ["Faizabad"],
+    "agra": ["Taj Mahal"],
+    "mathura": ["Vrindavan"],
+    "siddharthnagar": ["Siddharth Nagar"]
+  };
+  const languages = [
+    { value: "any", label: "Any language" },
+    { value: "hi", label: "Hindi" },
+    { value: "en", label: "English" },
+    { value: "ur", label: "Urdu" },
+    { value: "bho", label: "Bhojpuri" }
   ];
-  const generalUrl = "https://www.upstdc.co.in/website/gallery.aspx";
-  function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
-  function byId(id) { return document.getElementById(id); }
-  function node(tag, cls, content) {
-    const el = document.createElement(tag);
-    if (cls) el.className = cls;
-    if (content !== undefined) el.textContent = content;
-    return el;
+  const qualities = [
+    { value: "any", label: "Any quality" },
+    { value: "hd", label: "HD (720p+ preferred)" },
+    { value: "fullhd", label: "Full HD (1080p+ preferred)" },
+    { value: "4k", label: "4K preferred" }
+  ];
+  const clean = value => String(value || "").replace(/\s+/g, " ").trim();
+  const byId = id => document.getElementById(id);
+  function node(tag, cls, value) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (value !== undefined) n.textContent = value;
+    return n;
   }
-  function makeLink(url, label) {
-    const a = node("a", "district-video-source", label);
+  function addOptions(select, items) {
+    items.forEach(item => {
+      const opt = document.createElement("option");
+      opt.value = item.value;
+      opt.textContent = item.label;
+      select.appendChild(opt);
+    });
+  }
+  function cityTerms(city) {
+    const lower = city.toLowerCase();
+    const aliases = Object.entries(cityAliases).find(([key]) => lower.includes(key));
+    return aliases ? [city, ...aliases[1]] : [city];
+  }
+  function buildSearchUrl(city, language, quality) {
+    const terms = cityTerms(city).map(t => '"' + t + '"').join(" OR ");
+    const words = [];
+    if (language === "hi") words.push("Hindi");
+    if (language === "en") words.push("English");
+    if (language === "ur") words.push("Urdu");
+    if (language === "bho") words.push("Bhojpuri");
+    if (quality === "hd") words.push("HD 720p");
+    if (quality === "fullhd") words.push("1080p");
+    if (quality === "4k") words.push("4K UHD");
+    words.push("official tourism");
+    const query = [terms, "Uttar Pradesh India", words.join(" ")].join(" ");
+    return "https://www.youtube.com/results?search_query=" + encodeURIComponent(query);
+  }
+  function sourceForCity(city) {
+    const lower = city.toLowerCase();
+    if (lower.includes("mathura") || lower.includes("vrindavan") || lower.includes("gokul") || lower.includes("barsana")) {
+      return { label: "Official UP Tourism destination page · Mathura–Vrindavan", url: "https://www.upstdc.co.in/website/Mathura_Tourism.aspx" };
+    }
+    return { label: "Official UP Tourism gallery", url: officialGallery };
+  }
+  function makeLink(url, text) {
+    const a = node("a", "district-video-source", text);
     a.href = url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     return a;
   }
-  function render(city, source) {
-    const container = byId("districtMediaContent");
-    const section = byId("districtMediaSection");
-    if (!container || !section) return;
-    container.replaceChildren();
-    const card = node("article", "district-official-video-card");
-    const badge = node("span", "district-video-badge", "✓ OFFICIAL TOURISM SOURCE");
-    const title = node("h3", "", source ? source.title : "No verified official video found yet");
-    const description = node("p", "", source
-      ? source.description
-      : "We have not verified a city-specific video for " + city + " on the official UP Tourism pages yet. ExploreUP will not substitute a random or unrelated clip.");
-    const sourceName = node("p", "district-official-source-name", source ? source.sourceLabel : "Source: Uttar Pradesh State Tourism Development Corporation");
-    const actions = node("div", "district-official-video-actions");
-    if (source) actions.appendChild(makeLink(source.url, "Watch on official UP Tourism ↗"));
-    else actions.appendChild(makeLink(generalUrl, "Check official tourism gallery ↗"));
-    card.append(badge, title, description, sourceName, actions);
-    container.appendChild(card);
-    section.dataset.loaded = "true";
-    section.dataset.city = city;
-  }
-  function matchSource(city) {
-    const normalized = clean(city).toLowerCase();
-    return sources.find(item => item.matches.some(term => normalized === term || normalized.includes(term))) || null;
-  }
-  function loadForCity(city) {
+  function initSection() {
     const title = byId("districtMediaTitle");
-    const intro = byId("districtMediaIntro");
-    const section = byId("districtMediaSection");
     const modalTitle = byId("modalTitle");
-    if (!section || !byId("districtMediaContent") || !city) return;
-    const current = clean(modalTitle && modalTitle.textContent);
-    if (current && current.toLowerCase() !== city.toLowerCase()) return;
-    if (section.dataset.city === city && section.dataset.loaded === "true") return;
-    if (title) title.textContent = "🎬 Official videos — " + city;
-    if (intro) intro.textContent = "Only city-matched videos/pages from Uttar Pradesh Tourism are shown here. No random clips or unverified video search results.";
-    render(city, matchSource(city));
-    loaded.add(city);
-  }
-  function init() {
-    const title = byId("modalTitle");
     const modal = byId("modal");
-    if (!title || !modal || typeof MutationObserver === "undefined") return;
-    function maybeLoad() {
-      if (modal.getAttribute("aria-hidden") === "true" || modal.style.display === "none") return;
-      const city = clean(title.textContent);
+    const section = byId("districtMediaSection");
+    const content = byId("districtMediaContent");
+    if (!title || !modalTitle || !modal || !section || !content) return;
+    const heading = byId("districtMediaIntro");
+    if (heading) heading.textContent = "Choose preferred video quality and language. Search results open on YouTube so you can confirm the actual district and creator before playing.";
+    content.replaceChildren();
+    const settings = node("div", "district-video-settings");
+    const qualityLabel = node("label", "", "Video quality");
+    const qualitySelect = node("select", "district-video-select");
+    qualitySelect.id = "districtVideoQuality";
+    qualitySelect.setAttribute("aria-label", "Preferred video quality");
+    addOptions(qualitySelect, qualities);
+    qualityLabel.htmlFor = qualitySelect.id;
+    const languageLabel = node("label", "", "Language");
+    const languageSelect = node("select", "district-video-select");
+    languageSelect.id = "districtVideoLanguage";
+    languageSelect.setAttribute("aria-label", "Preferred video language");
+    addOptions(languageSelect, languages);
+    languageLabel.htmlFor = languageSelect.id;
+    const qWrap = node("div", "district-video-setting");
+    const lWrap = node("div", "district-video-setting");
+    qWrap.append(qualityLabel, qualitySelect);
+    lWrap.append(languageLabel, languageSelect);
+    settings.append(qWrap, lWrap);
+    const card = node("article", "district-official-video-card");
+    const badge = node("span", "district-video-badge", "✓ SOURCE-AWARE VIDEO SEARCH");
+    const cardTitle = node("h3", "", "Find a real video for this district");
+    const desc = node("p", "", "ExploreUP does not invent video links or automatically play unverified clips. Open the results, check that the video actually shows this district, and select a suitable result.");
+    const warning = node("p", "district-official-source-name", "Quality is a search preference, not a guarantee; confirm the actual resolution and source on the video page.");
+    const actions = node("div", "district-official-video-actions");
+    const search = makeLink("#", "Find district videos ↗");
+    const official = makeLink("#", "Official tourism source ↗");
+    actions.append(search, official);
+    card.append(badge, cardTitle, desc, warning, actions);
+    content.append(settings, card);
+    let activeCity = "";
+    function refresh() {
+      const city = clean(modalTitle.textContent);
       if (!city || city.toLowerCase() === "city") return;
-      loadForCity(city);
+      activeCity = city;
+      title.textContent = "🎬 District Videos — " + city;
+      search.href = buildSearchUrl(city, languageSelect.value, qualitySelect.value);
+      const source = sourceForCity(city);
+      official.href = source.url;
+      official.textContent = source.label + " ↗";
+      search.textContent = "Find " + city + " videos ↗";
+      search.setAttribute("aria-label", "Search video results for " + city);
     }
-    new MutationObserver(maybeLoad).observe(title, { childList: true, subtree: true, characterData: true });
-    new MutationObserver(maybeLoad).observe(modal, { attributes: true, attributeFilter: ["style", "aria-hidden"] });
+    qualitySelect.addEventListener("change", refresh);
+    languageSelect.addEventListener("change", refresh);
+    function maybeRefresh() {
+      if (modal.getAttribute("aria-hidden") === "true" || modal.style.display === "none") return;
+      refresh();
+    }
+    new MutationObserver(maybeRefresh).observe(modalTitle, { childList: true, subtree: true, characterData: true });
+    new MutationObserver(maybeRefresh).observe(modal, { attributes: true, attributeFilter: ["style", "aria-hidden"] });
+    maybeRefresh();
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
-  else init();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initSection, { once: true });
+  else initSection();
 })();
