@@ -48,7 +48,35 @@
     if (intro) intro.textContent = "Videos are embedded only when the source description names this city. Check the source link for full context.";
     content.replaceChildren();
     const card = node("article", "district-official-video-card");
-    if (matchesCity(city)) {
+    if (/\\bagra\\b/i.test(city)) {
+      const badge = node("span", "district-video-badge", "AGRA CITY VIDEO");
+      const heading = node("h3", "", "Explore Agra — video");
+      const frame = node("div", "district-playable-video-frame");
+      const player = node("video", "district-playable-video");
+      player.src = "/videos/agra-video.mp4";
+      player.controls = true;
+      player.playsInline = true;
+      player.preload = "metadata";
+      player.setAttribute("aria-label", "Agra city travel video");
+      player.onerror = function () {
+        const fallback = node("iframe", "district-playable-video");
+        fallback.src = "https://www.youtube-nocookie.com/embed/" + VIDEO.id;
+        fallback.title = VIDEO.title + " — includes Agra";
+        fallback.loading = "lazy";
+        fallback.referrerPolicy = "strict-origin-when-cross-origin";
+        fallback.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        fallback.allowFullscreen = true;
+        fallback.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-popups");
+        frame.replaceChildren(fallback);
+      };
+      frame.appendChild(player);
+      const body = node("p", "", "Agra-specific video. If the video file has not been uploaded to the site yet, the verified Uttar Pradesh travel compilation will appear instead.");
+      const credit = node("p", "district-official-source-name", "Local video asset: /videos/agra-video.mp4");
+      const actions = node("div", "district-official-video-actions");
+      actions.append(makeLink(VIDEO.source, "Open verified backup video ↗"));
+      actions.append(makeLink(GALLERY, "Official UP Tourism gallery ↗"));
+      card.append(badge, heading, frame, body, credit, actions);
+    } else if (matchesCity(city)) {
       const badge = node("span", "district-video-badge", "SOURCE LINK INCLUDED");
       const heading = node("h3", "", VIDEO.title);
       const frame = node("div", "district-playable-video-frame");
