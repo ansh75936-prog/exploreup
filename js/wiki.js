@@ -14,7 +14,7 @@
   const CREDIT_CLASS = "exploreup-wiki-credit";
 
   function normalizeName(value) {
-    return String(value || "").trim().replace(/\\s+/g, " ");
+    return String(value || "").trim().replace(/\s+/g, " ");
   }
 
   function titleCandidates(city) {
@@ -201,7 +201,61 @@
     }
   }
 
-  function updateArticleDetails(city, summary, details) {
+  const sectionCache = new Map();
+
+  async function fetchArticleSections(summary) {
+    if (!summary || !summary.title) return {};
+    if (sectionCache.has(summary.title)) return sectionCache.get(summary.title);
+    const result = {};
+    try {
+      const params = new URLSearchParams({
+        action: "parse", format: "json", origin: "*", page: summary.title, prop: "sections"
+      });
+      const response = await fetch("https://en.wikipedia.org/w/api.php?" + params.toString(), {
+        headers: { Accept: "application/json" }
+      });
+      if (!response.ok) return result;
+      const json = await response.json();
+      const sections = json.parse && json.parse.sections || [];
+      const wanted = [
+        { key: "history", terms: ["history"] },
+        { key: "culture", terms: ["culture", "tradition", "arts"] },
+        { key: "nature", terms: ["geography", "climate", "environment"] },
+        { key: "tourism", terms: ["tourism", "attractions", "landmarks", "places of interest"] }
+      ];
+      await Promise.all(wanted.map(async item => {
+        const section = sections.find(entry => item.terms.some(term =>
+          String(entry.line || "").toLowerCase().includes(term)
+        ));
+        if (!section) return;
+        try {
+          const sectionParams = new URLSearchParams({
+            action: "parse", format: "json", origin: "*", page: summary.title,
+            prop: "text", section: String(section.index)
+          });
+          const sectionResponse = await fetch("https://en.wikipedia.org/w/api.php?" + sectionParams.toString(), {
+            headers: { Accept: "application/json" }
+          });
+          if (!sectionResponse.ok) return;
+          const sectionJson = await sectionResponse.json();
+          const html = sectionJson.parse && sectionJson.parse.text && sectionJson.parse.text["*"];
+          if (!html) return;
+          const parsed = new DOMParser().parseFromString(html, "text/html");
+          parsed.querySelectorAll("script,style,table,.navbox,.reference,.mw-editsection").forEach(node => node.remove());
+          const text = (parsed.body.textContent || "").replace(/\s+/g, " ").trim();
+          if (text) result[item.key] = text.slice(0, 2200);
+        } catch (error) {
+          console.warn("ExploreUP Wikipedia section unavailable:", item.key, error);
+        }
+      }));
+    } catch (error) {
+      console.warn("ExploreUP Wikipedia section list unavailable:", error);
+    }
+    sectionCache.set(summary.title, result);
+    return result;
+  }
+
+  function updateArticleDetails(city, summary, details, sections) {
     const currentCity = normalizeName(document.getElementById("modalTitle") && document.getElementById("modalTitle").textContent);
     const modal = document.getElementById("modal");
     if (!modal || currentCity.toLowerCase() !== city.toLowerCase()) return;
@@ -228,18 +282,10 @@
     const why = document.getElementById("districtWhy");
     // Keep district-specific existing content in these fields unless Wikipedia
     // provides an appropriate clearly-labelled paragraph in the article extract.
-    const sections = extract.split(/\n(?===)/);
-    const findSection = terms => {
-      const found = sections.find(section => {
-        const heading = (section.split("\n")[0] || "").toLowerCase();
-        return terms.some(term => heading.includes(term));
-      });
-      return found ? found.split("\n").slice(1).join(" ").replace(/\s+/g, " ").trim().slice(0, 1800) : "";
-    };
-    const historyText = findSection(["history"]);
-    const cultureText = findSection(["culture", "tradition"]);
-    const natureText = findSection(["geography", "climate", "environment"]);
-    const tourismText = findSection(["tourism", "attractions", "landmarks"]);
+    const historyText = sections && sections.history || "";
+    const cultureText = sections && sections.culture || "";
+    const natureText = sections && sections.nature || "";
+    const tourismText = sections && sections.tourism || "";
     if (history && historyText) history.textContent = historyText;
     if (culture && cultureText) culture.textContent = cultureText;
     if (nature && natureText) nature.textContent = natureText;
@@ -279,13 +325,15 @@
     if (!summary) return null;
     const details = await fetchArticleDetails(summary);
     updateHeroImage(city, summary, details);
-    updateArticleDetails(city, summary, details);
-    return { summary, details };
+    const sections = await fetchArticleSections(summary);
+    updateArticleDetails(city, summary, details, sections);
+    return { summary, details, sections };
   }
 
   window.ExploreUPWiki = {
     fetchSummary: fetchCitySummary,
     fetchDetails: fetchArticleDetails,
+    fetchSections: fetchArticleSections,
     syncModal: syncCityWikipedia,
     enhanceCards: function () {
       document.querySelectorAll("#cityGrid .city").forEach(enhanceCard);
