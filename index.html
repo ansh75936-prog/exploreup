@@ -882,6 +882,13 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 <div class="contact-grid" id="hospitalContacts"></div>
 </div>
 </section>
+<section class="district-section district-media-section" data-search="video videos film watch city story documentary" id="districtMediaSection" aria-labelledby="districtMediaTitle">
+  <div class="district-media-heading">
+    <div><span class="district-media-kicker">EXPLORE IN MOTION</span><h2 class="section-title" id="districtMediaTitle">🎬 Watch this city</h2><p class="section-intro" id="districtMediaIntro">Discover a city video in high resolution, when a suitable public file is available.</p></div>
+    <span class="district-media-mark" aria-hidden="true">▶</span>
+  </div>
+  <div id="districtMediaContent" aria-live="polite"><div class="district-media-status">Preparing video preview…</div></div>
+</section>
 <section class="district-section" data-search="history culture overview about" id="districtKnowledgeSection"><h2 class="section-title">📖 District Knowledge</h2><p class="section-intro" id="districtKnowledge">Explore the district through its history, culture, geography, local identity and travel significance.</p><div class="knowledge-grid"><div class="knowledge-card" data-search="history"><h3>🏺 History &amp; Heritage</h3><p id="districtHistory">This section will contain verified district-specific history, major historical periods, monuments, heritage sites and important cultural milestones.</p></div><div class="knowledge-card" data-search="culture"><h3>🎭 Culture &amp; Local Life</h3><p id="districtCulture">This section will cover verified local traditions, arts, crafts, languages, customs, cuisine and everyday cultural life.</p></div><div class="knowledge-card" data-search="geography"><h3>🌿 Geography &amp; Nature</h3><p id="districtNature">This section will cover verified rivers, landscapes, forests, wetlands, parks, wildlife areas and other natural features.</p></div><div class="knowledge-card" data-search="travel"><h3>🧭 Why Visit?</h3><p id="districtWhy">A concise, district-specific guide to its strongest attractions, experiences and the types of travellers it suits.</p></div></div></section>
 <section class="district-section food-directory" data-search="food cuisine dishes sweets street food drinks must try" id="districtFood">
 <h2 class="section-title">🍴 Food &amp; Cuisine Guide</h2>
@@ -2786,5 +2793,47 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 </style>
 
 
+<style id="district-media-and-knowledge-polish">
+/* ExploreUP district media + knowledge cards */
+.district-media-section{margin:28px 0 34px;padding:clamp(18px,3vw,30px);border:1px solid #dce8f5;border-radius:24px;background:radial-gradient(circle at 100% 0%,#dcecff 0,transparent 36%),linear-gradient(145deg,#fff 0%,#f3f8ff 60%,#fff8e8 100%);box-shadow:0 16px 42px rgba(12,45,85,.08)}
+.district-media-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.district-media-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#0b67d1}
+.district-media-heading .section-title{margin:6px 0;font-size:clamp(22px,3vw,30px)}
+.district-media-heading .section-intro{margin:4px 0 0;max-width:650px}
+.district-media-mark{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#ffb51b,#ff8a00);color:#10233f;font-size:20px;box-shadow:0 8px 22px #ffb51b44}
+.district-video-card{overflow:hidden;border:1px solid #dce6f2;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(10,35,63,.10)}
+.district-video-frame{width:100%;aspect-ratio:16/9;min-height:180px;background:#06162d;display:grid;place-items:center}
+.district-feature-video{display:block;width:100%;height:100%;max-height:68vh;aspect-ratio:16/9;object-fit:contain;background:#06162d}
+.district-video-info{padding:18px 20px 20px}
+.district-video-badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#e6f7ed;color:#17663a;font-size:10px;letter-spacing:1px;font-weight:900}
+.district-video-info h3{font-size:clamp(18px,2.5vw,24px);margin:10px 0 6px;color:#10233f}
+.district-video-info p{margin:0 0 12px;line-height:1.65;color:#60708a;font-size:14px}
+.district-video-source{display:inline-flex;align-items:center;gap:6px;color:#0b67d1!important;font-weight:800;font-size:13px;text-decoration:underline!important;text-underline-offset:3px}
+.district-media-status{padding:24px 18px;border-radius:16px;background:#fff;border:1px dashed #b7cce4;color:#52657f;text-align:center;line-height:1.6}
+.district-video-empty{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid #e0e9f3;border-radius:18px;background:rgba(255,255,255,.86)}
+.district-video-empty-icon{flex:0 0 50px;width:50px;height:50px;display:grid;place-items:center;border-radius:16px;background:#e9f2ff;color:#0b67d1;font-size:20px}
+.district-video-empty-copy h3{margin:0 0 6px;font-size:17px;color:#10233f}
+.district-video-empty-copy p{margin:0 0 10px;color:#60708a;font-size:13px;line-height:1.65}
+#districtKnowledgeSection{margin-top:34px}
+#districtKnowledgeSection>.section-title{font-size:clamp(23px,3vw,30px);letter-spacing:-.3px}
+#districtKnowledgeSection>.section-intro,#districtKnowledge{line-height:1.8}
+#districtKnowledgeSection .knowledge-grid{gap:18px;margin-top:20px}
+#districtKnowledgeSection .knowledge-card{position:relative;overflow:hidden;min-width:0;padding:22px;border:1px solid #dfe9f4;border-radius:20px;background:linear-gradient(145deg,#fff 0%,#f8fbff 100%);box-shadow:0 10px 28px rgba(13,47,83,.06);transition:transform .2s ease,box-shadow .2s ease}
+#districtKnowledgeSection .knowledge-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#ffb51b,#0b67d1)}
+#districtKnowledgeSection .knowledge-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(13,47,83,.10)}
+#districtKnowledgeSection .knowledge-card h3{font-size:18px;line-height:1.35;margin:0 0 10px;color:#102b4d}
+#districtKnowledgeSection .knowledge-card p{font-size:14px;line-height:1.8;color:#536781;margin:0;overflow-wrap:anywhere}
+#districtKnowledgeSection .knowledge-card[data-search="history"]{background:linear-gradient(145deg,#fff9eb,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="culture"]{background:linear-gradient(145deg,#fff0f4,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="geography"]{background:linear-gradient(145deg,#eafaf4,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="travel"]{background:linear-gradient(145deg,#edf4ff,#fff)}
+body.dark .district-media-section{background:linear-gradient(145deg,#10243c,#0b1b2f);border-color:#29415d}
+body.dark .district-video-card,body.dark .district-video-empty,body.dark #districtKnowledgeSection .knowledge-card{background:#10243c;border-color:#29415d}
+body.dark .district-video-info h3,body.dark .district-video-empty-copy h3,body.dark #districtKnowledgeSection .knowledge-card h3{color:#eef5ff}
+body.dark .district-video-info p,body.dark .district-video-empty-copy p,body.dark #districtKnowledgeSection .knowledge-card p{color:#b3c3d8}
+body.dark .district-media-status{background:#10243c;border-color:#29415d;color:#b3c3d8}
+@media(max-width:620px){.district-media-section{padding:16px;border-radius:20px}.district-media-heading{align-items:flex-start}.district-media-mark{flex-basis:42px;width:42px;height:42px;border-radius:14px}.district-video-frame{min-height:160px}.district-video-info{padding:15px}.district-video-empty{align-items:flex-start;padding:16px}.district-video-empty-icon{flex-basis:40px;width:40px;height:40px}}
+</style>
 <script src="./js/wiki.js?v=20260928-fix2"></script>
+<script src="./js/district-media.js?v=20260928-1"></script>
 </body></html>
