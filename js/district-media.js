@@ -53,7 +53,7 @@
       const heading = node("h3", "", "Explore Agra — video");
       const frame = node("div", "district-playable-video-frame");
       const player = node("video", "district-playable-video");
-      player.src = "/videos/agra-video.mp4";
+      player.src = "/agra-video.mp4";
       player.controls = true;
       player.playsInline = true;
       player.preload = "metadata";
@@ -71,7 +71,7 @@
       };
       frame.appendChild(player);
       const body = node("p", "", "Agra-specific video. If the video file has not been uploaded to the site yet, the verified Uttar Pradesh travel compilation will appear instead.");
-      const credit = node("p", "district-official-source-name", "Local video asset: /videos/agra-video.mp4");
+      const credit = node("p", "district-official-source-name", "Local video asset: /agra-video.mp4");
       const actions = node("div", "district-official-video-actions");
       actions.append(makeLink(VIDEO.source, "Open verified backup video ↗"));
       actions.append(makeLink(GALLERY, "Official UP Tourism gallery ↗"));
