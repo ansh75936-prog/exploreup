@@ -2847,5 +2847,17 @@ body.dark .district-official-video-card{background:#10243c;border-color:#29415d}
 body.dark .district-official-video-card h3{color:#eef5ff}
 body.dark .district-official-video-card p{color:#b3c3d8}
 </style>
-<script src="./js/district-media.js?v=20260928-2"></script>
+<style id="district-video-settings-polish">
+.district-video-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px;padding:16px;border:1px solid #dbe7f5;border-radius:16px;background:rgba(255,255,255,.82)}
+.district-video-setting{display:flex;flex-direction:column;gap:8px;min-width:0}
+.district-video-setting label{font-size:13px;font-weight:800;color:#324b6a}
+.district-video-select{width:100%;min-width:0;padding:12px 10px;border:1px solid #cbd9e9;border-radius:12px;background:#fff;color:#142b47;font-size:14px}
+.district-official-video-actions{display:flex;flex-wrap:wrap;gap:10px}
+.district-official-video-actions .district-video-source{display:inline-flex;padding:12px 15px;border-radius:12px;background:#0b67d1;color:#fff!important;text-decoration:none!important}
+.district-official-video-actions .district-video-source:last-child{background:#eaf2fb;color:#17436e!important}
+body.dark .district-video-settings{background:#10243c;border-color:#29415d}
+body.dark .district-video-setting label{color:#d7e5f7}
+body.dark .district-video-select{background:#0b1b2f;border-color:#29415d;color:#eef5ff}
+@media(max-width:520px){.district-video-settings{grid-template-columns:1fr}.district-official-video-actions{flex-direction:column}.district-official-video-actions .district-video-source{justify-content:center}}
+</style><script src="./js/district-media.js?v=20260928-3"></script>
 </body></html>
