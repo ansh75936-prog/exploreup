@@ -7,14 +7,14 @@
     { name: "Varanasi", subtitle: "The City of Light", image: "./images/varanasi.jpg?v=20260929-2", position: "center 48%" },
     { name: "Agra", subtitle: "Home of the Taj Mahal", image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Taj_Mahal_HD.jpg", position: "center 48%" },
     { name: "Mathura", subtitle: "The Heart of Braj", image: "https://loremflickr.com/1800/1000/Mathura%2C%20Uttar%20Pradesh%2C%20India?lock=5", position: "center 48%" },
-    { name: "Ayodhya", subtitle: "Ram Mandir & Sacred Heritage", image: "./images/ayodhya-ram-mandir-card.jpg?v=20260929-2", position: "center 42%" }
+    { name: "Ayodhya", subtitle: "Ram Mandir & Sacred Heritage", image: "./images/ayodhya-gallery-1.jpg?v=20260929-4", position: "center 42%" }
   ];
 
   const CARD_IMAGES = {
     "varanasi": "./images/varanasi.jpg?v=20260929-2",
     "agra": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Taj_Mahal_HD.jpg",
     "mathura": "https://loremflickr.com/900/600/Mathura%2C%20Uttar%20Pradesh%2C%20India?lock=5",
-    "ayodhya": "./images/ayodhya-ram-mandir-card.jpg?v=20260929-2",
+    "ayodhya": "./images/ayodhya-gallery-1.jpg?v=20260929-4",
     "lucknow": "./images/lucknow.jpg?v=20260929-2"
   };
 
