@@ -2104,7 +2104,7 @@ function applyLanguage(isHindi){
    else h.textContent=raw;
  });
  const eyebrow=document.querySelector('.eyebrow');if(eyebrow)eyebrow.textContent=isHindi?'घूमें • खोजें • अनुभव करें':'EXPLORE • DISCOVER • EXPERIENCE';
- const h1=document.querySelector('.hero h1');if(h1)h1.innerHTML=isHindi?'उत्तर प्रदेश <em>घूमें</em>':'Explore <em>Uttar Pradesh</em>';
+ const h1=document.querySelector('.hero h1');if(h1)h1.innerHTML=isHindi?'असाधारण से आगे,<em>उत्तर प्रदेश घूमें</em>':'Beyond Ordinary,<em>Explore Extraordinary</em>';
  const heroP=document.querySelector('.hero > div > p');if(heroP)heroP.textContent=isHindi?'उत्तर प्रदेश की संस्कृति, विरासत, भोजन, स्थानों, ठहरने की जगहों और उपयोगी यात्रा जानकारी को शहर-दर-शहर जानें।':'Discover the culture, heritage, food, places, stays and useful travel information of Uttar Pradesh — city by city.';
  try{localStorage.setItem('exploreup_language',isHindi?'hi':'en')}catch(e){}
 }
