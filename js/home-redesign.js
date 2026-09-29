@@ -21,10 +21,10 @@
     else if(typeof window.openCity === "function") window.openCity(name);
   }
   function selectRegion(id){
-    const filter = $('.region-btn[data-region="'+id+'"]');
-    if(filter) filter.click();
     const viewAll = $("#viewAllDistrictsBtn");
     if(viewAll && viewAll.getAttribute("aria-expanded") !== "true") viewAll.click();
+    const filter = $('.region-btn[data-region="'+id+'"]');
+    if(filter) filter.click();
     const citySection = $("#cities");
     if(citySection) citySection.scrollIntoView({behavior:"smooth",block:"start"});
   }
