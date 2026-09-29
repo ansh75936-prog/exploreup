@@ -1,4 +1,4 @@
-const CACHE_NAME='exploreup-runtime-v3';
+const CACHE_NAME='exploreup-runtime-v4';
 
 self.addEventListener('install',()=>self.skipWaiting());
 
