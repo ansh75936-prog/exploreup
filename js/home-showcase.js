@@ -1,5 +1,5 @@
-/* ExploreUP homepage showcase: rotating heritage hero + curated city-card images.
-   Keeps district data, navigation handlers and all Arya AI files untouched. */
+/* ExploreUP homepage showcase: rotating heritage hero + curated homepage card images.
+   Visual-only layer; district data, navigation handlers and Arya AI files remain untouched. */
 (function () {
   "use strict";
 
@@ -32,13 +32,9 @@
     const layers = HERO_SLIDES.map((slide, index) => {
       const layer = document.createElement("div");
       layer.className = "eu-hero-slide" + (index === 0 ? " is-active" : "");
-      layer.style.backgroundImage = 'url("' + slide.image.replace(/"/g, "") + '")';
       layer.style.backgroundPosition = slide.position;
       layer.dataset.slideName = slide.name;
       stack.appendChild(layer);
-      const preload = new Image();
-      preload.decoding = "async";
-      preload.src = slide.image;
       return layer;
     });
     hero.appendChild(stack);
@@ -53,13 +49,22 @@
     }
 
     let current = 0;
+    function preloadNext(index) {
+      const next = (index + 1) % HERO_SLIDES.length;
+      const preload = new Image();
+      preload.decoding = "async";
+      preload.src = HERO_SLIDES[next].image;
+    }
     function show(index) {
       current = index % HERO_SLIDES.length;
+      const slide = HERO_SLIDES[current];
+      layers[current].style.backgroundImage = 'url("' + slide.image.replace(/"/g, "") + '")';
       layers.forEach((layer, i) => layer.classList.toggle("is-active", i === current));
       const city = caption.querySelector(".eu-hero-city");
       const subtitle = caption.querySelector(".eu-hero-subtitle");
-      if (city) city.textContent = HERO_SLIDES[current].name;
-      if (subtitle) subtitle.textContent = HERO_SLIDES[current].subtitle;
+      if (city) city.textContent = slide.name;
+      if (subtitle) subtitle.textContent = slide.subtitle;
+      preloadNext(current);
     }
     show(0);
     if (!reducedMotion) window.setInterval(() => show(current + 1), 6500);
@@ -81,7 +86,7 @@
       img.onerror = function () {
         if (this.dataset.euFallbackUsed === "1") return;
         this.dataset.euFallbackUsed = "1";
-        const original = window.__exploreUpDistrictCities || [];
+        const original = window.ExploreUPDistricts || [];
         const city = original.find(item => String(item.name || "").toLowerCase() === title);
         if (city && city.img && city.img !== this.src) this.src = city.img;
       };
