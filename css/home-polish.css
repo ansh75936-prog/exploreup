@@ -82,3 +82,41 @@ body.dark .categories{background:#10243c;border-color:#29415d}body.dark .cat{col
 @media(max-width:760px){.hero{min-height:0;padding:40px 20px 64px;gap:20px;border-radius:0 0 22px 22px}.hero>div:first-child{width:100%;max-width:none}.hero-arya{display:block;width:100%;max-width:540px;margin:0 auto}.eu-hero-location{right:16px;bottom:12px;padding:8px 11px}.eu-hero-subtitle{max-width:42vw}.categories{margin-top:-18px;padding:14px 10px;border-radius:18px;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.ico{width:42px;height:42px;font-size:20px}.cat{font-size:10px}.cities{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}.city{height:245px}.citytext{left:13px;right:13px;bottom:62px}.city .citymeta{left:12px;right:12px;bottom:11px}.city .meta{font-size:9px;padding:5px 6px}.arrow{width:32px;height:32px;right:9px;bottom:9px}.feature{grid-template-columns:1fr}.gems{grid-template-columns:repeat(2,minmax(0,1fr))}.gem img{height:150px}.blogs{grid-template-columns:repeat(2,minmax(0,1fr))}.districts{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:430px){.hero{padding:32px 15px 60px}.hero h1{font-size:clamp(35px,10vw,45px)}.hero .search{gap:4px}.hero .search input{min-width:0;font-size:12px}.hero .search button{padding:0 11px;font-size:12px}.cities{grid-template-columns:1fr!important}.city{height:280px}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.cat{font-size:12px}.gems,.blogs{grid-template-columns:1fr}.gem img,.blog img{height:185px}.districts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.eu-hero-slide{transition:none!important;transform:none!important}.city img{transition:none!important}}
+
+
+/* Mobile layout correction: prevent the desktop Arya preview card from covering the hero. */
+@media(max-width:900px){
+  .hero-arya{display:none!important}
+  .hero{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important}
+  .hero>div:first-child{width:100%!important;max-width:100%!important;min-width:0!important}
+}
+@media(max-width:620px){
+  .hero{min-height:0!important;padding:34px 18px 62px!important;gap:0!important}
+  .hero h1{font-size:clamp(36px,10vw,46px)!important;line-height:1.06!important;max-width:100%;overflow-wrap:anywhere}
+  .hero p{font-size:15px!important;line-height:1.65!important}
+  .hero .search{display:flex!important;flex-direction:column!important;width:100%;box-sizing:border-box;gap:7px}
+  .hero .search input{width:100%;box-sizing:border-box;min-height:46px;padding:12px 13px}
+  .hero .search button{width:100%;min-height:46px;border-radius:12px}
+  .hero-buttons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+  .hero-btn{padding:12px 10px!important;font-size:12px!important;min-width:0}
+  .hero-btn.installbtn{grid-column:1/-1}
+  .categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:14px!important;border-radius:20px!important;margin-top:-22px!important}
+  .categories .cat{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-width:0;min-height:82px;padding:10px 6px!important;border:1px solid #e7edf5;border-radius:14px;background:#fbfdff;font-size:12px!important;line-height:1.25;text-align:center}
+  .categories .ico{width:38px!important;height:38px!important;margin:0!important;font-size:20px!important;flex:0 0 auto}
+  .section{padding:28px 0!important}
+  .sectionhead{align-items:flex-start!important;gap:10px!important;flex-wrap:wrap}
+  .section h2{font-size:22px!important}
+  .sectionhead p{font-size:12px!important;line-height:1.5}
+  .district-tools{padding:12px!important;gap:10px!important}
+  .region-filters{display:flex!important;flex-wrap:wrap!important;overflow:visible!important}
+  .region-btn{font-size:12px!important;padding:8px 11px!important}
+  .up-map-card{padding:10px!important}
+  .up-map-wrap{min-height:320px!important}
+  .up-map-svg{min-width:620px!important;height:340px!important}
+}
+@media(max-width:380px){
+  .hero{padding-left:14px!important;padding-right:14px!important}
+  .hero h1{font-size:34px!important}
+  .hero-buttons{grid-template-columns:1fr!important}
+  .hero-btn.installbtn{grid-column:auto}
+}
