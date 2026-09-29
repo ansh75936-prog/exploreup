@@ -2,10 +2,10 @@
 (function(){
  "use strict";
  const slides=[
-  {name:"Varanasi",subtitle:"The City of Light",image:"./images/varanasi.jpg?v=20260929-5",position:"center 48%"},
-  {name:"Agra",subtitle:"Home of the Taj Mahal",image:"./images/agra-card.jpg?v=20260929-5",position:"center 48%"},
+  {name:"Varanasi",subtitle:"The City of Light",image:"/images/varanasi.jpg?v=20260929-6",position:"center 48%"},
+  {name:"Agra",subtitle:"Home of the Taj Mahal",image:"/images/agra-card.jpg?v=20260929-6",position:"center 48%"},
   {name:"Mathura",subtitle:"The Heart of Braj",image:"",position:"center"},
-  {name:"Ayodhya",subtitle:"Ram Mandir & Sacred Heritage",image:"./images/ayodhya-ram-mandir-card.jpg?v=20260929-5",position:"center 42%"}
+  {name:"Ayodhya",subtitle:"Ram Mandir & Sacred Heritage",image:"/images/ayodhya-ram-mandir-card.jpg?v=20260929-6",position:"center 42%"}
  ];
  const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
  function makeDashboard(){
@@ -58,7 +58,7 @@
   hero.dataset.euSlideshowReady="1";hero.classList.add("eu-slideshow-active");
   const stack=document.createElement("div");stack.className="eu-hero-slides";stack.setAttribute("aria-hidden","true");
   const layers=slides.map((s,i)=>{const el=document.createElement("div");el.className="eu-hero-slide"+(i===0?" is-active":"");el.style.backgroundPosition=s.position;stack.appendChild(el);return el;});
-  hero.prepend(stack);
+  hero.appendChild(stack);
   const caption=document.createElement("div");caption.className="eu-hero-location";caption.setAttribute("aria-live","polite");caption.innerHTML='<span class="eu-live-dot"></span><span class="eu-hero-city"></span><span class="eu-hero-subtitle"></span>';hero.appendChild(caption);
   let current=0;
   function show(i){
@@ -88,7 +88,7 @@
   const grid=document.getElementById("cityGrid");
   if(grid&&window.MutationObserver)new MutationObserver(removeApiDistrictImages).observe(grid,{childList:true,subtree:true});
   const feature=document.querySelector(".featurebanner");
-  if(feature)feature.style.backgroundImage='linear-gradient(100deg,rgba(5,25,49,.78),rgba(5,25,49,.16)),url("./images/varanasi.jpg?v=20260929-5")';
+  if(feature)feature.style.backgroundImage='linear-gradient(100deg,rgba(5,25,49,.78),rgba(5,25,49,.16)),url("/images/varanasi.jpg?v=20260929-6")';
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
