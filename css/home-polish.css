@@ -267,3 +267,5 @@ body{background:#f3f7fc;color:var(--eu-ink)}
  .hero-btn.installbtn{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:reduce){.eu-hero-slide,.eu-featured-card,.city{transition:none!important}}
+
+.hero-arya{position:relative;z-index:3}.eu-region-card{font:inherit}
