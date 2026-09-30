@@ -48,7 +48,11 @@
   const dash=main.querySelector(".eu-home-dashboard");
   if(dash)dash.insertAdjacentElement("afterend",section);else main.insertBefore(section,main.children[1]||null);
   const btn=section.querySelector("#euViewAll");if(btn)btn.addEventListener("click",function(){const all=document.getElementById("viewAllDistrictsBtn");if(all)all.click();else{const grid=document.getElementById("cityGrid");if(grid){grid.hidden=false;grid.scrollIntoView({behavior:"smooth"});}}});
-  section.querySelectorAll("[data-feature-city]").forEach(card=>card.addEventListener("click",()=>{if(typeof window.safeOpenCity==="function")window.safeOpenCity(card.dataset.featureCity);}));
+  section.querySelectorAll("[data-feature-city]").forEach(card=>{
+   const openCity=()=>{if(typeof window.safeOpenCity==="function")window.safeOpenCity(card.dataset.featureCity);};
+   card.addEventListener("click",openCity);
+   card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openCity();}});
+  });
  }
  function featuredCard(name,sub,icon){
   return '<article class="eu-featured-card" data-feature-city="'+name+'" role="button" tabindex="0"><div class="eu-featured-photo"><span>'+icon+'</span></div><div class="eu-featured-info"><div><strong>'+name+'</strong><small>'+sub+'</small></div><span class="arrow">→</span></div></article>';
