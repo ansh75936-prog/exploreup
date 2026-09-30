@@ -681,6 +681,41 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 .arya-panel.arya-visible:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
 </style>
 <link rel="stylesheet" href="./css/home-polish.css?v=20260930-5">
+
+<style id="exploreup-premium-district-cards">
+/* Premium district cards inspired by the approved colorful reference */
+#cityGrid.cities{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;width:100%!important;align-items:stretch}
+#cityGrid .city{display:block!important;position:relative!important;width:100%!important;height:auto!important;min-width:0;aspect-ratio:.91;margin:0!important;overflow:hidden;border:1px solid rgba(255,255,255,.7);border-radius:22px;background:linear-gradient(145deg,#0877d5,#172554);box-shadow:0 12px 28px rgba(15,35,70,.15);isolation:isolate;cursor:pointer;transition:transform .24s ease,box-shadow .24s ease}
+#cityGrid .city:nth-child(4n+1){--card-accent:#e11d48;--card-accent-dark:#881337}
+#cityGrid .city:nth-child(4n+2){--card-accent:#f97316;--card-accent-dark:#9a3412}
+#cityGrid .city:nth-child(4n+3){--card-accent:#7c3aed;--card-accent-dark:#3b0764}
+#cityGrid .city:nth-child(4n){--card-accent:#059669;--card-accent-dark:#064e3b}
+#cityGrid .city-photo{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:saturate(1.08) contrast(1.03);transition:transform .55s cubic-bezier(.2,.7,.2,1);image-rendering:auto}
+#cityGrid .city-photo-fallback{display:none;position:absolute;inset:0;z-index:0;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff;font-size:38px;font-weight:800;background:linear-gradient(145deg,var(--card-accent),var(--card-accent-dark))}
+#cityGrid .city-photo-fallback span{font-size:16px}
+#cityGrid .city:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,15,35,.06) 0%,rgba(3,15,35,.02) 28%,rgba(3,15,35,.42) 53%,var(--card-accent-dark) 100%);opacity:.96;pointer-events:none}
+#cityGrid .city:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,transparent 35%,var(--card-accent) 145%);opacity:.23;pointer-events:none}
+#cityGrid .city:hover{transform:translateY(-5px);box-shadow:0 20px 38px rgba(15,35,70,.24)}
+#cityGrid .city:hover .city-photo{transform:scale(1.07)}
+#cityGrid .city-badge{position:absolute;top:13px;left:13px;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid rgba(255,255,255,.65);border-radius:999px;background:rgba(8,20,42,.36);color:#fff;font-size:9px;font-weight:900;letter-spacing:1px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#cityGrid .city-badge-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+#cityGrid .citytext{position:absolute;z-index:3;left:18px;right:14px;bottom:77px}
+#cityGrid .citytext h3{margin:0 0 7px;color:#fff;font-size:clamp(21px,2.1vw,30px);font-weight:900;line-height:1.05;letter-spacing:-.5px;text-shadow:0 3px 12px rgba(0,0,0,.3)}
+#cityGrid .citytext small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:rgba(255,255,255,.94);font-size:12px;line-height:1.45;text-shadow:0 2px 7px rgba(0,0,0,.3)}
+#cityGrid .city-bottom{position:absolute;z-index:4;left:15px;right:15px;bottom:15px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+#cityGrid .city-location{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-size:10px;font-weight:750}
+#cityGrid .city-explore{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;padding:9px 13px;border:1px solid rgba(255,255,255,.62);border-radius:999px;background:rgba(255,255,255,.96);color:var(--card-accent-dark);font-size:12px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+#cityGrid .city-explore b{font-size:16px;line-height:1}
+#cityGrid .citymeta{position:absolute;z-index:3;top:50px;left:13px;right:13px;bottom:auto;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none}
+#cityGrid .citymeta .meta{font-size:10px;padding:5px 8px;border:1px solid rgba(255,255,255,.25);background:rgba(8,20,42,.38);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#cityGrid .citymeta .rating{background:rgba(255,247,218,.95);color:#7c4a03}
+body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+@media(max-width:1000px){#cityGrid.cities{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}}
+@media(max-width:700px){#cityGrid.cities{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}#cityGrid .city{border-radius:18px;aspect-ratio:.78}#cityGrid .citytext{left:12px;right:10px;bottom:68px}#cityGrid .citytext h3{font-size:clamp(18px,4.6vw,25px)}#cityGrid .citytext small{font-size:11px}#cityGrid .city-bottom{left:10px;right:10px;bottom:10px;gap:4px}#cityGrid .city-location{font-size:9px}#cityGrid .city-explore{padding:8px 10px;font-size:11px;gap:5px}#cityGrid .city-badge{top:10px;left:10px;font-size:8px;padding:6px 8px}#cityGrid .citymeta{left:10px;right:10px;top:42px}#cityGrid .citymeta .meta{font-size:9px;padding:4px 6px}}
+@media(max-width:360px){#cityGrid.cities{gap:8px!important}#cityGrid .city{aspect-ratio:.72}#cityGrid .citytext h3{font-size:17px}#cityGrid .citytext small{font-size:10px}#cityGrid .city-location{display:none}}
+@media(prefers-reduced-motion:reduce){#cityGrid .city,#cityGrid .city-photo{transition:none}}
+</style>
+
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -1356,7 +1391,7 @@ function toggleAllDistricts(){
 function renderCities(){
  const grid=document.getElementById('cityGrid'); if(!grid)return;
  const list=(window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?window.__exploreUpDistrictCities:cities;
- grid.innerHTML=list.map((c)=>{const i=cities.indexOf(c);return `<div class="city" data-open-city="${escapeHtml(c.name)}" data-city-index="${i>=0?i:''}" role="button" tabindex="0" aria-label="Open ${escapeHtml(c.name)}"><div class="eu-card-photo-placeholder" aria-label="Custom district image slot"><span>📷</span><small>Custom photo coming soon</small></div><div class="citytext"><h3>${escapeHtml(c.name)}</h3><small>${escapeHtml(c.tag)}</small></div><div class="citymeta"><span class="meta">📍 ${escapeHtml(c.distance)}</span><span class="meta">₹ ${escapeHtml(c.fee)}</span><span class="meta rating">★ ${escapeHtml(c.rating)}</span></div><div class="arrow" aria-hidden="true">→</div></div>`}).join('');
+ grid.innerHTML=list.map((c)=>{const i=cities.indexOf(c);const name=escapeHtml(c.name);const photo=escapeHtml(c.img||'');return `<div class="city" data-open-city="${name}" data-city-index="${i>=0?i:''}" role="button" tabindex="0" aria-label="Explore ${name} district"><img class="city-photo" src="${photo}" alt="${name} district attraction" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="city-photo-fallback" aria-hidden="true">📍<span>Discover ${name}</span></div><span class="city-badge"><span class="city-badge-dot"></span> UTTAR PRADESH</span><div class="citytext"><h3>${name}</h3><small>${escapeHtml(c.tag||'Explore local places, food and culture')}</small></div><div class="city-bottom"><span class="city-location">⌖ ${escapeHtml(c.distance||'District guide')}</span><span class="city-explore">Explore <b>→</b></span></div><div class="citymeta" aria-label="Travel information"><span class="meta">₹ ${escapeHtml(c.fee||'Varies')}</span><span class="meta rating">★ ${escapeHtml(c.rating||'—')}</span></div></div>`}).join('');
  const badge=document.getElementById('destinationCountBadge'); if(badge)badge.textContent='75 districts';
 }
 ;
