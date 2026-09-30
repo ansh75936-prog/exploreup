@@ -316,3 +316,115 @@ body{background:#f3f7fc;color:var(--eu-ink)}
  .eu-hero-slide:after{background:linear-gradient(90deg,rgba(4,21,42,.50),rgba(4,21,42,.24) 70%,rgba(4,21,42,.12))!important}
  .hero:after{background:linear-gradient(90deg,rgba(4,24,49,.38),rgba(4,24,49,.18) 65%,rgba(4,24,49,.06))!important}
 }
+
+
+/* ExploreUP colourful polish: vibrant travel colours, clearer hierarchy, softer cards. */
+:root{
+ --eu-navy:#09284b;
+ --eu-blue:#1265ad;
+ --eu-sky:#eaf6ff;
+ --eu-gold:#ffb21c;
+ --eu-coral:#ff765e;
+ --eu-teal:#18a89b;
+ --eu-violet:#8065d9;
+}
+body{
+ background:linear-gradient(180deg,#f4f9ff 0%,#fffaf2 48%,#f1f8ff 100%)!important;
+}
+.nav{
+ box-shadow:0 5px 22px rgba(10,38,75,.08)!important;
+ border-bottom:1px solid rgba(20,90,150,.12)!important;
+}
+.navlinks a{transition:color .2s ease,background .2s ease,transform .2s ease!important}
+.navlinks a:hover{color:#1265ad!important;transform:translateY(-1px)}
+.hero{
+ isolation:isolate!important;
+ background:linear-gradient(115deg,#06254b 0%,#0b4f82 48%,#17315c 100%)!important;
+ box-shadow:0 18px 42px rgba(5,36,76,.18)!important;
+}
+.hero h1 em{
+ background:linear-gradient(90deg,#ffd166,#ff9f43 48%,#ff7b72)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+}
+.hero .search{
+ border:1px solid rgba(255,255,255,.7)!important;
+ box-shadow:0 12px 32px rgba(0,0,0,.18)!important;
+}
+.hero .search button,.hero-btn{
+ transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important;
+}
+.hero .search button:hover,.hero-btn:hover{transform:translateY(-2px)!important;filter:brightness(1.06)!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important}
+.sectionhead h2,.eu-section-title{
+ letter-spacing:-.025em!important;
+}
+.sectionhead h2:after{
+ content:"";display:block;width:54px;height:4px;border-radius:10px;margin-top:8px;
+ background:linear-gradient(90deg,#ffb21c,#ff765e,#8065d9);
+}
+.eu-home-dashboard{gap:22px!important}
+.eu-region-panel,.eu-why-panel{
+ border:1px solid rgba(30,95,150,.13)!important;
+ box-shadow:0 14px 34px rgba(21,65,105,.08)!important;
+}
+.eu-region-card{
+ border:1px solid rgba(40,90,145,.13)!important;
+ box-shadow:0 5px 14px rgba(15,55,95,.04)!important;
+ transition:transform .2s ease,box-shadow .2s ease!important;
+}
+.eu-region-card:nth-child(1){background:linear-gradient(135deg,#e8f8ee,#fff)!important;border-color:#c5ead2!important}
+.eu-region-card:nth-child(2){background:linear-gradient(135deg,#fff0f3,#fff)!important;border-color:#f5d0dc!important}
+.eu-region-card:nth-child(3){background:linear-gradient(135deg,#fff4dc,#fff)!important;border-color:#f4dfad!important}
+.eu-region-card:nth-child(4){background:linear-gradient(135deg,#f0eaff,#fff)!important;border-color:#ddd0ff!important}
+.eu-region-card:hover{transform:translateY(-3px)!important;box-shadow:0 12px 25px rgba(15,55,95,.12)!important}
+.eu-region-icon,.eu-why-icon{
+ box-shadow:0 4px 12px rgba(17,53,95,.09)!important;
+}
+.eu-featured-card,.city,.gem,.trail,.travel-card,.blog-card{
+ overflow:hidden!important;
+ border:1px solid rgba(26,74,120,.12)!important;
+ box-shadow:0 8px 24px rgba(20,55,95,.08)!important;
+ transition:transform .22s ease,box-shadow .22s ease!important;
+}
+.eu-featured-card:hover,.city:hover,.gem:hover,.trail:hover,.travel-card:hover,.blog-card:hover{
+ transform:translateY(-4px)!important;
+ box-shadow:0 16px 34px rgba(20,55,95,.15)!important;
+}
+.eu-featured-photo{
+ background:linear-gradient(135deg,#0e659c,#29b8b1 52%,#ffc857)!important;
+}
+.eu-featured-card:nth-child(2) .eu-featured-photo{background:linear-gradient(135deg,#7d3c98,#d96c9d,#ffc36b)!important}
+.eu-featured-card:nth-child(3) .eu-featured-photo{background:linear-gradient(135deg,#b84a35,#f3a43b,#ffdb80)!important}
+.eu-featured-card:nth-child(4) .eu-featured-photo{background:linear-gradient(135deg,#164e63,#17a398,#b6e5c9)!important}
+.eu-featured-card:nth-child(5) .eu-featured-photo{background:linear-gradient(135deg,#3654a5,#8b73d6,#e5b9ff)!important}
+.eu-featured-photo span{filter:drop-shadow(0 5px 5px rgba(0,0,0,.22))!important}
+.eu-featured-info{background:linear-gradient(180deg,#fff,#f7fbff)!important}
+.eu-featured-info .arrow,.city .arrow{color:#1265ad!important}
+.featurebanner{
+ border:1px solid rgba(255,255,255,.2)!important;
+ box-shadow:0 16px 34px rgba(6,30,60,.17)!important;
+}
+.gem img,.city img{transition:transform .35s ease!important}
+.gem:hover img,.city:hover img{transform:scale(1.035)!important}
+.up-map-card,.up-map-wrap{
+ border-radius:22px!important;
+ box-shadow:0 10px 28px rgba(20,55,95,.06)!important;
+}
+#cityGrid[hidden],.cities[hidden]{display:none!important}
+#cityGrid:not([hidden]){animation:eu-grid-in .28s ease both}
+.eu-trip-promo button{
+ background:linear-gradient(110deg,#ffb21c,#ff875b)!important;
+ color:#09284b!important;border:0!important;font-weight:800!important;
+ box-shadow:0 7px 16px rgba(255,151,57,.24)!important;
+}
+.view,.sectionhead .view{
+ border:0!important;
+ background:linear-gradient(110deg,#1265ad,#173d77)!important;
+ box-shadow:0 7px 18px rgba(18,101,173,.2)!important;
+ transition:transform .2s ease,box-shadow .2s ease!important;
+}
+.view:hover,.sectionhead .view:hover{transform:translateY(-2px)!important;box-shadow:0 10px 24px rgba(18,101,173,.28)!important}
+@keyframes eu-grid-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .eu-region-card,.eu-featured-card,.city,.gem,.trail,.travel-card,.blog-card,.hero .search button,.hero-btn{transition:none!important}
+ #cityGrid:not([hidden]){animation:none!important}
+}
