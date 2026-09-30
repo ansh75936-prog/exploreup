@@ -47,7 +47,7 @@
    '</div>';
   const dash=main.querySelector(".eu-home-dashboard");
   if(dash)dash.insertAdjacentElement("afterend",section);else main.insertBefore(section,main.children[1]||null);
-  const btn=section.querySelector("#euViewAll");if(btn)btn.addEventListener("click",function(){const all=document.getElementById("viewAllDistrictsBtn");if(all)all.click();else{const grid=document.getElementById("cityGrid");if(grid){grid.hidden=false;grid.scrollIntoView({behavior:"smooth"});}}});
+  const btn=section.querySelector("#euViewAll");if(btn)btn.addEventListener("click",function(){if(typeof window.toggleAllDistricts==="function")window.toggleAllDistricts();});
   section.querySelectorAll("[data-feature-city]").forEach(card=>{
    const openCity=()=>{if(typeof window.safeOpenCity==="function")window.safeOpenCity(card.dataset.featureCity);};
    card.addEventListener("click",openCity);
