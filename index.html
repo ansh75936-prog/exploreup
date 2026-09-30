@@ -708,7 +708,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
   </div>
 </section>
 <section class="section" id="cities">
-<div class="sectionhead"><div><h2>📍 Explore All Cities</h2><p>Explore Uttar Pradesh city by city, with comprehensive travel guides, transport, hotels and food.</p></div></div>
+<div class="sectionhead"><div><h2>📍 Explore All Cities</h2><p>Explore Uttar Pradesh city by city, with comprehensive travel guides, transport, hotels and food.</p></div><button class="view" type="button" id="euViewAll" aria-controls="cityGrid" aria-expanded="false">View All Cities ↓</button></div>
 <div class="cities" id="cityGrid" hidden></div>
 </section>
 <section class="section" id="places">
@@ -1319,7 +1319,7 @@ function toggleAllDistricts(){
  grid.hidden=!willOpen;
  btn.setAttribute('aria-expanded',String(willOpen));
  btn.setAttribute('aria-controls','cityGrid');
- btn.textContent=willOpen?'Hide All Districts ↑':'View All 75 Districts →';
+ btn.textContent=willOpen?'Hide All Cities ↑':'View All Cities ↓';
  if(willOpen) grid.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderCities(){
@@ -2834,5 +2834,5 @@ body.dark .district-playable-video-info h3{color:#eef5ff}
 body.dark .district-playable-video-info p{color:#b3c3d8}
 @media(max-width:520px){.district-playable-video-info{padding:15px}.district-playable-video-info .district-video-source{width:100%;justify-content:center;box-sizing:border-box}}
 </style><script src="./js/district-media.js?v=20260929-5"></script>
-<script src="./js/home-showcase.js?v=20260930-2" defer></script>
+<script src="./js/home-showcase.js?v=20260930-3" defer></script>
 </body></html>
