@@ -301,3 +301,18 @@ body{background:#f3f7fc;color:var(--eu-ink)}
  .hero-btn.installbtn{grid-column:auto!important}
  .categories .cat{font-size:11px!important}
 }
+
+
+/* Bug-fix pass: reveal the destination photos instead of stacking dark overlays. */
+.eu-hero-slide:after{
+ background:linear-gradient(90deg,rgba(4,21,42,.35) 0%,rgba(4,21,42,.20) 43%,rgba(4,21,42,.06) 100%),linear-gradient(0deg,rgba(4,21,42,.14),transparent 50%)!important;
+}
+.hero:after{
+ background:linear-gradient(90deg,rgba(4,24,49,.48) 0%,rgba(4,24,49,.24) 45%,rgba(4,24,49,.07) 100%)!important;
+}
+@media(max-width:760px){
+ .hero>.hero-arya{display:none!important}
+ .hero>div:first-child{flex:1 1 auto!important}
+ .eu-hero-slide:after{background:linear-gradient(90deg,rgba(4,21,42,.50),rgba(4,21,42,.24) 70%,rgba(4,21,42,.12))!important}
+ .hero:after{background:linear-gradient(90deg,rgba(4,24,49,.38),rgba(4,24,49,.18) 65%,rgba(4,24,49,.06))!important}
+}
