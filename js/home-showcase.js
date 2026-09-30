@@ -38,7 +38,7 @@
   if(document.querySelector(".eu-featured-section"))return;
   const main=document.getElementById("mainContent");if(!main)return;
   const section=document.createElement("section");section.className="eu-featured-section";
-  section.innerHTML='<div class="sectionhead"><div><h2>⭐ Featured Districts</h2><p>Popular destinations you must explore</p></div><button class="view" type="button" id="euViewAll">View All 75 Districts →</button></div><div class="eu-featured-grid">'+
+  section.innerHTML='<div class="sectionhead"><div><h2>⭐ Featured Districts</h2><p>Popular destinations you must explore</p></div></div><div class="eu-featured-grid">'+
    featuredCard("Varanasi","Spiritual Capital","🛕")+
    featuredCard("Agra","Taj Mahal City","🏛️")+
    featuredCard("Lucknow","City of Nawabs","🏰")+
@@ -47,7 +47,6 @@
    '</div>';
   const dash=main.querySelector(".eu-home-dashboard");
   if(dash)dash.insertAdjacentElement("afterend",section);else main.insertBefore(section,main.children[1]||null);
-  const btn=section.querySelector("#euViewAll");if(btn)btn.addEventListener("click",function(){if(typeof window.toggleAllDistricts==="function")window.toggleAllDistricts();});
   section.querySelectorAll("[data-feature-city]").forEach(card=>{
    const openCity=()=>{if(typeof window.safeOpenCity==="function")window.safeOpenCity(card.dataset.featureCity);};
    card.addEventListener("click",openCity);
