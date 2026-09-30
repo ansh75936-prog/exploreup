@@ -654,7 +654,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 .arya-panel[hidden]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .arya-panel.arya-visible:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
 </style>
-<link rel="stylesheet" href="./css/home-polish.css?v=20260930-2">
+<link rel="stylesheet" href="./css/home-polish.css?v=20260930-3">
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -1313,13 +1313,18 @@ function safeOpenCity(name){
 
 function toggleAllDistricts(){
  const grid=document.getElementById('cityGrid');
- const btn=document.getElementById('euViewAll');
- if(!grid||!btn)return;
+ if(!grid)return;
  const willOpen=grid.hidden;
+ if(willOpen){
+  try{renderCities();}catch(e){console.warn('ExploreUP district list render failed:',e);}
+ }
  grid.hidden=!willOpen;
- btn.setAttribute('aria-expanded',String(willOpen));
- btn.setAttribute('aria-controls','cityGrid');
- btn.textContent=willOpen?'Hide All Cities ↑':'View All Cities ↓';
+ const buttons=[document.getElementById('euViewAll'),document.getElementById('euViewAllFeatured')].filter(Boolean);
+ buttons.forEach(btn=>{
+  btn.setAttribute('aria-expanded',String(willOpen));
+  btn.setAttribute('aria-controls','cityGrid');
+  btn.textContent=willOpen?'Hide Districts ↑':'View All 75 Districts ↓';
+ });
  if(willOpen) grid.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderCities(){
@@ -2834,5 +2839,5 @@ body.dark .district-playable-video-info h3{color:#eef5ff}
 body.dark .district-playable-video-info p{color:#b3c3d8}
 @media(max-width:520px){.district-playable-video-info{padding:15px}.district-playable-video-info .district-video-source{width:100%;justify-content:center;box-sizing:border-box}}
 </style><script src="./js/district-media.js?v=20260929-5"></script>
-<script src="./js/home-showcase.js?v=20260930-3" defer></script>
+<script src="./js/home-showcase.js?v=20260930-4" defer></script>
 </body></html>
