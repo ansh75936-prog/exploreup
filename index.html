@@ -654,7 +654,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 .arya-panel[hidden]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .arya-panel.arya-visible:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
 </style>
-<link rel="stylesheet" href="./css/home-polish.css?v=20260930-1">
+<link rel="stylesheet" href="./css/home-polish.css?v=20260930-2">
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -713,9 +713,8 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 </section>
 <section class="section" id="places">
 <div class="feature">
-<div class="featurebanner"><div class="eyebrow">FEATURED CITY</div><h2>Banaras / Varanasi</h2><p>Ghats, Ganga Aarti, Banarasi silk and legendary street food — Varanasi is a city to experience through its ghats, culture, cuisine and living traditions.</p><button onclick="safeOpenCity('Varanasi')" style="background:var(--gold);border:0;border-radius:25px;padding:12px 20px;font-weight:800;cursor:pointer">Explore Banaras →</button></div>
-<div class="panel" id="about"><h2>⭐ Why ExploreUP?</h2><div class="checks">
-<div class="check">✅<div><b>Complete City Guide</b><small>Useful information in one place</small></div></div>
+<div class="featurebanner" style="grid-column:1/-1"><div class="eyebrow">FEATURED CITY</div><h2>Banaras / Varanasi</h2><p>Ghats, Ganga Aarti, Banarasi silk and legendary street food — Varanasi is a city to experience through its ghats, culture, cuisine and living traditions.</p><button onclick="safeOpenCity('Varanasi')" style="background:var(--gold);border:0;border-radius:25px;padding:12px 20px;font-weight:800;cursor:pointer">Explore Banaras →</button></div>
+
 <div class="check">🗺️<div><b>Easy Navigation</b><small>Find places and areas quickly</small></div></div>
 <div class="check">🍴<div><b>Local Food Guide</b><small>Must-try dishes and local favourites</small></div></div>
 <div class="check">💡<div><b>Practical Tips</b><small>Budget, transport and local advice</small></div></div>
@@ -730,47 +729,7 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 <article class="gem"><button class="save" onclick="toggleSave(this,'Saman Bird Sanctuary')">♡</button><img decoding="async" fetchpriority="low" loading="lazy" onerror="exploreUpImageFallback(this)" src="https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&amp;fit=crop&amp;w=700&amp;q=70"/><div><h3>Saman Bird Sanctuary</h3><p>Nature aur birdwatching ke liye peaceful escape.</p><button class="share" onclick="shareItem('Saman Bird Sanctuary')">↗ Share</button></div></article>
 </div>
 </section>
-<section class="section" id="districts">
-<div class="sectionhead"><div><h2>🧭 District-wise Exploration</h2><p>Choose a district to explore its places, food, services and travel information.</p></div></div>
-<div class="districts">
-<div class="district" data-open-city="Lucknow" role="button" tabindex="0">Lucknow</div>
-<div class="district" data-open-city="Ayodhya" role="button" tabindex="0">Ayodhya</div>
-<div class="district" data-open-city="Varanasi" role="button" tabindex="0">Varanasi</div>
-<div class="district" data-open-city="Agra" role="button" tabindex="0">Agra</div>
-<div class="district" data-open-city="Mathura" role="button" tabindex="0">Mathura</div>
-<div class="district" data-open-city="Vrindavan" role="button" tabindex="0">Vrindavan</div>
-<div class="district" data-open-city="Prayagraj" role="button" tabindex="0">Prayagraj</div>
-<div class="district" data-open-city="Kanpur" role="button" tabindex="0">Kanpur</div>
-<div class="district" data-open-city="Jhansi" role="button" tabindex="0">Jhansi</div>
-<div class="district" data-open-city="Chitrakoot" role="button" tabindex="0">Chitrakoot</div>
-<div class="district" data-open-city="Meerut" role="button" tabindex="0">Meerut</div>
-<div class="district" data-open-city="Moradabad" role="button" tabindex="0">Moradabad</div>
-<div class="district" data-open-city="Rampur" role="button" tabindex="0">Rampur</div>
-<div class="district" data-open-city="Bareilly" role="button" tabindex="0">Bareilly</div>
-<div class="district" data-open-city="Saharanpur" role="button" tabindex="0">Saharanpur</div>
-<div class="district" data-open-city="Firozabad" role="button" tabindex="0">Firozabad</div>
-<div class="district" data-open-city="Kannauj" role="button" tabindex="0">Kannauj</div>
-<div class="district" data-open-city="Mirzapur" role="button" tabindex="0">Mirzapur</div>
-<div class="district" data-open-city="Jaunpur" role="button" tabindex="0">Jaunpur</div>
-<div class="district" data-open-city="Gorakhpur" role="button" tabindex="0">Gorakhpur</div>
-<div class="district" data-open-city="Kushinagar" role="button" tabindex="0">Kushinagar</div>
-<div class="district" data-open-city="Lakhimpur Kheri" role="button" tabindex="0">Lakhimpur Kheri</div>
-<div class="district" data-open-city="Sonbhadra" role="button" tabindex="0">Sonbhadra</div>
-<div class="district" data-open-city="Bhadohi" role="button" tabindex="0">Bhadohi</div>
-<div class="district" data-open-city="Pratapgarh" role="button" tabindex="0">Pratapgarh</div>
-<div class="district" data-open-city="Etawah" role="button" tabindex="0">Etawah</div>
-<div class="district" data-open-city="Aligarh" role="button" tabindex="0">Aligarh</div>
-<div class="district" data-open-city="Bulandshahr" role="button" tabindex="0">Bulandshahr</div>
-<div class="district" data-open-city="Hapur" role="button" tabindex="0">Hapur</div>
-<div class="district" data-open-city="Muzaffarnagar" role="button" tabindex="0">Muzaffarnagar</div>
-<div class="district" data-open-city="Pilibhit" role="button" tabindex="0">Pilibhit</div>
-<div class="district" data-open-city="Amroha" role="button" tabindex="0">Amroha</div>
-<div class="district" data-open-city="Budaun" role="button" tabindex="0">Budaun</div>
-<div class="district" data-open-city="Chandauli" role="button" tabindex="0">Chandauli</div>
-<div class="district" data-open-city="Sultanpur" role="button" tabindex="0">Sultanpur</div>
-<div class="district" data-open-city="Unnao" role="button" tabindex="0">Unnao</div>
-</div>
-</section>
+
 <section class="section" id="festivals">
 <div class="sectionhead"><div><h2>🎉 Festivals Calendar</h2><p>Plan your UP trip around festivals</p></div></div>
 <div class="calendar">
