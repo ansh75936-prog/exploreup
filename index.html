@@ -2680,7 +2680,11 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 
     document.getElementById('mobileAboutItem')?.addEventListener('click',function(){
       closeMenu();
-      document.getElementById('about')?.scrollIntoView({behavior:'smooth'});
+      // The page has no #about anchor; find the actual About/Why ExploreUP section instead.
+      const headings=Array.from(document.querySelectorAll('h1,h2,h3'));
+      const heading=headings.find(el=>/why exploreup|about exploreup/i.test(el.textContent||''));
+      const target=heading?.closest('section,article')||heading||document.querySelector('footer')||document.getElementById('top');
+      target?.scrollIntoView({behavior:'smooth',block:'start'});
     });
 
     document.addEventListener('keydown',function(e){
