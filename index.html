@@ -716,6 +716,22 @@ body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0
 @media(prefers-reduced-motion:reduce){#cityGrid .city,#cityGrid .city-photo{transition:none}}
 </style>
 
+
+<style id="exploreup-mobile-menu-functional-fix">
+/* The 3-dot trigger is shown up to 1000px, so its drawer must be visible at those widths too. */
+@media (min-width:621px) and (max-width:1000px){
+  .mobile-menu{display:block!important;max-height:calc(100dvh - 62px);width:min(520px,86vw)}
+  .mobile-menu-backdrop{display:block!important}
+  .mobile-menu-btn{display:flex!important}
+  .navlinks{display:none!important}
+}
+.mobile-menu-item,.mobile-menu-back,.mobile-menu-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.mobile-menu-item:focus-visible,.mobile-menu-back:focus-visible,.mobile-menu-btn:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}
+.mobile-menu-item{position:relative;z-index:1;pointer-events:auto}
+.mobile-menu-toggle{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.mobile-menu,.mobile-menu-backdrop,.mobile-menu-toggle,.mobile-menu-toggle:after{transition:none!important}}
+</style>
+
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -2554,8 +2570,11 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 
     document.getElementById('mobileBackItem')?.addEventListener('click',function(){
       closeMenu();
-      if(window.history.length>1) window.history.back();
-      else window.location.href='/';
+      // The menu's Back control should dismiss the drawer and return to the home section,
+      // not unexpectedly navigate away from ExploreUP via browser history.
+      const top=document.getElementById('top');
+      if(top) top.scrollIntoView({behavior:'smooth',block:'start'});
+      else window.scrollTo({top:0,behavior:'smooth'});
     });
 
     function openAuth(mode){
