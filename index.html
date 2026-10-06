@@ -716,6 +716,34 @@ body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0
 @media(prefers-reduced-motion:reduce){#cityGrid .city,#cityGrid .city-photo{transition:none}}
 </style>
 
+<style id="exploreup-three-dot-visibility-fix">
+/* Stable 3-dot trigger: keep it visible on phones/tablets without affecting Arya AI. */
+@media (max-width:1000px){
+  .mobile-menu-btn{
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 40px!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    margin-right:6px!important;
+    padding:0!important;
+    position:relative!important;
+    visibility:visible!important;
+    opacity:1!important;
+    color:#fff!important;
+    background:rgba(255,255,255,.08)!important;
+    border:1px solid rgba(255,255,255,.38)!important;
+    border-radius:50%!important;
+    font-size:28px!important;
+    line-height:1!important;
+    z-index:10001!important;
+  }
+  .mobile-menu-btn.is-open{background:#29425f!important;}
+}
+</style>
+
 
 <style id="exploreup-mobile-menu-functional-fix">
 /* The 3-dot trigger is shown up to 1000px, so its drawer must be visible at those widths too. */
@@ -735,6 +763,7 @@ body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
+<button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Open menu" title="Menu" aria-expanded="false">⋮</button>
 <div class="logo"><div class="pin"><b>●</b></div><div>Explore<span>UP</span><small class="tag">HAR SHEHAR KI KAHANI</small></div></div>
 <nav class="navlinks"><a aria-label="ExploreUP home" href="#top">Home</a><a href="#cities">Cities</a><a href="#places">Places</a><a href="#food">Food</a><a href="#travel">Travel</a><a href="#blogs">Blogs</a><a href="#about">About</a></nav>
 <div class="actions"><button class="adminbtn" onclick="openAdminPanel()">Admin</button><div class="circle">⌕</div></div>
@@ -2492,19 +2521,23 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
 (function(){
   function initMobileMenu(){
     const nav=document.querySelector('.nav');
-    if(!nav || document.getElementById('mobileMenuBtn')) return;
+    if(!nav) return;
 
-    const btn=document.createElement('button');
-    btn.id='mobileMenuBtn';
-    btn.className='mobile-menu-btn';
-    btn.type='button';
-    btn.setAttribute('aria-label','Open menu');
-    btn.setAttribute('title','Menu');
-    btn.setAttribute('aria-expanded','false');
-    btn.textContent='⋮';
+    /* Use the stable header trigger when present; create one only as a fallback. */
+    let btn=document.getElementById('mobileMenuBtn');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='mobileMenuBtn';
+      btn.className='mobile-menu-btn';
+      btn.type='button';
+      btn.setAttribute('aria-label','Open menu');
+      btn.setAttribute('title','Menu');
+      btn.setAttribute('aria-expanded','false');
+      btn.textContent='⋮';
 
-    const logo=nav.querySelector('.logo');
-    if(logo) nav.insertBefore(btn,logo); else nav.prepend(btn);
+      const logo=nav.querySelector('.logo');
+      if(logo) nav.insertBefore(btn,logo); else nav.prepend(btn);
+    }
 
     const backdrop=document.createElement('div');
     backdrop.className='mobile-menu-backdrop';
