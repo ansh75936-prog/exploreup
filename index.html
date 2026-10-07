@@ -776,6 +776,21 @@ body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0
 @media(prefers-reduced-motion:reduce){.mobile-menu,.mobile-menu-backdrop,.mobile-menu-toggle,.mobile-menu-toggle:after{transition:none!important}}
 </style>
 
+
+<!-- ExploreUP performance: faster connection setup without changing app behavior -->
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style id="exploreup-smooth-performance">
+  html{scrollbar-gutter:stable}
+  body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overscroll-behavior-x:none}
+  button,a{touch-action:manipulation}
+  img,video{max-width:100%}
+  .section,.feature-row,.gems,.districts,.calendar,.trails,.servicebar,.blogs{contain:layout style}
+  .modal,.mobile-menu,.mobile-menu-backdrop,.favpanel{contain:layout paint}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+</style>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -2973,4 +2988,20 @@ body.dark .district-playable-video-info p{color:#b3c3d8}
 @media(max-width:520px){.district-playable-video-info{padding:15px}.district-playable-video-info .district-video-source{width:100%;justify-content:center;box-sizing:border-box}}
 </style><script src="./js/district-media.js?v=20260929-5"></script>
 <script src="./js/home-showcase.js?v=20260930-5" defer></script>
+
+<script id="exploreup-performance-runtime">
+(function(){
+  'use strict';
+  // Keep off-screen media cheap; visible/interactive media remains unchanged.
+  const markMedia=()=>{
+    document.querySelectorAll('img:not([loading]),video:not([preload])').forEach(el=>{
+      if(el.closest('.hero,.modalhero,[data-critical-media]')) return;
+      if(el.tagName==='IMG'){el.loading='lazy';el.decoding='async';}
+      else if(el.tagName==='VIDEO'){el.preload='metadata';}
+    });
+  };
+  if('requestIdleCallback' in window) requestIdleCallback(markMedia,{timeout:1200});
+  else setTimeout(markMedia,300);
+})();
+</script>
 </body></html>
