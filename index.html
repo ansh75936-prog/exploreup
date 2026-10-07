@@ -2729,26 +2729,45 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
     updateMobileAuthState();
     loadSupabaseBackend().then(client=>client?.auth?.onAuthStateChange?.(()=>updateMobileAuthState()));
 
-    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(){
-      if(typeof toggleLanguage==='function') toggleLanguage();
+    // Robust menu actions: always prevent the drawer/backdrop from swallowing taps,
+    // run the requested action safely, then restore the menu state.
+    function runMenuAction(action){
+      try{
+        if(typeof action==='function') action();
+      }catch(err){
+        console.warn('ExploreUP menu action failed:',err);
+      }finally{
+        closeMenu();
+      }
+    }
+
+    document.getElementById('mobileLanguageItem')?.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      runMenuAction(()=>window.toggleLanguage?.());
     });
 
-    document.getElementById('mobileDarkItem')?.addEventListener('click',function(){
-      if(typeof toggleDark==='function') toggleDark();
+    document.getElementById('mobileDarkItem')?.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      runMenuAction(()=>window.toggleDark?.());
     });
 
-    document.getElementById('mobileAdminItem')?.addEventListener('click',function(){
-      if(typeof openAdminPanel==='function') openAdminPanel();
-      closeMenu();
+    document.getElementById('mobileAdminItem')?.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      runMenuAction(()=>window.openAdminPanel?.());
     });
 
-    document.getElementById('mobileAboutItem')?.addEventListener('click',function(){
+    document.getElementById('mobileAboutItem')?.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
       closeMenu();
       // The page has no #about anchor; find the actual About/Why ExploreUP section instead.
       const headings=Array.from(document.querySelectorAll('h1,h2,h3'));
       const heading=headings.find(el=>/why exploreup|about exploreup/i.test(el.textContent||''));
       const target=heading?.closest('section,article')||heading||document.querySelector('footer')||document.getElementById('top');
-      target?.scrollIntoView({behavior:'smooth',block:'start'});
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
     });
 
     document.addEventListener('keydown',function(e){
