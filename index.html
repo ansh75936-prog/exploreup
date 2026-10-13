@@ -3023,4 +3023,70 @@ body.dark .district-playable-video-info p{color:#b3c3d8}
   else setTimeout(markMedia,300);
 })();
 </script>
+
+<style id="exploreup-professional-polish">
+/* Site-wide visual refinement; intentionally leaves Arya AI styling and behavior untouched. */
+:root{--radius-lg:22px;--shadow-soft:0 10px 30px rgba(7,27,53,.07);--shadow-hover:0 18px 42px rgba(7,27,53,.13)}
+html{scroll-padding-top:82px}
+body{font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;letter-spacing:-.01em}
+.nav{box-shadow:0 5px 24px rgba(2,15,32,.16);backdrop-filter:saturate(140%);-webkit-backdrop-filter:saturate(140%)}
+.logo{letter-spacing:-.035em}
+.navlinks a,.actions button,.circle{transition:color .18s ease,background .18s ease,transform .18s ease}
+.hero{background-position:center 44%;isolation:isolate;position:relative}
+.hero>div{max-width:900px}
+.hero h1{letter-spacing:-.055em;text-wrap:balance}
+.hero p{max-width:620px}
+.search{border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 50px rgba(0,15,40,.22)}
+.search:focus-within{outline:3px solid rgba(255,181,27,.34)}
+.search input{border-radius:40px}
+.search button,.hero-btn,.view,.suggestbtn,.contact-tab,.share,.save,.district,.servicebar a{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.search button:hover,.hero-btn:hover,.view:hover,.suggestbtn:hover{transform:translateY(-1px);box-shadow:0 9px 24px rgba(7,27,53,.16)}
+.wrap{width:min(1320px,91%)}
+.section{padding-top:clamp(34px,5vw,62px);padding-bottom:clamp(34px,5vw,62px)}
+.sectionhead{gap:16px;align-items:center}
+.section h2{letter-spacing:-.035em;line-height:1.15}
+.sectionhead p{line-height:1.6}
+.panel,.blog,.gem,.district,.festival,.contact-card,.foodcard,.suggestbox,.mallcard,.detail,.knowledge-card{box-shadow:var(--shadow-soft);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.blog:hover,.gem:hover,.contact-card:hover,.foodcard:hover,.mallcard:hover,.panel:hover{box-shadow:var(--shadow-hover)}
+.blog,.gem,.contact-card,.foodcard{border-radius:18px}
+.blog img,.gem img{display:block}
+.cat{padding:7px 3px;border-radius:14px;transition:background .18s ease,transform .18s ease}
+.cat:hover{background:#f4f8ff;transform:translateY(-2px)}
+.ico{box-shadow:inset 0 0 0 1px rgba(20,55,95,.04)}
+.featurebanner,.trail{border-radius:22px;box-shadow:var(--shadow-soft)}
+.featurebanner h2{letter-spacing:-.04em}
+.footer{line-height:1.7}
+button,a,input,select,textarea{ -webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(11,103,209,.5);outline-offset:3px}
+button:disabled{opacity:.55;cursor:not-allowed}
+img{height:auto}
+.modalbox{box-shadow:0 22px 70px rgba(3,18,38,.18)}
+.close{box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.district-subnav a,.chip,.meta{transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.district-subnav a:hover,.district:hover,.servicebar a:hover{transform:translateY(-2px)}
+#results{border-radius:18px;box-shadow:0 20px 55px rgba(0,24,55,.22)}
+.result{transition:background .16s ease}
+.favbar{transition:transform .2s ease,box-shadow .2s ease}
+.favbar:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,27,59,.35)}
+body.dark .cat:hover{background:#142b45}
+body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark .contact-card,body.dark .foodcard{box-shadow:0 12px 32px rgba(0,0,0,.18)}
+@media(min-width:1001px){
+ .nav{padding-inline:max(4.5%,calc((100vw - 1320px)/2))}
+ .hero{min-height:470px;padding-inline:max(6%,calc((100vw - 1320px)/2))}
+}
+@media(max-width:700px){
+ .wrap{width:92%}
+ .sectionhead{align-items:flex-start}
+ .section h2{font-size:clamp(22px,6vw,28px)}
+ .sectionhead .view{flex-shrink:0;padding:10px 13px;font-size:12px}
+ .categories{gap:10px}
+ .hero p{font-size:15px}
+ .footer{padding-bottom:95px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+
 </body></html>
