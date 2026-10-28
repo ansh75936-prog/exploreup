@@ -38,7 +38,7 @@ function doGet(e) {
     const rows = readRows_(tabName);
     const callback = e && e.parameter && e.parameter.callback;
     const json = JSON.stringify({ ok: true, data: rows });
-    if (callback && /^[A-Za-z_$][0-9A-Za-z_$\.]{0,80}$/.test(callback)) {
+    if (callback && /^[A-Za-z_$][0-9A-Za-z_$]{0,80}$/.test(callback)) {
       return ContentService.createTextOutput(callback + '(' + json + ');')
         .setMimeType(ContentService.MimeType.JAVASCRIPT);
     }
