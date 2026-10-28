@@ -111,6 +111,10 @@ function readRows_(tabName) {
       if (header) item[header] = row[index] || '';
     });
     return item;
+  }).filter(item => {
+    // Draft and pending rows must never be exposed through public reads.
+    if (tabName === 'Settings') return String(item.is_public || '').toLowerCase() === 'true';
+    return String(item.status || '').toLowerCase() === 'published';
   });
 }
 
