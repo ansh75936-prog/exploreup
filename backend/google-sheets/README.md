@@ -35,7 +35,7 @@ Create a Google Spreadsheet named **ExploreUP Master Data** and add these tabs. 
 `id | created_at | event_type | district_slug | path`
 
 ### Settings
-`key | value | updated_at`
+`key | value | updated_at | is_public`
 
 Keep the spreadsheet private. The Apps Script runs as the owner and accesses it by its ID; the sheet itself should not be shared publicly.
 
