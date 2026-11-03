@@ -428,3 +428,108 @@ body{
  .eu-region-card,.eu-featured-card,.city,.gem,.trail,.travel-card,.blog-card,.hero .search button,.hero-btn{transition:none!important}
  #cityGrid:not([hidden]){animation:none!important}
 }
+
+
+/* ExploreUP Hero — premium editorial redesign */
+.hero{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.25fr) minmax(280px,.72fr)!important;
+  align-items:center!important;
+  gap:clamp(28px,5vw,76px)!important;
+  min-height:610px!important;
+  padding:76px clamp(28px,7vw,110px) 82px!important;
+  border-radius:0 0 34px 34px!important;
+  background-color:#071b35!important;
+  box-shadow:0 24px 60px rgba(4,24,49,.18)!important;
+}
+.hero:after{
+  background:linear-gradient(90deg,rgba(4,20,40,.88) 0%,rgba(4,20,40,.72) 48%,rgba(4,20,40,.22) 100%)!important;
+}
+.hero>div:first-child{max-width:760px!important;width:100%!important;z-index:3!important}
+.hero .eyebrow{
+  display:inline-flex!important;align-items:center;gap:10px!important;
+  color:#f5d28a!important;font-size:12px!important;font-weight:800!important;
+  letter-spacing:3.8px!important;text-transform:uppercase!important;
+}
+.hero .eyebrow:before{content:"";width:34px;height:1px;background:#d8ad58;display:inline-block}
+.hero h1{
+  max-width:760px!important;margin:18px 0 18px!important;
+  color:#fff!important;font-family:Georgia,"Times New Roman",serif!important;
+  font-size:clamp(48px,5.4vw,78px)!important;font-weight:500!important;
+  line-height:1.02!important;letter-spacing:-1.8px!important;
+}
+.hero h1 em{
+  display:block!important;margin-top:7px!important;font-style:italic!important;
+  font-weight:500!important;color:#e7bd70!important;
+  background:none!important;-webkit-text-fill-color:#e7bd70!important;
+}
+.hero p{max-width:590px!important;color:rgba(255,255,255,.84)!important;font-size:16px!important;line-height:1.8!important}
+.hero .search{
+  display:flex!important;flex-direction:row!important;align-items:center!important;
+  max-width:650px!important;margin-top:28px!important;padding:7px!important;
+  border:1px solid rgba(255,255,255,.48)!important;border-radius:15px!important;
+  background:rgba(255,255,255,.97)!important;box-shadow:0 18px 42px rgba(0,0,0,.24)!important;
+}
+.hero .search input{
+  min-height:54px!important;padding:0 18px!important;background:transparent!important;
+  color:#18304c!important;font-size:14px!important;border:0!important;
+}
+.hero .search input::placeholder{color:#718096!important}
+.hero .search button{
+  min-height:52px!important;padding:0 26px!important;border-radius:11px!important;
+  background:linear-gradient(135deg,#f4d18a,#d6a84f)!important;color:#102945!important;
+  font-size:14px!important;font-weight:850!important;white-space:nowrap!important;
+}
+.hero .home-trust{display:flex!important;gap:9px!important;margin-top:18px!important;flex-wrap:wrap!important}
+.hero .home-trust span{
+  padding:8px 12px!important;border:1px solid rgba(255,255,255,.25)!important;
+  border-radius:30px!important;background:rgba(255,255,255,.09)!important;
+  color:#f5f0e6!important;font-size:11px!important;letter-spacing:.2px!important;
+}
+.hero-buttons{gap:10px!important;margin-top:22px!important}
+.hero .hero-btn{min-height:46px!important;padding:0 18px!important;border-radius:11px!important;font-size:12px!important;letter-spacing:.2px!important}
+.hero .hero-btn.primary{background:#e2b968!important;color:#102945!important;box-shadow:0 8px 22px rgba(226,185,104,.22)!important}
+.hero .hero-btn.secondary{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.38)!important;color:#fff!important}
+.hero-arya{
+  display:block!important;align-self:center!important;width:100%!important;max-width:350px!important;
+  justify-self:end!important;border:1px solid rgba(255,255,255,.48)!important;
+  border-radius:20px!important;background:rgba(250,248,242,.97)!important;
+  box-shadow:0 28px 70px rgba(0,0,0,.32)!important;overflow:hidden!important;
+}
+.hero-arya-head{padding:18px 20px!important;background:#102d4b!important;border-radius:0!important}
+.hero-arya-head b{font-family:Georgia,serif!important;font-size:18px!important;letter-spacing:.2px!important}
+.hero-arya-head small{color:#d8c49b!important}
+.hero-arya-body{padding:19px!important}
+.hero-arya-body>p{color:#526174!important;font-size:13px!important;line-height:1.65!important}
+.hero-arya-msg{border:1px solid #eadfc9!important;background:#fffaf0!important;border-radius:12px!important;color:#233b55!important;padding:13px!important}
+.hero-arya-prompts button{border:1px solid #e3d5b8!important;background:#fff!important;color:#29425c!important;border-radius:20px!important}
+.hero-arya-cta{background:#d9ad5c!important;color:#102945!important;border-radius:10px!important;font-weight:850!important}
+.eu-hero-location{right:clamp(18px,4vw,58px)!important;bottom:18px!important}
+@media(max-width:900px){
+ .hero{grid-template-columns:minmax(0,1fr) minmax(230px,.72fr)!important;gap:22px!important;padding:55px 5% 76px!important;min-height:540px!important}
+ .hero h1{font-size:clamp(42px,6vw,58px)!important}
+ .hero-arya{max-width:300px!important}
+}
+@media(max-width:760px){
+ .hero{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;
+   min-height:0!important;padding:38px 20px 70px!important;border-radius:0 0 24px 24px!important}
+ .hero>div:first-child{max-width:none!important;width:100%!important}
+ .hero h1{font-size:clamp(39px,10vw,52px)!important;line-height:1.04!important;letter-spacing:-1px!important}
+ .hero h1 em{display:block!important}
+ .hero p{font-size:14px!important;line-height:1.7!important}
+ .hero .search{flex-direction:column!important;align-items:stretch!important;gap:6px!important;border-radius:14px!important;padding:7px!important}
+ .hero .search input,.hero .search button{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+ .hero .search input{min-height:48px!important}
+ .hero .search button{min-height:46px!important}
+ .hero-buttons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+ .hero .hero-btn{padding:0 10px!important;font-size:11px!important}
+ .hero .hero-btn.installbtn{grid-column:1/-1!important}
+ .hero-arya{display:none!important}
+ .eu-hero-location{right:12px!important;bottom:10px!important;max-width:190px!important}
+}
+@media(max-width:420px){
+ .hero{padding:32px 16px 66px!important}
+ .hero h1{font-size:39px!important}
+ .hero-buttons{grid-template-columns:1fr!important}
+ .hero .hero-btn.installbtn{grid-column:auto!important}
+}
