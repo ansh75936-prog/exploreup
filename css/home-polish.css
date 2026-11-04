@@ -533,3 +533,35 @@ body{
  .hero-buttons{grid-template-columns:1fr!important}
  .hero .hero-btn.installbtn{grid-column:auto!important}
 }
+
+
+/* Premium hero correction: use the bundled Varanasi photograph as the real hero backdrop. */
+.hero{
+  background-color:#071b35!important;
+  background-image:
+    linear-gradient(90deg,rgba(4,17,34,.92) 0%,rgba(4,17,34,.78) 43%,rgba(4,17,34,.28) 100%),
+    url("../images/varanasi.jpg")!important;
+  background-position:center 48%!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  isolation:isolate!important;
+}
+.hero:after{
+  background:linear-gradient(90deg,rgba(4,17,34,.10),rgba(4,17,34,.04) 58%,rgba(4,17,34,.10))!important;
+  pointer-events:none!important;
+}
+.hero>div:first-child{position:relative!important;z-index:2!important}
+.hero-arya{position:relative!important;z-index:2!important}
+.hero .home-trust span{
+  border-color:rgba(235,205,148,.38)!important;
+  background:rgba(7,27,53,.42)!important;
+  color:#fff8e9!important;
+  backdrop-filter:blur(8px)!important;
+}
+@media(max-width:760px){
+  .hero{
+    min-height:510px!important;
+    background-image:linear-gradient(90deg,rgba(4,17,34,.88),rgba(4,17,34,.66) 72%,rgba(4,17,34,.52)),url("../images/varanasi.jpg")!important;
+    background-position:58% center!important;
+  }
+}
