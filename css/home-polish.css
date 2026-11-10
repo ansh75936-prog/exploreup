@@ -476,7 +476,7 @@ body{
 }
 .hero .search input{
   min-height:56px!important;padding:0 20px!important;background:transparent!important;
-  color:#1a3a5c!important;font-size:14px!important;border:0!important;
+  color:#1a3a5c!important;font-size:16px!important;border:0!important;
 }
 .hero .search input::placeholder{color:#8fa3b8!important}
 .hero .search button{
