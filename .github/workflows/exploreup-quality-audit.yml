@@ -5,6 +5,7 @@ on:
     paths:
       - "districts/**/data.js"
       - "*.html"
+      - "*.js"
       - "css/**"
       - "js/**"
       - ".github/workflows/exploreup-quality-audit.yml"
