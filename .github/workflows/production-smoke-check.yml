@@ -96,6 +96,7 @@ jobs:
           ];
           const assets = [
             "/css/homepage-base.css?v=20261111-1",
+            "/css/homepage-head-overrides.css?v=20261111-1",
             "/css/exploreup-design-system.css",
             "/css/heritage-motion.css",
             "/js/feature-motion.js",
@@ -205,6 +206,7 @@ jobs:
               if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
 
                 "homepage-base.css",
+                "homepage-head-overrides.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
                 "feature-motion.js",
