@@ -2,7 +2,6 @@
    Progressive enhancement layer. Loaded last in index.html to unify legacy styles.
    Keep existing content, routing, district data and feature behavior intact. */
 :root{
-  color-scheme:light;
   /* Brand */
   --eu-primary:#A94F0B;
   --eu-primary-hover:#873E08;
@@ -10,7 +9,6 @@
   --eu-saffron-deep:#A94F0B;
   --eu-maroon:#5B1F2A;
   --eu-maroon-deep:#3E1020;
-  --eu-gold:#8A5A12;
   --eu-forest:#23483D;
   --eu-terracotta:#C96B18;
   /* Surfaces and text */
@@ -75,7 +73,9 @@ body{
   border-color:var(--eu-border);
   border-radius:var(--eu-radius);
 }
-:where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear,.view,.hero-btn,.search button){
+:where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear,.view,.hero-btn,.search button,.circle,.arya-fab){
+  min-width:44px;
+  min-height:44px;
   font-family:var(--eu-font-body);
   font-weight:700;
   touch-action:manipulation;
@@ -101,6 +101,7 @@ body{
 }
 @media(max-width:700px){
   body{line-height:1.6}
+  :where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear,.view,.hero-btn,.search button,.circle,.arya-fab){min-width:48px;min-height:48px}
   :where(.wrap){width:92%!important}
   :where(.section){scroll-margin-top:76px}
 }
