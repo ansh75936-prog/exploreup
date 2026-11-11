@@ -58,8 +58,8 @@ async function main() {
 
     const districtSearch = page.locator("#searchInput");
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
-    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 1, "District search should narrow to Agra");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
+    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 2, "Agra search should also match Prayagraj by substring");
 
     await districtSearch.fill("");
     const braj = page.locator('.region-btn[data-region="braj"]');
@@ -78,7 +78,8 @@ async function main() {
 
     await districtSearch.fill("Agra");
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
-    await page.locator("#cityGrid .city:not(.is-hidden)").first().click();
+    const agraCard = page.locator("#cityGrid .city").filter({ has: page.locator(".citytext h3", { hasText: /^Agra$/ }) });
+    await agraCard.click();
     await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
     assert.equal((await page.locator("#modalTitle").textContent()).trim(), "Agra", "Selecting a district should open its guide");
 
