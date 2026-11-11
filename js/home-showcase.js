@@ -75,21 +75,20 @@
   }
   show(0);if(!reduced)window.setInterval(()=>show((current+1)%slides.length),6500);
  }
- function removeApiDistrictImages(){
+ function prepareDistrictCards(){
   const grid=document.getElementById("cityGrid");if(!grid)return;
   grid.querySelectorAll(".city").forEach(card=>{
    card.classList.add("eu-district-card");
-   const img=card.querySelector("img");if(img)img.remove();
-   if(!card.querySelector(".eu-card-photo-placeholder")){
-    const ph=document.createElement("div");ph.className="eu-card-photo-placeholder";ph.setAttribute("aria-label","Custom district image slot");
-    ph.innerHTML="<span>📷</span><small>Custom photo coming soon</small>";card.prepend(ph);
-   }
+   const img=card.querySelector("img");
+   if(img){img.loading="lazy";img.decoding="async";img.removeAttribute("fetchpriority");}
+   const placeholder=card.querySelector(".eu-card-photo-placeholder");
+   if(placeholder)placeholder.remove();
   });
  }
  function init(){
-  setupHero();makeDashboard();makeFeatured();removeApiDistrictImages();
+  setupHero();makeDashboard();makeFeatured();prepareDistrictCards();
   const grid=document.getElementById("cityGrid");
-  if(grid&&window.MutationObserver)new MutationObserver(removeApiDistrictImages).observe(grid,{childList:true,subtree:true});
+  if(grid&&window.MutationObserver)new MutationObserver(prepareDistrictCards).observe(grid,{childList:true,subtree:true});
   const feature=document.querySelector(".featurebanner");
   if(feature)feature.style.backgroundImage='linear-gradient(100deg,rgba(5,25,49,.78),rgba(5,25,49,.16)),url("/images/varanasi.jpg?v=20260929-6")';
  }
