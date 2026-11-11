@@ -1,4 +1,4 @@
-function syncDistrictCatalog(){
+async function syncDistrictCatalog(){
   try{
     if(!exploreSupabase) return;
     const {data,error}=await exploreSupabase.from('districts').select('name,name_hi,slug,kind,sort_order,is_active').eq('is_active',true).order('sort_order',{ascending:true});
