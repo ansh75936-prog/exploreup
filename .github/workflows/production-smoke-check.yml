@@ -109,7 +109,8 @@ jobs:
             "/js/site-shell.js?v=20261111-1",
             "/js/homepage-stability.js?v=20261111-1",
             "/js/share-accessibility.js?v=20261111-1",
-            "/js/pwa-runtime.js?v=20261111-1"
+            "/js/pwa-runtime.js?v=20261111-1",
+            "/js/district-runtime.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -152,6 +153,7 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
               const stabilitySource = assetResults[assets.indexOf("/js/homepage-stability.js?v=20261111-1")]?.body || "";
               const shareAccessibilitySource = assetResults[assets.indexOf("/js/share-accessibility.js?v=20261111-1")]?.body || "";
               const pwaSource = assetResults[assets.indexOf("/js/pwa-runtime.js?v=20261111-1")]?.body || "";
@@ -221,7 +223,8 @@ jobs:
                 "site-shell.js",
                 "homepage-stability.js",
                 "share-accessibility.js",
-                "pwa-runtime.js"
+                "pwa-runtime.js",
+                "district-runtime.js"
               ].filter(name => !homepage.includes(name));
               if (!siteShellSource.includes("function toggleReportPanel(") ||
                   !siteShellSource.includes("async function submitInfoReport(") ||
@@ -229,6 +232,13 @@ jobs:
                   !siteShellSource.includes("function setupOfflineState(") ||
                   !siteShellSource.includes("function renderGovernmentProfile(")) {
                 missingHomeAssets.push("Site shell report, PWA, offline and government profile functions must be available");
+              }
+              if (!districtRuntimeSource.includes("function syncDistrictCatalog(") ||
+                  !districtRuntimeSource.includes("function renderCities(") ||
+                  !districtRuntimeSource.includes("function setupDistrictSearch(") ||
+                  !districtRuntimeSource.includes("function toggleAllDistricts(") ||
+                  !districtRuntimeSource.includes("async function openCity(")) {
+                missingHomeAssets.push("District catalog, search, rendering and modal functions must be available");
               }
               if (!stabilitySource.includes("window.__exploreUpLocalSuggestionFallback") ||
                   !stabilitySource.includes("window.__exploreUpReadSuggestionLocal") ||
