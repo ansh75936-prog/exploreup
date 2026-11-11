@@ -8,7 +8,7 @@ function aryaDetectLanguage(text){
  if(/[\u0C80-\u0CFF]/.test(t)) return 'kn';
  if(/[\u0D00-\u0D7F]/.test(t)) return 'ml';
  // Detect common romanised Indian-language questions too.
- if(/\b(kya|kaise|kahan|kidhar|batao|bataye|baare|ke bare|khana|khane|mithai|jagah|ghumna|ghoomna|kitna|kab|kyun|mujhe|mera|meri|hai|hain|mein|me|par|aur|se|ka|ki|ke)\b/.test(x)) return 'hi';
+ if(/\b(kya|kaise|kahan|kidhar|batao|bataye|baare|ke bare|khana|khane|mithai|jagah|ghumna|ghoomna|kitna|kab|kyun|mujhe|mera|meri|hai|hain|mein|par|aur|se|ka|ki|ke)\b/.test(x)) return 'hi';
  if(/\b(kemon|ki|kothay|bolun|bolbe|khawa|khawar|mishti|jayga|ghurte|ami|amar|ache|achen)\b/.test(x)) return 'bn';
  if(/\b(kiwe|kithe|dasso|dasde|khana|thaan|ghumman|mainu|mera|meri|hai|ne)\b/.test(x)) return 'pa';
  return 'en';

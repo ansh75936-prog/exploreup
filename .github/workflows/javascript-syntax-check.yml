@@ -44,3 +44,6 @@ jobs:
             count=$((count + 1))
           done < <(find . -type f -name '*.js' -not -path './.git/*' -print0)
           echo "Validated syntax for $count JavaScript files."
+
+      - name: Run Arya assistant regression tests
+        run: node tests/arya-regression.test.js
