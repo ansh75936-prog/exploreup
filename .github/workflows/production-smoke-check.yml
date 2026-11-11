@@ -74,7 +74,7 @@ jobs:
           const base = process.env.SITE_URL;
           const pages = [
             "/", "/agra.html", "/ayodhya.html", "/city.html",
-            "/favorites.html", "/feedback.html", "/lucknow.html",
+            "/favorites.html", "/feedback.html", "/index-1.html", "/lucknow.html",
             "/nearby.html", "/search.html", "/varanasi.html"
           ];
           const assets = [
@@ -98,6 +98,7 @@ jobs:
             try {
               const pageResults = await Promise.all(pages.map(request));
               const assetResults = await Promise.all(assets.map(request));
+              const [sitemapResult, robotsResult] = await Promise.all([request("/sitemap.xml"), request("/robots.txt")]);
               const badPages = pageResults
                 .map((r, i) => ({ path: pages[i], ...r }))
                 .filter(r => r.status !== 200);
@@ -112,6 +113,36 @@ jobs:
               const homepage = pageResults[0].body;
               const ayodhya = pageResults[2].body;
               const missingSeo = [];
+              const indexable = [
+                ["/", "https://exploreup-five.vercel.app/"],
+                ["/agra.html", "https://exploreup-five.vercel.app/agra.html"],
+                ["/ayodhya.html", "https://exploreup-five.vercel.app/ayodhya.html"],
+                ["/lucknow.html", "https://exploreup-five.vercel.app/lucknow.html"],
+                ["/varanasi.html", "https://exploreup-five.vercel.app/varanasi.html"]
+              ];
+              for (const [path, canonical] of indexable) {
+                const page = pageResults[pages.indexOf(path)]?.body || "";
+                const hasRobots = page.includes('name="robots"') && /content=["']index,? ?follow/i.test(page);
+                if (!page.includes('rel="canonical"') || !page.includes(canonical) || !hasRobots) {
+                  missingSeo.push(path + " canonical or indexable robots metadata");
+                }
+                if (!/<title/i.test(page) || !page.includes('name="description"')) {
+                  missingSeo.push(path + " title or meta description");
+                }
+              }
+              const duplicateHome = pageResults[pages.indexOf("/index-1.html")]?.body || "";
+              if (!duplicateHome.includes('name="robots"') || !/content=["']noindex,follow/i.test(duplicateHome)) {
+                missingSeo.push("Duplicate index-1.html must be noindex,follow");
+              }
+              const expectedSitemap = indexable.map(([, url]) => url);
+              const sitemapUrls = [...sitemapResult.body.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+              if (sitemapResult.status !== 200 || expectedSitemap.some(url => !sitemapUrls.includes(url)) ||
+                  sitemapUrls.some(url => !expectedSitemap.includes(url))) {
+                missingSeo.push("Sitemap must list exactly the five canonical indexable pages");
+              }
+              if (robotsResult.status !== 200 || !robotsResult.body.includes("Sitemap: https://exploreup-five.vercel.app/sitemap.xml")) {
+                missingSeo.push("robots.txt must publish the production sitemap");
+              }
               if (!ayodhya.includes('application/ld+json') ||
                   !ayodhya.includes('"BreadcrumbList"') ||
                   !ayodhya.includes('https://exploreup-five.vercel.app/ayodhya.html')) {
