@@ -183,7 +183,7 @@ jobs:
                 const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
                 if (!card || Number(card[1]) !== count) missingDiscovery.push(region + " dashboard count must match " + count + " districts");
               }
-              const regionMatch = runtime.match(/const regionLists=\{([\s\S]*?)\n \};/);
+              const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
               const regionBlock = regionMatch?.[1] || "";
               const regionNames = [...regionBlock.matchAll(/^\s*[a-z]+:\[([^\]]*)\]/gm)]
                 .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]));
@@ -212,9 +212,9 @@ jobs:
                   !searchScript.includes("buildCandidates")) {
                 missingSearchReveal.push("Powerful Search page must load its district search engine");
               }
-              if (!runtime.includes("typeof renderCities==='function'") ||
-                  !runtime.includes("grid.hidden=false") ||
-                  !runtime.includes("q||active!=='all'")) {
+              if (!homepage.includes("typeof renderCities==='function'") ||
+                  !homepage.includes("grid.hidden=false") ||
+                  !homepage.includes("q||active!=='all'")) {
                 missingSearchReveal.push("Search and region filters must reveal matching district cards");
               }
 
