@@ -14,10 +14,10 @@
   const dash=document.createElement("section");dash.className="eu-home-dashboard";
   dash.innerHTML=
    '<div class="eu-region-panel"><h2 class="eu-section-title">🏰 Explore by Region</h2><p class="eu-section-subtitle">Discover the beauty of Uttar Pradesh, one district at a time.</p><div class="eu-region-grid">'+
-   '<button class="eu-region-card" type="button" data-region-jump="awadh"><span class="eu-region-icon">🏛️</span><span><strong>Awadh</strong><small>12 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
-   '<button class="eu-region-card" type="button" data-region-jump="braj"><span class="eu-region-icon">🛕</span><span><strong>Braj</strong><small>11 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
+   '<button class="eu-region-card" type="button" data-region-jump="awadh"><span class="eu-region-icon">🏛️</span><span><strong>Awadh</strong><small>22 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
+   '<button class="eu-region-card" type="button" data-region-jump="braj"><span class="eu-region-icon">🛕</span><span><strong>Braj</strong><small>8 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
    '<button class="eu-region-card" type="button" data-region-jump="purvanchal"><span class="eu-region-icon">🌅</span><span><strong>Purvanchal</strong><small>20 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
-   '<button class="eu-region-card" type="button" data-region-jump="bundelkhand"><span class="eu-region-icon">🏰</span><span><strong>Bundelkhand</strong><small>12 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
+   '<button class="eu-region-card" type="button" data-region-jump="bundelkhand"><span class="eu-region-icon">🏰</span><span><strong>Bundelkhand</strong><small>7 Districts</small></span><span class="eu-region-arrow">→</span></button>'+
    '</div></div>'+
    '<aside class="eu-why-panel"><h2 class="eu-section-title">Why ExploreUP?</h2><div class="eu-why-list">'+
    '<div class="eu-why-item"><span class="eu-why-icon">🛡️</span><div><strong>Useful travel information</strong><small>Clear, practical destination guides</small></div></div>'+
