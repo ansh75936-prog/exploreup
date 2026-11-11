@@ -47,7 +47,7 @@ jobs:
           for (const file of actualFiles) {
             const source = fs.readFileSync(file, "utf8");
             const pushes = source.split("window.ExploreUPDistricts.push(").length - 1;
-            const name = source.match(/"name":"([^"]+)"/);
+            const name = source.match(/name\s*:\s*"([^"]+)"/);
             if (pushes !== 1 || !name) {
               throw new Error(`${file} must contain exactly one district data entry.`);
             }
