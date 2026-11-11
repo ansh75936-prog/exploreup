@@ -48,32 +48,23 @@
     if (intro) intro.textContent = "Videos are embedded only when the source description names this city. Check the source link for full context.";
     content.replaceChildren();
     const card = node("article", "district-official-video-card");
-    if (/\bagra\b/i.test(city)) {
-      const badge = node("span", "district-video-badge", "AGRA CITY VIDEO");
-      const heading = node("h3", "", "Explore Agra — video");
+    if (/\\bagra\\b/i.test(city)) {
+      const badge = node("span", "district-video-badge", "VERIFIED UP TRAVEL VIDEO");
+      const heading = node("h3", "", "Uttar Pradesh — travel highlights");
       const frame = node("div", "district-playable-video-frame");
-      const player = node("video", "district-playable-video");
-      player.src = "/agra-video.mp4";
-      player.controls = true;
-      player.playsInline = true;
-      player.preload = "metadata";
-      player.setAttribute("aria-label", "Agra city travel video");
-      player.onerror = function () {
-        const fallback = node("iframe", "district-playable-video");
-        fallback.src = "https://www.youtube-nocookie.com/embed/" + VIDEO.id;
-        fallback.title = VIDEO.title + " — includes Agra";
-        fallback.loading = "lazy";
-        fallback.referrerPolicy = "strict-origin-when-cross-origin";
-        fallback.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-        fallback.allowFullscreen = true;
-        fallback.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-popups");
-        frame.replaceChildren(fallback);
-      };
+      const player = node("iframe", "district-playable-video");
+      player.src = "https://www.youtube-nocookie.com/embed/" + VIDEO.id;
+      player.title = VIDEO.title + " — includes Agra";
+      player.loading = "lazy";
+      player.referrerPolicy = "strict-origin-when-cross-origin";
+      player.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      player.allowFullscreen = true;
+      player.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-popups");
       frame.appendChild(player);
-      const body = node("p", "", "Agra-specific video. If the video file has not been uploaded to the site yet, the verified Uttar Pradesh travel compilation will appear instead.");
-      const credit = node("p", "district-official-source-name", "Local video asset: /agra-video.mp4");
+      const body = node("p", "", "This verified multi-destination Uttar Pradesh travel compilation includes Agra; it is not an exclusive Agra film.");
+      const credit = node("p", "district-official-source-name", VIDEO.credit);
       const actions = node("div", "district-official-video-actions");
-      actions.append(makeLink(VIDEO.source, "Open verified backup video ↗"));
+      actions.append(makeLink(VIDEO.source, "Open original YouTube source ↗"));
       actions.append(makeLink(GALLERY, "Official UP Tourism gallery ↗"));
       card.append(badge, heading, frame, body, credit, actions);
     } else if (matchesCity(city)) {
