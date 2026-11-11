@@ -8,6 +8,7 @@ on:
       - "*.js"
       - "css/**"
       - "js/**"
+      - "tests/**"
       - ".github/workflows/exploreup-quality-audit.yml"
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "*.html"
       - "css/**"
       - "js/**"
+      - "tests/**"
       - ".github/workflows/exploreup-quality-audit.yml"
   workflow_dispatch:
 
@@ -54,7 +56,10 @@ jobs:
 
           const allFiles = walk(root);
           const relativeFiles = new Set(allFiles.map(file => path.relative(root, file).split(path.sep).join("/")));
-          const htmlFiles = allFiles.filter(file => file.endsWith(".html"));
+          const redirectedHtml = new Set((JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8")).redirects || [])
+            .map(item => String(item.source || "").replace(/^\//, "").replace(/\/$/, "")));
+          const htmlFiles = allFiles.filter(file => file.endsWith(".html") &&
+            !redirectedHtml.has(path.relative(root, file).split(path.sep).join("/")));
           const districtFiles = allFiles.filter(file =>
             /(^|[\\/])districts[\\/][^\\/]+[\\/]data\.js$/.test(file) &&
             !file.includes(path.sep + "_template" + path.sep)
@@ -223,6 +228,9 @@ jobs:
 
       - name: Validate local CSS asset references
         run: node tests/css-asset-references.test.js
+
+      - name: Validate active HTML references and duplicate UI assets
+        run: node tests/site-integrity.test.js
 
       - name: Validate restored search script syntax
         run: node --check v21-step2-powerful-search.js

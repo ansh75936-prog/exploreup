@@ -1,0 +1,70 @@
+name: ExploreUP browser smoke tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "js/**"
+      - "css/**"
+      - "districts/**"
+      - "tests/**"
+      - "v21-*.js"
+      - ".github/workflows/browser-smoke.yml"
+  pull_request:
+    paths:
+      - "*.html"
+      - "js/**"
+      - "css/**"
+      - "districts/**"
+      - "tests/**"
+      - "v21-*.js"
+      - ".github/workflows/browser-smoke.yml"
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Optional deployed site URL (default: test the checked-out repository locally)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exploreup-browser-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pinned Playwright test runner
+        run: |
+          npm init -y
+          npm install --no-save playwright@1.56.1
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Exercise core ExploreUP user flows against this commit
+        env:
+          BASE_URL: ${{ inputs.base_url || '' }}
+        run: node tests/browser-smoke.test.cjs
+
+      - name: Verify production after a main-branch deployment
+        if: github.event_name == 'push'
+        env:
+          BASE_URL: https://exploreup-five.vercel.app
+          EXPECT_REMOVED_ASSET: arya-ai-bridge.js
+        run: node tests/browser-smoke.test.cjs

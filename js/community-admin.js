@@ -92,6 +92,7 @@ function handleCityUrl(){
  if(slug){ const c=cities.find(x=>districtSlug(x.name)===slug); if(c)openCity(c.name,{fromHistory:true}); else districtCatalogReady?.then(()=>{const ready=cities.find(x=>districtSlug(x.name)===slug);if(ready)openCity(ready.name,{fromHistory:true});}); }
  else if(location.hash.startsWith('#city=')){ const n=decodeURIComponent(location.hash.slice(6)); openCity(n,{fromHistory:true}); }
 }
+window.handleCityUrl=handleCityUrl;
 window.addEventListener('popstate',()=>{if(location.hash==='#all-blogs'){openBlogsPage();}else if(location.search.includes('city=')||location.hash.startsWith('#city=')){closeBlogsPage(true);handleCityUrl();}else{closeBlogsPage(true);closeModal({fromHistory:true});}});
 
 function openAdminPanel(){const o=document.getElementById('adminOverlay');if(!o)return;o.style.display='block';o.setAttribute('aria-hidden','false');checkAdminSession();}
