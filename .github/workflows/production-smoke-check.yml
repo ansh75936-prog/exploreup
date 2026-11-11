@@ -87,7 +87,7 @@ jobs:
         env:
           SITE_URL: https://exploreup-five.vercel.app
         run: |
-          node <<'NODE'
+          node --input-type=module <<'NODE'
           const base = process.env.SITE_URL;
           const pages = [
             "/", "/agra.html", "/ayodhya.html", "/city.html",
@@ -96,6 +96,7 @@ jobs:
           ];
           const assets = [
             "/css/homepage-base.css?v=20261111-1",
+            "/css/homepage-head-overrides.css?v=20261111-1",
             "/css/exploreup-design-system.css",
             "/css/heritage-motion.css",
             "/js/feature-motion.js",
@@ -145,7 +146,7 @@ jobs:
           const usesExternalDiscovery = homepage.includes("district-discovery.js");
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
-              const homepageRuntime = assetResults[6]?.body || "";
+              const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
           const contentAssetPath = "/js/district-content.js?v=20261111-1";
           const usesExternalDistrictContent = homepage.includes("district-content.js");
           const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
@@ -201,15 +202,15 @@ jobs:
                 missingSeo.push("Ayodhya JSON-LD / canonical URL");
               }
               const missingHomeAssets = [
-              if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
-              if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
-
                 "homepage-base.css",
+                "homepage-head-overrides.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
                 "feature-motion.js",
                 "arya-core.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
+              if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
               if (usesExternalMobileNavigation && mobileNavigationAsset.status !== 200) missingHomeAssets.push("mobile-navigation.js must return HTTP 200");
               if (!mobileNavigationSource.includes("initMobileMenu") ||
                   !mobileNavigationSource.includes("closeMenu") ||
@@ -250,7 +251,7 @@ jobs:
               const missingDiscovery = [];
           if (usesExternalDiscovery && discoveryAsset.status !== 200) missingDiscovery.push("District discovery feature asset must return HTTP 200.");
           if (!discoverySource.includes("window.exploreUpPhase2")) missingDiscovery.push("District tabs and itinerary export must be present.");
-              const dashboard = assetResults[4]?.body || "";
+              const dashboard = assetResults[assets.indexOf("/js/home-showcase.js")]?.body || "";
               const expectedDashboardCounts = { awadh: 22, braj: 8, purvanchal: 20, bundelkhand: 7 };
               for (const [region, count] of Object.entries(expectedDashboardCounts)) {
                 const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
@@ -279,7 +280,7 @@ jobs:
 
               const missingSearchReveal = [];
               const searchPage = pageResults[pages.indexOf("/search.html")]?.body || "";
-              const searchScript = assetResults[5]?.body || "";
+              const searchScript = assetResults[assets.indexOf("/v21-step2-powerful-search.js?v=20261111-1")]?.body || "";
               if (!searchPage.includes("v21-step2-powerful-search.js?v=20261111-1") ||
                   !searchScript.includes("function loadDistricts") ||
                   !searchScript.includes("buildCandidates")) {
