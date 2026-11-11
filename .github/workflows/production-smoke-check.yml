@@ -203,7 +203,7 @@ jobs:
               const missingSearchReveal = [];
               const searchPage = pageResults[pages.indexOf("/search.html")]?.body || "";
               const searchScript = assetResults[5]?.body || "";
-              if (!searchPage.includes("v21-step2-powerful-search.js") ||
+              if (!searchPage.includes("v21-step2-powerful-search.js?v=20261111-1") ||
                   !searchScript.includes("function loadDistricts") ||
                   !searchScript.includes("buildCandidates")) {
                 missingSearchReveal.push("Powerful Search page must load its district search engine");
@@ -239,7 +239,7 @@ jobs:
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
-                console.log("PASS: all 5 shared assets return HTTP 200.");
+                console.log("PASS: all shared assets return HTTP 200.");
                 console.log("PASS: Ayodhya WebPage and BreadcrumbList JSON-LD are live.");
                 console.log("PASS: six region filters map 75 unique districts.");
                 console.log("PASS: featured region dashboard counts match the district mapping.");
