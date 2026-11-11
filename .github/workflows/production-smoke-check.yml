@@ -103,9 +103,16 @@ jobs:
                 missingSearchReveal.push("Search and region filters must reveal matching district cards");
               }
 
+              const missingMobileLayout = [];
+              if (!homepage.includes('id="exploreup-mobile-district-row-layout"') ||
+                  !homepage.includes('#cityGrid.cities{') ||
+                  !homepage.includes('grid-template-columns:minmax(0,1fr)!important')) {
+                missingMobileLayout.push("Mobile district cards must use a single-column row layout");
+              }
+
               if (!badPages.length && !badAssets.length &&
                   !missingStyles.length && !missingHomeAssets.length && !missingSeo.length &&
-                  !missingDiscovery.length && !missingAccessibility.length && !missingSearchReveal.length) {
+                  !missingDiscovery.length && !missingAccessibility.length && !missingSearchReveal.length && !missingMobileLayout.length) {
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
@@ -114,6 +121,7 @@ jobs:
                 console.log("PASS: six region filters map 75 unique districts.");
                 console.log("PASS: map and filters expose accessible states; one primary search remains.");
                 console.log("PASS: search and region filters reveal matching district cards.");
+                console.log("PASS: mobile district cards use a single-column row layout.");
                 process.exit(0);
               }
 
