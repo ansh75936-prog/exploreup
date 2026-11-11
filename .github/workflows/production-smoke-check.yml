@@ -174,7 +174,7 @@ jobs:
               const aryaDistrictMediaSource = assetResults[assets.indexOf("/css/arya-and-district-media.css?v=20261111-1")]?.body || "";
               const districtVideoStylesSource = assetResults[assets.indexOf("/css/district-video-components.css?v=20261111-1")]?.body || "";
               const homepageFinalOverridesSource = assetResults[assets.indexOf("/css/homepage-final-overrides.css?v=20261111-1")]?.body || "";
-              const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
+
               const stabilitySource = assetResults[assets.indexOf("/js/homepage-stability.js?v=20261111-1")]?.body || "";
               const shareAccessibilitySource = assetResults[assets.indexOf("/js/share-accessibility.js?v=20261111-1")]?.body || "";
               const pwaSource = assetResults[assets.indexOf("/js/pwa-runtime.js?v=20261111-1")]?.body || "";
