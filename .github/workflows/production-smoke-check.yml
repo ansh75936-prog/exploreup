@@ -106,7 +106,10 @@ jobs:
             "/js/homepage-runtime.js?v=20261111-1",
             "/js/arya-core.js?v=20261111-1",
             "/js/ui-preferences.js?v=20261111-1",
-            "/js/site-shell.js?v=20261111-1"
+            "/js/site-shell.js?v=20261111-1",
+            "/js/homepage-stability.js?v=20261111-1",
+            "/js/share-accessibility.js?v=20261111-1",
+            "/js/pwa-runtime.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -149,6 +152,9 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const stabilitySource = assetResults[assets.indexOf("/js/homepage-stability.js?v=20261111-1")]?.body || "";
+              const shareAccessibilitySource = assetResults[assets.indexOf("/js/share-accessibility.js?v=20261111-1")]?.body || "";
+              const pwaSource = assetResults[assets.indexOf("/js/pwa-runtime.js?v=20261111-1")]?.body || "";
               const siteShellSource = assetResults[assets.indexOf("/js/site-shell.js?v=20261111-1")]?.body || "";
           const contentAssetPath = "/js/district-content.js?v=20261111-1";
           const usesExternalDistrictContent = homepage.includes("district-content.js");
@@ -212,7 +218,10 @@ jobs:
                 "feature-motion.js",
                 "arya-core.js",
                 "ui-preferences.js",
-                "site-shell.js"
+                "site-shell.js",
+                "homepage-stability.js",
+                "share-accessibility.js",
+                "pwa-runtime.js"
               ].filter(name => !homepage.includes(name));
               if (!siteShellSource.includes("function toggleReportPanel(") ||
                   !siteShellSource.includes("async function submitInfoReport(") ||
@@ -220,6 +229,21 @@ jobs:
                   !siteShellSource.includes("function setupOfflineState(") ||
                   !siteShellSource.includes("function renderGovernmentProfile(")) {
                 missingHomeAssets.push("Site shell report, PWA, offline and government profile functions must be available");
+              }
+              if (!stabilitySource.includes("window.__exploreUpLocalSuggestionFallback") ||
+                  !stabilitySource.includes("window.__exploreUpReadSuggestionLocal") ||
+                  !stabilitySource.includes("new MutationObserver")) {
+                missingHomeAssets.push("Homepage feedback and image stability handlers must be available");
+              }
+              if (!shareAccessibilitySource.includes("exploreupBottomShare") ||
+                  !shareAccessibilitySource.includes("skip-link") ||
+                  !shareAccessibilitySource.includes("scrollTo")) {
+                missingHomeAssets.push("Share and accessibility quick-navigation handlers must be available");
+              }
+              if (!pwaSource.includes("navigator.serviceWorker.register") ||
+                  !pwaSource.includes("checkForUpdate") ||
+                  !pwaSource.includes("visibilitychange")) {
+                missingHomeAssets.push("PWA registration and deployment update checks must be available");
               }
               if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
               if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");

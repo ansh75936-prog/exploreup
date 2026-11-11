@@ -545,80 +545,7 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
 <script src="./js/service-renderer.js?v=20261111-1"></script>
 <script src="./js/community-admin.js?v=20261111-1"></script>
 <script src="./js/site-shell.js?v=20261111-1"></script>
-<script>
-/* ExploreUP stability batch v1: feedback/suggestion storage + form safety. */
-(function(){
-  'use strict';
-  function readSuggestionLocal(city){
-    try{
-      const v=JSON.parse(exploreStorage.get(suggestionKey(city))||'[]');
-      return Array.isArray(v)?v:[];
-    }catch(e){return []}
-  }
-  function writeSuggestionLocal(city,items){
-    try{exploreStorage.set(suggestionKey(city),JSON.stringify(Array.isArray(items)?items.slice(-30):[]));return true}catch(e){return false}
-  }
-  function localSuggestionFallback(city,name,category,text){
-    const items=readSuggestionLocal(city);
-    items.push({name,category,text,time:new Date().toISOString()});
-    return writeSuggestionLocal(city,items);
-  }
-  window.__exploreUpLocalSuggestionFallback=localSuggestionFallback;
-  window.__exploreUpReadSuggestionLocal=readSuggestionLocal;
-  window.__exploreUpWriteSuggestionLocal=writeSuggestionLocal;
-})();
-</script>
-<!-- ExploreUP stability batch v1 -->
-
-<script>
-/* ExploreUP local city image stability patch v1 */
-(function(){
-  'use strict';
-  const localImages={Lucknow:'./images/lucknow.jpg',Varanasi:'./images/varanasi.jpg'};
-  function applyCards(){
-    document.querySelectorAll('#cityGrid .city').forEach(card=>{
-      const name=card.querySelector('.citytext h3')?.textContent?.trim();
-      const src=localImages[name];
-      const img=card.querySelector('img');
-      if(src&&img&&img.getAttribute('src')!==src){
-        img.setAttribute('src',src);
-        img.setAttribute('loading','lazy');
-        img.setAttribute('decoding','async');
-        img.setAttribute('onerror','exploreUpImageFallback(this)');
-      }
-    });
-  }
-  function applyProfile(){
-    const title=document.getElementById('modalTitle');
-    const hero=document.getElementById('modalHero');
-    if(!title||!hero)return;
-    const name=title.textContent.trim();
-    const src=localImages[name];
-    if(src)hero.style.backgroundImage='linear-gradient(transparent,#06162d88),url("'+src+'")';
-  }
-  function applyAll(){try{applyCards();applyProfile();}catch(e){console.warn('ExploreUP local image patch warning:',e)}}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();
-  new MutationObserver(applyAll).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','src']});
-})();
-</script>
-
-
-<script>
-/* ExploreUP Varanasi hero image stability fix v1 */
-(function(){
-  'use strict';
-  function apply(){
-    try{
-      const el=document.querySelector('.featurebanner');
-      if(!el)return;
-      el.style.backgroundImage='linear-gradient(180deg,rgba(3,20,41,.08),rgba(3,20,41,.86)),url("./images/varanasi.jpg")';
-      el.style.backgroundSize='cover';
-      el.style.backgroundPosition='center';
-    }catch(e){console.warn('ExploreUP Varanasi hero image warning:',e)}
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
-})();
-</script>
+<script src="./js/homepage-stability.js?v=20261111-1"></script>
 
   <script src="./exploreup-city-images.js?v=20260923"></script>
   <script src="./arya-v20-district-aliases.js?v=20260915"></script>
@@ -701,84 +628,7 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
       let exploreUpReloading = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (exploreUpReloading) return;
-        exploreUpReloading = true;
-        window.location.reload();
-      });
-    }
-  </script>
-
-  <script>
-    /* ExploreUP PWA: detect new Vercel deployments while the app is open */
-    (function(){
-      'use strict';
-      const KEY='exploreup-deployment-version-v1';
-      const CHECK_EVERY=60000;
-      let checking=false;
-
-      async function checkForUpdate(){
-        if(checking || document.visibilityState==='hidden') return;
-        checking=true;
-        try{
-          const controller=new AbortController();
-          const timeout=setTimeout(()=>controller.abort(),8000);
-          const response=await fetch('/api/version?ts='+Date.now(),{
-            cache:'no-store',
-            headers:{'Cache-Control':'no-cache'},
-            signal:controller.signal
-          });
-          clearTimeout(timeout);
-          if(!response.ok) return;
-          const data=await response.json();
-          const version=String(data.version||'').trim();
-          if(!version || version==='unknown') return;
-
-          const previous=localStorage.getItem(KEY);
-          if(!previous){
-            localStorage.setItem(KEY,version);
-            return;
-          }
-          if(previous!==version){
-            localStorage.setItem(KEY,version);
-            window.location.reload();
-          }
-        }catch(e){
-          /* Offline or temporary network failure: keep the current app usable. */
-        }finally{
-          checking=false;
-        }
-      }
-
-      window.addEventListener('load',()=>{
-        checkForUpdate();
-        setInterval(checkForUpdate,CHECK_EVERY);
-      });
-      document.addEventListener('visibilitychange',()=>{
-        if(document.visibilityState==='visible') checkForUpdate();
-      });
-      window.addEventListener('pageshow',checkForUpdate);
-    })();
-  </script>
-
-<script src="./js/mobile-navigation.js?v=20261111-1"></script>
-
-<style id="arya-open-state-fix">
-.arya-panel[hidden]{display:none!important}
-.arya-panel.arya-visible{display:flex!important}
-</style>
-<script id="arya-open-state-fix-script">
-(function(){
-  'use strict';
-  const getPanel=()=>document.getElementById('aryaPanel');
-  const close=()=>{
-    const p=getPanel();
-    if(p){p.hidden=true;p.classList.remove('arya-visible');p.style.display='none';}
-    document.body.classList.remove('arya-open');
-  };
-  const open=()=>{
-    const p=getPanel();
-    if(!p)return;
-    p.hidden=false;
-    p.classList.add('arya-visible');
+       <script src="./js/share-accessibility.js?v=20261111-1"></script>  p.classList.add('arya-visible');
     p.style.display='flex';
     document.body.classList.add('arya-open');
     setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
@@ -841,59 +691,7 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
   box-shadow:0 7px 20px rgba(64,75,190,.24)!important;
 }
 .arya-suggest button{
-  border:1px solid transparent!important;
-  border-radius:999px!important;
-  padding:8px 11px!important;
-  font-weight:800!important;
-  color:#17385f!important;
-  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#0b67d1,#7b3ff2,#ffb51b) border-box!important;
-  box-shadow:0 4px 12px rgba(40,80,140,.10)!important;
-  transition:transform .18s ease,box-shadow .18s ease!important;
-}
-.arya-suggest button:nth-child(3n+1){background:linear-gradient(#eef7ff,#eef7ff) padding-box,linear-gradient(135deg,#0b67d1,#31b7ff) border-box!important}
-.arya-suggest button:nth-child(3n+2){background:linear-gradient(#f6efff,#f6efff) padding-box,linear-gradient(135deg,#7b3ff2,#e14cff) border-box!important}
-.arya-suggest button:nth-child(3n){background:linear-gradient(#fff7df,#fff7df) padding-box,linear-gradient(135deg,#ff9f1c,#ffcf33) border-box!important}
-.arya-suggest button:hover{transform:translateY(-2px)!important;box-shadow:0 7px 16px rgba(40,80,140,.16)!important}
-.arya-input{
-  background:rgba(255,255,255,.96)!important;
-  border-top:1px solid #dce8f6!important;
-}
-.arya-input input,#aryaInput{
-  background:#f4f8ff!important;
-  border:1px solid #cbdcf1!important;
-}
-.arya-input input:focus,#aryaInput:focus{
-  border-color:#7b3ff2!important;
-  box-shadow:0 0 0 3px rgba(123,63,242,.13)!important;
-}
-.arya-input button,#aryaSend{
-  background:linear-gradient(135deg,#ffb51b,#ff8a00)!important;
-  color:#10233f!important;
-  box-shadow:0 5px 14px rgba(255,145,0,.25)!important;
-}
-.arya-fab{
-  background:linear-gradient(135deg,#ffb51b,#ff8a00,#7b3ff2)!important;
-  color:#fff!important;
-  box-shadow:0 12px 30px rgba(84,57,160,.30)!important;
-}
-@media(max-width:620px){
-  .arya-panel{background:#f8fbff!important}
-  .arya-head{border-radius:18px 18px 0 0!important}
-}
-</style>
-
-<style id="arya-message-colour-separation">
-/* Arya AI — separate colours for user questions and Arya answers */
-.arya-msg.user{
-  background:linear-gradient(135deg,#0b67d1 0%,#2454e8 52%,#7b3ff2 100%)!important;
-  color:#fff!important;
-  border:0!important;
-  border-radius:18px 18px 5px 18px!important;
-  margin-left:auto!important;
-  box-shadow:0 7px 20px rgba(38,76,210,.28)!important;
-}
-.arya-msg.bot{
-  background:linear-gradient(135deg,#fff7df 0%,#fffaf0 45%,#eaf4ff 100%)!important;
+  bo<script src="./js/pwa-runtime.js?v=20261111-1"></script>mportant;
   color:#17385f!important;
   border:1px solid #d7e5f5!important;
   border-left:4px solid #ffb51b!important;
