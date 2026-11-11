@@ -133,6 +133,10 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
+          const imageFallbackPath = "/js/image-fallback.js?v=20261111-1";
+          const usesExternalImageFallback = homepage.includes("image-fallback.js");
+          const imageFallbackAsset = usesExternalImageFallback ? await request(imageFallbackPath) : { status: 200, body: "" };
+          const imageFallbackSource = usesExternalImageFallback ? imageFallbackAsset.body : homepage;
           const mobileNavigationPath = "/js/mobile-navigation.js?v=20261111-1";
           const usesExternalMobileNavigation = homepage.includes("mobile-navigation.js");
           const mobileNavigationAsset = usesExternalMobileNavigation ? await request(mobileNavigationPath) : { status: 200, body: "" };
@@ -197,6 +201,9 @@ jobs:
                 missingSeo.push("Ayodhya JSON-LD / canonical URL");
               }
               const missingHomeAssets = [
+              if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
+              if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
+
                 "homepage-base.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
