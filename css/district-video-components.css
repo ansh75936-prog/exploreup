@@ -1,0 +1,35 @@
+.district-official-video-card{padding:clamp(18px,3vw,26px);border:1px solid #dce6f2;border-radius:20px;background:linear-gradient(145deg,#fff 0%,#f4f8ff 65%,#fff8e9 100%);box-shadow:0 12px 30px rgba(10,35,63,.08)}
+.district-official-video-card h3{font-size:clamp(20px,2.6vw,25px);line-height:1.4;margin:14px 0 8px;color:#10233f}
+.district-official-video-card p{font-size:14px;line-height:1.75;color:#52657f;margin:0 0 12px}
+.district-official-video-card .district-official-source-name{font-size:12px;font-weight:700;color:#6b7c91}
+.district-official-video-actions{margin-top:14px}
+.district-official-video-actions .district-video-source{display:inline-flex;padding:12px 16px;border-radius:12px;background:#0b67d1;color:#fff!important;text-decoration:none!important}
+body.dark .district-official-video-card{background:#10243c;border-color:#29415d}
+body.dark .district-official-video-card h3{color:#eef5ff}
+body.dark .district-official-video-card p{color:#b3c3d8}
+
+.district-video-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px;padding:16px;border:1px solid #dbe7f5;border-radius:16px;background:rgba(255,255,255,.82)}
+.district-video-setting{display:flex;flex-direction:column;gap:8px;min-width:0}
+.district-video-setting label{font-size:13px;font-weight:800;color:#324b6a}
+.district-video-select{width:100%;min-width:0;padding:12px 10px;border:1px solid #cbd9e9;border-radius:12px;background:#fff;color:#142b47;font-size:14px}
+.district-official-video-actions{display:flex;flex-wrap:wrap;gap:10px}
+.district-official-video-actions .district-video-source{display:inline-flex;padding:12px 15px;border-radius:12px;background:#0b67d1;color:#fff!important;text-decoration:none!important}
+.district-official-video-actions .district-video-source:last-child{background:#eaf2fb;color:#17436e!important}
+body.dark .district-video-settings{background:#10243c;border-color:#29415d}
+body.dark .district-video-setting label{color:#d7e5f7}
+body.dark .district-video-select{background:#0b1b2f;border-color:#29415d;color:#eef5ff}
+@media(max-width:520px){.district-video-settings{grid-template-columns:1fr}.district-official-video-actions{flex-direction:column}.district-official-video-actions .district-video-source{justify-content:center}}
+
+.district-video-results{display:grid;gap:18px}
+.district-playable-video-card{overflow:hidden;border:1px solid #dce6f2;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(10,35,63,.08)}
+.district-playable-video-frame{width:100%;aspect-ratio:16/9;background:#06162d;display:grid;place-items:center}
+.district-playable-video{display:block;width:100%;height:100%;object-fit:contain;background:#06162d}
+.district-playable-video-info{padding:18px 20px 22px}
+.district-playable-video-info h3{font-size:clamp(18px,2.4vw,24px);line-height:1.4;margin:12px 0 8px;color:#10233f;overflow-wrap:anywhere}
+.district-playable-video-info p{font-size:14px;line-height:1.7;color:#5a6d85;margin:7px 0}
+.district-playable-video-info .district-video-source{display:inline-flex;margin-top:12px;padding:10px 14px;border-radius:12px;background:#0b67d1;color:white!important;text-decoration:none!important}
+.district-video-attribution{font-size:12px!important}
+body.dark .district-playable-video-card{background:#10243c;border-color:#29415d}
+body.dark .district-playable-video-info h3{color:#eef5ff}
+body.dark .district-playable-video-info p{color:#b3c3d8}
+@media(max-width:520px){.district-playable-video-info{padding:15px}.district-playable-video-info .district-video-source{width:100%;justify-content:center;box-sizing:border-box}}
