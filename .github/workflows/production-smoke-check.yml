@@ -233,7 +233,7 @@ jobs:
                   !homepage.includes('href="https://images.unsplash.com"') ||
                   !homepage.includes('<img width="700" height="460"') ||
                   !homepage.includes('<img width="1000" height="650"') ||
-                  !homepage.includes('<img width="1000" height="650" class="city-photo"')) {
+                  !homepageRuntime.includes('<img width="1000" height="650" class="city-photo"')) {
                 missingMediaStability.push("Image connections and intrinsic dimensions must be declared");
               }
 
@@ -257,7 +257,8 @@ jobs:
               lastError = JSON.stringify({
                 badPages, badAssets,
                 missingStyles: missingStyles.map(x => x.path),
-                missingHomeAssets, missingSeo, missingDiscovery, missingAccessibility, missingSearchReveal
+                missingHomeAssets, missingSeo, missingDiscovery, missingAccessibility, missingSearchReveal,
+                missingMobileLayout, missingMediaStability
               });
             } catch (error) {
               lastError = error.message;
