@@ -1493,20 +1493,41 @@ function safeOpenCity(name){
 
 function toggleAllDistricts(){
  const grid=document.getElementById('cityGrid');
- if(!grid)return;
- const willOpen=grid.hidden;
+ if(!grid)return false;
+ const willOpen=grid.hidden || grid.getAttribute('aria-hidden')==='true';
  if(willOpen){
-  try{renderCities();}catch(e){console.warn('ExploreUP district list render failed:',e);}
+  try{
+   renderCities();
+   const cards=grid.querySelectorAll('.city');
+   if(cards.length!==75){
+    const status=document.getElementById('districtFilterStatus');
+    if(status)status.textContent='District list could not be loaded completely. Please refresh and try again.';
+    console.error('ExploreUP expected 75 district cards; rendered:',cards.length);
+    return false;
+   }
+  }catch(error){
+   console.error('ExploreUP district list render failed:',error);
+   const status=document.getElementById('districtFilterStatus');
+   if(status)status.textContent='Unable to load districts right now. Please refresh and try again.';
+   return false;
+  }
  }
  grid.hidden=!willOpen;
- const buttons=[document.getElementById('euViewAll'),document.getElementById('euViewAllFeatured')].filter(Boolean);
+ grid.setAttribute('aria-hidden',String(!willOpen));
+ grid.style.display=willOpen?'block':'none';
+ const buttons=[...document.querySelectorAll('#euViewAll,#euViewAllFeatured')];
  buttons.forEach(btn=>{
   btn.setAttribute('aria-expanded',String(willOpen));
   btn.setAttribute('aria-controls','cityGrid');
   btn.textContent=willOpen?'Hide Districts ↑':'View All 75 Districts ↓';
  });
- if(willOpen) grid.scrollIntoView({behavior:'smooth',block:'start'});
+ if(willOpen){
+  const section=document.getElementById('cities');
+  if(section)section.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ }
+ return true;
 }
+window.toggleAllDistricts=toggleAllDistricts;
 function renderCities(){
  const grid=document.getElementById('cityGrid'); if(!grid)return;
  const list=(window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?window.__exploreUpDistrictCities:cities;
