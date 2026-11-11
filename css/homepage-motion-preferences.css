@@ -1,0 +1,9 @@
+html{scrollbar-gutter:stable}
+  body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overscroll-behavior-x:none}
+  button,a{touch-action:manipulation}
+  img,video{max-width:100%}
+  .section,.feature-row,.gems,.districts,.calendar,.trails,.servicebar,.blogs{contain:layout style}
+  .modal,.mobile-menu,.mobile-menu-backdrop,.favpanel{contain:layout paint}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }

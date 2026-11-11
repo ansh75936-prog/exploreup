@@ -97,6 +97,11 @@ jobs:
           const assets = [
             "/css/homepage-base.css?v=20261111-1",
             "/css/homepage-head-overrides.css?v=20261111-1",
+            "/css/homepage-card-navigation.css?v=20261111-1",
+            "/css/homepage-motion-preferences.css?v=20261111-1",
+            "/css/arya-and-district-media.css?v=20261111-1",
+            "/css/district-video-components.css?v=20261111-1",
+            "/css/homepage-final-overrides.css?v=20261111-1",
             "/css/exploreup-design-system.css",
             "/css/heritage-motion.css",
             "/js/feature-motion.js",
@@ -153,6 +158,11 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const homepageCardNavigationSource = assetResults[assets.indexOf("/css/homepage-card-navigation.css?v=20261111-1")]?.body || "";
+              const homepageMotionPreferencesSource = assetResults[assets.indexOf("/css/homepage-motion-preferences.css?v=20261111-1")]?.body || "";
+              const aryaDistrictMediaSource = assetResults[assets.indexOf("/css/arya-and-district-media.css?v=20261111-1")]?.body || "";
+              const districtVideoStylesSource = assetResults[assets.indexOf("/css/district-video-components.css?v=20261111-1")]?.body || "";
+              const homepageFinalOverridesSource = assetResults[assets.indexOf("/css/homepage-final-overrides.css?v=20261111-1")]?.body || "";
               const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
               const stabilitySource = assetResults[assets.indexOf("/js/homepage-stability.js?v=20261111-1")]?.body || "";
               const shareAccessibilitySource = assetResults[assets.indexOf("/js/share-accessibility.js?v=20261111-1")]?.body || "";
@@ -215,6 +225,11 @@ jobs:
               const missingHomeAssets = [
                 "homepage-base.css",
                 "homepage-head-overrides.css",
+                "homepage-card-navigation.css",
+                "homepage-motion-preferences.css",
+                "arya-and-district-media.css",
+                "district-video-components.css",
+                "homepage-final-overrides.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
                 "feature-motion.js",
@@ -338,10 +353,24 @@ jobs:
                 missingSearchReveal.push("Search and region filters must reveal matching district cards");
               }
 
+              if (!homepageCardNavigationSource.includes("#cityGrid.cities") ||
+                  !homepageCardNavigationSource.includes(".mobile-menu-btn")) {
+                missingHomeAssets.push("Homepage card and navigation styles must be available");
+              }
+              if (!homepageMotionPreferencesSource.includes("prefers-reduced-motion")) {
+                missingHomeAssets.push("Homepage reduced-motion preferences must be available");
+              }
+              if (!aryaDistrictMediaSource.includes(".arya-panel") ||
+                  !aryaDistrictMediaSource.includes(".district-media-section")) {
+                missingHomeAssets.push("Arya and district media styles must be available");
+              }
+              if (!districtVideoStylesSource.includes(".district-playable-video-card") ||
+                  !districtVideoStylesSource.includes(".district-video-settings")) {
+                missingHomeAssets.push("District video component styles must be available");
+              }
               const missingMobileLayout = [];
-              if (!homepage.includes('id="exploreup-mobile-district-row-layout"') ||
-                  !homepage.includes('#cityGrid.cities{') ||
-                  !homepage.includes('grid-template-columns:minmax(0,1fr)!important')) {
+              if (!homepageFinalOverridesSource.includes('#cityGrid.cities{') ||
+                  !homepageFinalOverridesSource.includes('grid-template-columns:minmax(0,1fr)!important')) {
                 missingMobileLayout.push("Mobile district cards must use a single-column row layout");
               }
 

@@ -1,0 +1,144 @@
+/* Arya AI — colourful chat theme */
+.arya-panel{
+  border:1px solid rgba(77,144,255,.28)!important;
+  background:linear-gradient(145deg,#ffffff 0%,#f5f9ff 48%,#fff7e8 100%)!important;
+  box-shadow:0 24px 80px rgba(19,64,125,.30),0 0 0 1px rgba(255,181,27,.08)!important;
+}
+.arya-head{
+  background:linear-gradient(135deg,#071b35 0%,#1559a5 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border-bottom:0!important;
+  position:relative;
+  overflow:hidden;
+}
+.arya-head:after{
+  content:"";position:absolute;right:-35px;top:-55px;width:145px;height:145px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,181,27,.48),rgba(255,181,27,0) 68%);pointer-events:none;
+}
+.arya-head>div{position:relative;z-index:1}
+.arya-head b{color:#fff!important}
+.arya-head small{color:#dceaff!important}
+.arya-back,.arya-close{color:#fff!important}
+.arya-back:hover,.arya-close:hover{background:rgba(255,255,255,.16)!important}
+.arya-body{
+  background:radial-gradient(circle at 100% 0,rgba(123,63,242,.08),transparent 32%),radial-gradient(circle at 0 100%,rgba(11,103,209,.07),transparent 34%),#f8fbff!important;
+}
+.arya-msg{
+  border-radius:18px!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(40,91,160,.10)!important;
+  box-shadow:0 5px 16px rgba(24,66,120,.08)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#ffffff,#eaf4ff)!important;
+  color:#17385f!important;
+  border-left:4px solid #0b67d1!important;
+}
+.arya-msg.user{
+  margin-left:auto!important;
+  background:linear-gradient(135deg,#7b3ff2,#0b67d1)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 20px rgba(64,75,190,.24)!important;
+}
+.arya-suggest button{
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  padding:8px 11px!important;
+  font-weight:800!important;
+  color:#17385f!important;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#0b67d1,#7b3ff2,#ffb51b) border-box!important;
+  box-shadow:0 4px 12px rgba(40,80,140,.10)!important;
+  transition:transform .18s ease,box-shadow .18s ease!important;
+}
+.arya-suggest button:nth-child(3n+1){background:linear-gradient(#eef7ff,#eef7ff) padding-box,linear-gradient(135deg,#0b67d1,#31b7ff) border-box!important}
+.arya-suggest button:nth-child(3n+2){background:linear-gradient(#f6efff,#f6efff) padding-box,linear-gradient(135deg,#7b3ff2,#e14cff) border-box!important}
+.arya-suggest button:nth-child(3n){background:linear-gradient(#fff7df,#fff7df) padding-box,linear-gradient(135deg,#ff9f1c,#ffcf33) border-box!important}
+.arya-suggest button:hover{transform:translateY(-2px)!important;box-shadow:0 7px 16px rgba(40,80,140,.16)!important}
+.arya-input{
+  background:rgba(255,255,255,.96)!important;
+  border-top:1px solid #dce8f6!important;
+}
+.arya-input input,#aryaInput{
+  background:#f4f8ff!important;
+  border:1px solid #cbdcf1!important;
+}
+.arya-input input:focus,#aryaInput:focus{
+  border-color:#7b3ff2!important;
+  box-shadow:0 0 0 3px rgba(123,63,242,.13)!important;
+}
+.arya-input button,#aryaSend{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00)!important;
+  color:#10233f!important;
+  box-shadow:0 5px 14px rgba(255,145,0,.25)!important;
+}
+.arya-fab{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00,#7b3ff2)!important;
+  color:#fff!important;
+  box-shadow:0 12px 30px rgba(84,57,160,.30)!important;
+}
+@media(max-width:620px){
+  .arya-panel{background:#f8fbff!important}
+  .arya-head{border-radius:18px 18px 0 0!important}
+}
+
+/* Arya AI — separate colours for user questions and Arya answers */
+.arya-msg.user{
+  background:linear-gradient(135deg,#0b67d1 0%,#2454e8 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:18px 18px 5px 18px!important;
+  margin-left:auto!important;
+  box-shadow:0 7px 20px rgba(38,76,210,.28)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#fff7df 0%,#fffaf0 45%,#eaf4ff 100%)!important;
+  color:#17385f!important;
+  border:1px solid #d7e5f5!important;
+  border-left:4px solid #ffb51b!important;
+  border-radius:18px 18px 18px 5px!important;
+  margin-right:auto!important;
+  box-shadow:0 6px 18px rgba(24,66,120,.10)!important;
+}
+.arya-msg.user *{color:#fff!important}
+.arya-msg.bot *{color:#17385f!important}
+
+/* ExploreUP district media + knowledge cards */
+.district-media-section{margin:28px 0 34px;padding:clamp(18px,3vw,30px);border:1px solid #dce8f5;border-radius:24px;background:radial-gradient(circle at 100% 0%,#dcecff 0,transparent 36%),linear-gradient(145deg,#fff 0%,#f3f8ff 60%,#fff8e8 100%);box-shadow:0 16px 42px rgba(12,45,85,.08)}
+.district-media-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.district-media-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#0b67d1}
+.district-media-heading .section-title{margin:6px 0;font-size:clamp(22px,3vw,30px)}
+.district-media-heading .section-intro{margin:4px 0 0;max-width:650px}
+.district-media-mark{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#ffb51b,#ff8a00);color:#10233f;font-size:20px;box-shadow:0 8px 22px #ffb51b44}
+.district-video-card{overflow:hidden;border:1px solid #dce6f2;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(10,35,63,.10)}
+.district-video-frame{width:100%;aspect-ratio:16/9;min-height:180px;background:#06162d;display:grid;place-items:center}
+.district-feature-video{display:block;width:100%;height:100%;max-height:68vh;aspect-ratio:16/9;object-fit:contain;background:#06162d}
+.district-video-info{padding:18px 20px 20px}
+.district-video-badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#e6f7ed;color:#17663a;font-size:10px;letter-spacing:1px;font-weight:900}
+.district-video-info h3{font-size:clamp(18px,2.5vw,24px);margin:10px 0 6px;color:#10233f}
+.district-video-info p{margin:0 0 12px;line-height:1.65;color:#60708a;font-size:14px}
+.district-video-source{display:inline-flex;align-items:center;gap:6px;color:#0b67d1!important;font-weight:800;font-size:13px;text-decoration:underline!important;text-underline-offset:3px}
+.district-media-status{padding:24px 18px;border-radius:16px;background:#fff;border:1px dashed #b7cce4;color:#52657f;text-align:center;line-height:1.6}
+.district-video-empty{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid #e0e9f3;border-radius:18px;background:rgba(255,255,255,.86)}
+.district-video-empty-icon{flex:0 0 50px;width:50px;height:50px;display:grid;place-items:center;border-radius:16px;background:#e9f2ff;color:#0b67d1;font-size:20px}
+.district-video-empty-copy h3{margin:0 0 6px;font-size:17px;color:#10233f}
+.district-video-empty-copy p{margin:0 0 10px;color:#60708a;font-size:13px;line-height:1.65}
+#districtKnowledgeSection{margin-top:34px}
+#districtKnowledgeSection>.section-title{font-size:clamp(23px,3vw,30px);letter-spacing:-.3px}
+#districtKnowledgeSection>.section-intro,#districtKnowledge{line-height:1.8}
+#districtKnowledgeSection .knowledge-grid{gap:18px;margin-top:20px}
+#districtKnowledgeSection .knowledge-card{position:relative;overflow:hidden;min-width:0;padding:22px;border:1px solid #dfe9f4;border-radius:20px;background:linear-gradient(145deg,#fff 0%,#f8fbff 100%);box-shadow:0 10px 28px rgba(13,47,83,.06);transition:transform .2s ease,box-shadow .2s ease}
+#districtKnowledgeSection .knowledge-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#ffb51b,#0b67d1)}
+#districtKnowledgeSection .knowledge-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(13,47,83,.10)}
+#districtKnowledgeSection .knowledge-card h3{font-size:18px;line-height:1.35;margin:0 0 10px;color:#102b4d}
+#districtKnowledgeSection .knowledge-card p{font-size:14px;line-height:1.8;color:#536781;margin:0;overflow-wrap:anywhere}
+#districtKnowledgeSection .knowledge-card[data-search="history"]{background:linear-gradient(145deg,#fff9eb,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="culture"]{background:linear-gradient(145deg,#fff0f4,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="geography"]{background:linear-gradient(145deg,#eafaf4,#fff)}
+#districtKnowledgeSection .knowledge-card[data-search="travel"]{background:linear-gradient(145deg,#edf4ff,#fff)}
+body.dark .district-media-section{background:linear-gradient(145deg,#10243c,#0b1b2f);border-color:#29415d}
+body.dark .district-video-card,body.dark .district-video-empty,body.dark #districtKnowledgeSection .knowledge-card{background:#10243c;border-color:#29415d}
+body.dark .district-video-info h3,body.dark .district-video-empty-copy h3,body.dark #districtKnowledgeSection .knowledge-card h3{color:#eef5ff}
+body.dark .district-video-info p,body.dark .district-video-empty-copy p,body.dark #districtKnowledgeSection .knowledge-card p{color:#b3c3d8}
+body.dark .district-media-status{background:#10243c;border-color:#29415d;color:#b3c3d8}
+@media(max-width:620px){.district-media-section{padding:16px;border-radius:20px}.district-media-heading{align-items:flex-start}.district-media-mark{flex-basis:42px;width:42px;height:42px;border-radius:14px}.district-video-frame{min-height:160px}.district-video-info{padding:15px}.district-video-empty{align-items:flex-start;padding:16px}.district-video-empty-icon{flex-basis:40px;width:40px;height:40px}}

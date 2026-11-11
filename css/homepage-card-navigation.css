@@ -1,0 +1,84 @@
+/* Premium district cards inspired by the approved colorful reference */
+#cityGrid.cities{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;width:100%!important;align-items:stretch}
+#cityGrid .city{display:block!important;position:relative!important;width:100%!important;height:auto!important;min-width:0;aspect-ratio:.91;margin:0!important;overflow:hidden;border:1px solid rgba(255,255,255,.7);border-radius:22px;background:linear-gradient(145deg,#0877d5,#172554);box-shadow:0 12px 28px rgba(15,35,70,.15);isolation:isolate;cursor:pointer;transition:transform .24s ease,box-shadow .24s ease}
+#cityGrid .city:nth-child(4n+1){--card-accent:#e11d48;--card-accent-dark:#881337}
+#cityGrid .city:nth-child(4n+2){--card-accent:#f97316;--card-accent-dark:#9a3412}
+#cityGrid .city:nth-child(4n+3){--card-accent:#7c3aed;--card-accent-dark:#3b0764}
+#cityGrid .city:nth-child(4n){--card-accent:#059669;--card-accent-dark:#064e3b}
+#cityGrid .city-photo{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:saturate(1.08) contrast(1.03);transition:transform .55s cubic-bezier(.2,.7,.2,1);image-rendering:auto}
+#cityGrid .city-photo-fallback{display:none;position:absolute;inset:0;z-index:0;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff;font-size:38px;font-weight:800;background:linear-gradient(145deg,var(--card-accent),var(--card-accent-dark))}
+#cityGrid .city-photo-fallback span{font-size:16px}
+#cityGrid .city:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(3,15,35,.06) 0%,rgba(3,15,35,.02) 28%,rgba(3,15,35,.42) 53%,var(--card-accent-dark) 100%);opacity:.96;pointer-events:none}
+#cityGrid .city:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,transparent 35%,var(--card-accent) 145%);opacity:.23;pointer-events:none}
+#cityGrid .city:hover{transform:translateY(-5px);box-shadow:0 20px 38px rgba(15,35,70,.24)}
+#cityGrid .city:hover .city-photo{transform:scale(1.07)}
+#cityGrid .city-badge{position:absolute;top:13px;left:13px;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid rgba(255,255,255,.65);border-radius:999px;background:rgba(8,20,42,.36);color:#fff;font-size:9px;font-weight:900;letter-spacing:1px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#cityGrid .city-badge-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+#cityGrid .citytext{position:absolute;z-index:3;left:18px;right:14px;bottom:77px}
+#cityGrid .citytext h3{margin:0 0 7px;color:#fff;font-size:clamp(21px,2.1vw,30px);font-weight:900;line-height:1.05;letter-spacing:-.5px;text-shadow:0 3px 12px rgba(0,0,0,.3)}
+#cityGrid .citytext small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:rgba(255,255,255,.94);font-size:12px;line-height:1.45;text-shadow:0 2px 7px rgba(0,0,0,.3)}
+#cityGrid .city-bottom{position:absolute;z-index:4;left:15px;right:15px;bottom:15px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+#cityGrid .city-location{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-size:10px;font-weight:750}
+#cityGrid .city-explore{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;padding:9px 13px;border:1px solid rgba(255,255,255,.62);border-radius:999px;background:rgba(255,255,255,.96);color:var(--card-accent-dark);font-size:12px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+#cityGrid .city-explore b{font-size:16px;line-height:1}
+#cityGrid .citymeta{position:absolute;z-index:3;top:50px;left:13px;right:13px;bottom:auto;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none}
+#cityGrid .citymeta .meta{font-size:10px;padding:5px 8px;border:1px solid rgba(255,255,255,.25);background:rgba(8,20,42,.38);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#cityGrid .citymeta .rating{background:rgba(255,247,218,.95);color:#7c4a03}
+body.dark #cityGrid .city{border-color:#2a3c54;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+@media(max-width:1000px){#cityGrid.cities{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}}
+@media(max-width:700px){#cityGrid.cities{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}#cityGrid .city{border-radius:18px;aspect-ratio:.78}#cityGrid .citytext{left:12px;right:10px;bottom:68px}#cityGrid .citytext h3{font-size:clamp(18px,4.6vw,25px)}#cityGrid .citytext small{font-size:11px}#cityGrid .city-bottom{left:10px;right:10px;bottom:10px;gap:4px}#cityGrid .city-location{font-size:9px}#cityGrid .city-explore{padding:8px 10px;font-size:11px;gap:5px}#cityGrid .city-badge{top:10px;left:10px;font-size:8px;padding:6px 8px}#cityGrid .citymeta{left:10px;right:10px;top:42px}#cityGrid .citymeta .meta{font-size:9px;padding:4px 6px}}
+@media(max-width:360px){#cityGrid.cities{gap:8px!important}#cityGrid .city{aspect-ratio:.72}#cityGrid .citytext h3{font-size:17px}#cityGrid .citytext small{font-size:10px}#cityGrid .city-location{display:none}}
+@media(prefers-reduced-motion:reduce){#cityGrid .city,#cityGrid .city-photo{transition:none}}
+
+/* Stable 3-dot trigger: keep it visible on phones/tablets without affecting Arya AI. */
+@media (max-width:1000px){
+  .mobile-menu-btn{
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 40px!important;
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    min-height:40px!important;
+    margin-right:6px!important;
+    padding:0!important;
+    position:relative!important;
+    visibility:visible!important;
+    opacity:1!important;
+    color:#fff!important;
+    background:rgba(255,255,255,.08)!important;
+    border:1px solid rgba(255,255,255,.38)!important;
+    border-radius:50%!important;
+    font-size:28px!important;
+    line-height:1!important;
+    z-index:10001!important;
+  }
+  .mobile-menu-btn.is-open{background:#29425f!important;}
+}
+
+@media (max-width:1000px){
+  #mobileMenuBtn.mobile-menu-btn{
+    background:#10233f!important;
+    color:#ffffff!important;
+    border:2px solid #ffffff!important;
+    box-shadow:0 3px 12px rgba(0,0,0,.28)!important;
+    text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
+  }
+  #mobileMenuBtn.mobile-menu-btn.is-open{
+    background:#29425f!important;
+    color:#ffffff!important;
+  }
+}
+
+/* The 3-dot trigger is shown up to 1000px, so its drawer must be visible at those widths too. */
+@media (min-width:621px) and (max-width:1000px){
+  .mobile-menu{display:block!important;max-height:calc(100dvh - 62px);width:min(520px,86vw)}
+  .mobile-menu-backdrop{display:block!important}
+  .mobile-menu-btn{display:flex!important}
+  .navlinks{display:none!important}
+}
+.mobile-menu-item,.mobile-menu-back,.mobile-menu-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.mobile-menu-item:focus-visible,.mobile-menu-back:focus-visible,.mobile-menu-btn:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}
+.mobile-menu-item{position:relative;z-index:1;pointer-events:auto}
+.mobile-menu-toggle{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.mobile-menu,.mobile-menu-backdrop,.mobile-menu-toggle,.mobile-menu-toggle:after{transition:none!important}}
