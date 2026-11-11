@@ -3144,4 +3144,38 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
 }
 </style>
 
+
+<style id="exploreup-mobile-district-row-layout">
+/* Mobile district cards: one clear, compact destination per row. */
+@media (max-width:700px){
+  #cityGrid.cities{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:14px!important;
+  }
+  #cityGrid .city{
+    aspect-ratio:1.9!important;
+    min-height:176px!important;
+    max-height:220px!important;
+    border-radius:18px!important;
+  }
+  #cityGrid .citytext{left:15px!important;right:14px!important;bottom:58px!important}
+  #cityGrid .citytext h3{font-size:clamp(20px,5vw,26px)!important}
+  #cityGrid .citytext small{-webkit-line-clamp:1!important;font-size:11px!important}
+  #cityGrid .city-bottom{left:14px!important;right:14px!important;bottom:10px!important}
+  #cityGrid .citymeta{left:13px!important;right:13px!important;top:43px!important}
+  #cityGrid .citymeta .meta{font-size:9px!important;padding:4px 7px!important}
+  #cityGrid .city:focus-visible{outline:3px solid #ffb52e!important;outline-offset:3px!important}
+}
+@media (max-width:380px){
+  #cityGrid .city{min-height:176px!important;max-height:196px!important}
+  #cityGrid .citytext{bottom:55px!important}
+  #cityGrid .citytext h3{font-size:20px!important}
+  #cityGrid .city-location{max-width:45%;font-size:9px!important}
+  #cityGrid .city-explore{padding:7px 9px!important;font-size:10px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  #cityGrid .city,#cityGrid .city-photo{transition:none!important}
+}
+</style>
+
 </body></html>
