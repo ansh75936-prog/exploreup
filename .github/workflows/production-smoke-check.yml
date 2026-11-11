@@ -147,6 +147,7 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const aryaCoreSource = assetResults[assets.indexOf("/js/arya-core.js?v=20261111-1")]?.body || "";
           const contentAssetPath = "/js/district-content.js?v=20261111-1";
           const usesExternalDistrictContent = homepage.includes("district-content.js");
           const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
@@ -209,6 +210,11 @@ jobs:
                 "feature-motion.js",
                 "arya-core.js"
               ].filter(name => !homepage.includes(name));
+              if (!aryaCoreSource.includes("function askArya(") ||
+                  !aryaCoreSource.includes("function aryaAnswer(") ||
+                  !aryaCoreSource.includes("function aryaDetectLanguage(")) {
+                missingHomeAssets.push("Arya assistant core functions must be present in the dedicated module");
+              }
               if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
               if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
               if (usesExternalMobileNavigation && mobileNavigationAsset.status !== 200) missingHomeAssets.push("mobile-navigation.js must return HTTP 200");
