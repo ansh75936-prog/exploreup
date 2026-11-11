@@ -11,6 +11,8 @@ const context = vm.createContext({
   Promise,
   setTimeout,
   clearTimeout,
+  setInterval: () => 0,
+  clearInterval: () => {},
   fetch: async () => { throw new Error("Network disabled in regression tests"); },
   document: { getElementById: () => null },
   exploreSupabase: null,
