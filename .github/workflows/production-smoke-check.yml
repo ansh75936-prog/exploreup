@@ -159,7 +159,7 @@ jobs:
               const dashboard = assetResults[4]?.body || "";
               const expectedDashboardCounts = { awadh: 22, braj: 8, purvanchal: 20, bundelkhand: 7 };
               for (const [region, count] of Object.entries(expectedDashboardCounts)) {
-                const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
+                const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\s\\S]*?<small>(\\d+) Districts</small>'));
                 if (!card || Number(card[1]) !== count) missingDiscovery.push(region + " dashboard count must match " + count + " districts");
               }
               const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
@@ -198,6 +198,9 @@ jobs:
               }
 
               const missingMediaStability = [];
+              if (/<img\b[^>]*\balt=["\']\s*["\']/i.test(homepage)) {
+                missingMediaStability.push("Homepage content images must have descriptive alternative text");
+              }
               if (!homepage.includes('href="https://fonts.gstatic.com"') ||
                   !homepage.includes('href="https://images.unsplash.com"') ||
                   !homepage.includes('<img width="700" height="460"') ||
@@ -219,7 +222,7 @@ jobs:
                 console.log("PASS: map and filters expose accessible states; one primary search remains.");
                 console.log("PASS: search and region filters reveal matching district cards.");
                 console.log("PASS: mobile district cards use a single-column row layout.");
-                console.log("PASS: image preconnects and intrinsic dimensions are present.");
+                console.log("PASS: image preconnects, intrinsic dimensions, and descriptive alternative text are present.");
                 process.exit(0);
               }
 
