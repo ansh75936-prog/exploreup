@@ -32,7 +32,8 @@ Use the main search to find destinations, open a city/district for its full guid
    return `${L.welcome} ${L.ask}\n\nI can help with Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features.`;
  };
  if(c){
-   const k=aryaKnowledge[c.name]||{};
+   const knowledgeKey=c.name==="Kanpur Nagar"?"Kanpur":c.name;
+   const k=aryaKnowledge[knowledgeKey]||{};
    const hasSpecificDetail=value=>{
      if(typeof value!=='string'||!value.trim())return false;
      return !/^(?:local landmarks, attractions, markets & nearby places|local cuisine, regional specialities & popular eateries|local markets, handicrafts & district shopping)$/i.test(value.trim());
@@ -84,13 +85,13 @@ ${c.budget}.
 
 ExploreUP provides this as a planning guide; it does not provide live prices.`;
    else if(/trip|itinerary|plan|day/.test(x)) base=`${c.name} — Trip Planner:
-${k.places}
+${districtDetails.places}
 
 Food: ${districtDetails.food}
 
 Tip: ${districtDetails.tips}`;
-   else if(/tip|tips|advice|kab|when|best time/.test(x)) base=`${c.name} — Travel Tip:
-${k.tips}
+   else if(/\b(?:tip|tips|advice|kab|when)\b|best time/.test(x)) base=`${c.name} — Travel Tip:
+${districtDetails.tips}
 
 ExploreUP lists: ${c.time}.`;
    else if(/about|overview|guide|information|info|batao|tell me|details|baare mein|ke bare mein/.test(x)) base=`${c.name}

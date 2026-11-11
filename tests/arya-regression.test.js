@@ -11,31 +11,28 @@ const context = vm.createContext({
   Promise,
   setTimeout,
   clearTimeout,
+  setInterval: () => 0,
+  clearInterval: () => {},
   fetch: async () => { throw new Error("Network disabled in regression tests"); },
   document: { getElementById: () => null },
-  window: {},
   exploreSupabase: null,
-  cities: [{
-    name: "Lucknow",
-    tag: "Awadhi heritage and culture",
-    food: "Awadhi biryani, kebabs and local sweets",
-    shop: "Hazratganj and Chowk markets",
-    budget: "A moderate city-break budget",
-    time: "October to March"
-  }, {
-    name: "Kanpur Dehat",
-    tag: "Kanpur Dehat district guide & local experiences",
-    places: "Local landmarks, attractions, markets & nearby places",
-    food: "Local cuisine, regional specialities & popular eateries",
-    shop: "Local markets, handicrafts & district shopping",
-    budget: "₹1,000 – ₹3,500/day",
-    time: "Oct – Mar",
-    tip: "Check local timings, transport and seasonal conditions before visiting.",
-    about: "Kanpur Dehat is one of Uttar Pradesh’s 75 districts covered by ExploreUP."
-  }],
-  contactData: { Lucknow: { hotels: [], hospitals: [] }, "Kanpur Dehat": { hotels: [], hospitals: [] } },
-  districtServiceContacts: { Lucknow: { hotels: [], hospitals: [] }, "Kanpur Dehat": { hotels: [], hospitals: [] } }
+  window: { ExploreUPDistricts: [] },
+  cities: [],
+  contactData: {},
+  districtServiceContacts: {}
 });
+
+const districtRoot = path.join(root, "districts");
+const districtFiles = fs.readdirSync(districtRoot, { withFileTypes: true })
+  .filter(entry => entry.isDirectory() && entry.name !== "_template")
+  .map(entry => path.join(districtRoot, entry.name, "data.js"))
+  .sort();
+for (const filename of districtFiles) {
+  vm.runInContext(fs.readFileSync(filename, "utf8"), context, { filename });
+}
+context.cities = context.window.ExploreUPDistricts;
+assert.equal(context.cities.length, 75, "Regression suite must load all 75 district data files");
+assert.equal(new Set(context.cities.map(city => city.name)).size, 75, "District names must be unique");
 
 const scripts = [
   "js/arya-core.js",
@@ -68,6 +65,9 @@ async function main() {
   const history = await evaluate('aryaAnswer("Lucknow history", "en")');
   assert.match(history, /Nawabs of Awadh/);
 
+  const kanpurNagarHistory = await evaluate('aryaAnswer("Kanpur Nagar history", "en")');
+  assert.match(kanpurNagarHistory, /Industrial city on the Ganga/);
+
   const genericPlaces = await evaluate('aryaAnswer("Kanpur Dehat places", "en")');
   assert.match(genericPlaces, /Verified Kanpur Dehat place details are not currently available/);
   assert.doesNotMatch(genericPlaces, /undefined/);
@@ -84,6 +84,27 @@ async function main() {
   const genericTrip = await evaluate('aryaAnswer("Make a trip plan for Kanpur Dehat", "en")');
   assert.match(genericTrip, /Verified Kanpur Dehat place details are not currently available/);
   assert.doesNotMatch(genericTrip, /undefined/);
+
+  for (const district of context.cities) {
+    const name = district.name;
+    const queries = [
+      `${name} places`,
+      `Food in ${name}`,
+      `${name} history`,
+      `${name} culture`,
+      `${name} nature`,
+      `Shopping in ${name}`,
+      `${name} district guide`,
+      `Trip plan for ${name}`
+    ];
+    for (const query of queries) {
+      const answer = await evaluate(`aryaAnswer(${JSON.stringify(query)}, "en")`);
+      assert.equal(typeof answer, "string", `Expected a text answer for ${query}`);
+      assert.doesNotMatch(answer, /\bundefined\b/, `Unexpected undefined in answer for ${query}`);
+      assert.doesNotMatch(answer, /Local landmarks, attractions, markets & nearby places|Local cuisine, regional specialities & popular eateries|Local markets, handicrafts & district shopping/i,
+        `Generic placeholder leaked into answer for ${query}`);
+    }
+  }
 
   const planner = await evaluate('aryaAnswer("Make a 2 day trip plan for Lucknow", "en")');
   assert.match(planner, /Quick Plan uses bundled ExploreUP information/);
@@ -110,6 +131,7 @@ async function main() {
   console.log("PASS: Arya detects Hindi script, romanised Hindi and English.");
   console.log("PASS: Arya language packs safely fall back to English.");
   console.log("PASS: detailed district answers use bundled knowledge.");
+  console.log("PASS: all 75 districts return safe answers across eight core intents without undefined values or generic placeholders.");
   console.log("PASS: districts without detailed knowledge clearly report unavailable verified details.");
   console.log("PASS: trip-planner and website-navigation answers remain available.");
   console.log("PASS: out-of-scope questions receive the ExploreUP scope response.");
