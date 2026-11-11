@@ -1,0 +1,115 @@
+/* ExploreUP Modern Heritage Design System
+   Progressive enhancement layer. Loaded last in index.html to unify legacy styles.
+   Keep existing content, routing, district data and feature behavior intact. */
+:root{
+  color-scheme:light;
+  /* Brand */
+  --eu-primary:#A94F0B;
+  --eu-primary-hover:#873E08;
+  --eu-saffron:#FF9933;
+  --eu-saffron-deep:#A94F0B;
+  --eu-maroon:#5B1F2A;
+  --eu-maroon-deep:#3E1020;
+  --eu-gold:#8A5A12;
+  --eu-forest:#23483D;
+  --eu-terracotta:#C96B18;
+  /* Surfaces and text */
+  --eu-cream:#FFF8EC;
+  --eu-paper:#FFF8EC;
+  --eu-surface:#FFFFFF;
+  --eu-surface-secondary:#F2E6D3;
+  --eu-ink:#241A18;
+  --eu-text:#241A18;
+  --eu-muted:#62564F;
+  --eu-border:#E5D6C2;
+  --eu-line:rgba(91,31,42,.14);
+  --eu-glass:rgba(255,248,236,.88);
+  --eu-shadow:0 14px 36px rgba(62,16,32,.09);
+  --eu-radius:18px;
+  /* Compatibility tokens used by existing pages */
+  --eu-navy:#3E1020;
+  --eu-blue:#245A78;
+  --eu-gold:#8A5A12;
+  /* Type */
+  --eu-font-display:"Playfair Display",Georgia,serif;
+  --eu-font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --eu-font-devanagari:"Noto Sans Devanagari",sans-serif;
+  /* Motion */
+  --eu-motion-fast:150ms;
+  --eu-motion-normal:200ms;
+  --eu-motion-medium:250ms;
+  --eu-motion-slow:350ms;
+  --eu-ease:cubic-bezier(.2,.7,.25,1);
+  /* Layout */
+  --eu-container:1280px;
+  --eu-page-gutter:clamp(16px,4vw,40px);
+}
+html{scroll-padding-top:88px}
+body{
+  color:var(--eu-ink)!important;
+  background:var(--eu-cream)!important;
+  font-family:var(--eu-font-body)!important;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+:where(h1,h2,h3,.section-title,.sectionhead h2){
+  font-family:var(--eu-font-display)!important;
+  font-weight:700;
+  letter-spacing:-.025em;
+  line-height:1.18;
+}
+:where(p,li,.description,.sectionhead p){line-height:1.65}
+:where(.hero h1){line-height:1.08;text-wrap:balance}
+:where(.hero p,.sectionhead p,.section-intro){max-width:68ch}
+:where(.nav){
+  background:rgba(62,16,32,.94)!important;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+}
+:where(.logo,.navlinks,.actions){font-family:var(--eu-font-body)!important}
+:where(.sectionhead h2,.section h2,.home-map-title,.home-regions-title){color:var(--eu-maroon)!important}
+:where(.panel,.intro,.content-card,.compare,.item,.tip,.tip-card,.compareItem,.citytool){
+  border-color:var(--eu-border);
+  border-radius:var(--eu-radius);
+}
+:where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear,.view,.hero-btn,.search button){
+  font-family:var(--eu-font-body);
+  font-weight:700;
+  touch-action:manipulation;
+}
+:where(input,select,textarea){
+  font-family:var(--eu-font-body);
+  font-size:16px;
+}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{
+  outline:3px solid #245A78!important;
+  outline-offset:3px!important;
+}
+:where(button,a,input,select,textarea){-webkit-tap-highlight-color:transparent}
+:where(.city,.blog,.gem,.foodcard,.mallcard,.festival,.contact-card,.panel){
+  transition:transform var(--eu-motion-normal) var(--eu-ease),box-shadow var(--eu-motion-normal) var(--eu-ease),border-color var(--eu-motion-normal) var(--eu-ease);
+}
+:where(.search button,.view,.hero-btn,.btn):active{transform:scale(.985)}
+:where(.search button,.view,.hero-btn,.btn):focus-visible{outline-offset:4px}
+:where(.muted,.hint,.meta,.status){color:var(--eu-muted)}
+/* Avoid decorative texture competing with content. */
+.eu-heritage-texture{
+  background-image:repeating-linear-gradient(45deg,rgba(138,90,18,.035) 0 1px,transparent 1px 9px);
+}
+@media(max-width:700px){
+  body{line-height:1.6}
+  :where(.wrap){width:92%!important}
+  :where(.section){scroll-margin-top:76px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
