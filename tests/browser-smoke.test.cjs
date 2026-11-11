@@ -177,6 +177,12 @@ async function main() {
     await page.waitForFunction(() => document.getElementById("v21NearbyStatus")?.textContent.includes("permission was denied"), null, { timeout: 5000 });
     assert.equal(await page.locator("#nearbyBtn").isDisabled(), false, "Nearby button should recover after permission denial");
 
+    // A direct district URL must resolve after the shared route handler has loaded.
+    const deepLink = await openPage(browser, "/?city=agra");
+    await deepLink.page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false", null, { timeout: 10000 });
+    assert.equal((await deepLink.page.locator("#modalTitle").textContent()).trim(), "Agra", "Direct district URLs should open the requested guide");
+    await deepLink.context.close();
+
     // Feedback and city guide routes must render without a failed local document.
     for (const route of ["/feedback.html", "/city.html?city=Agra", "/agra.html", "/ayodhya.html", "/lucknow.html", "/varanasi.html"]) {
       const result = await openPage(browser, route);
