@@ -1,15 +1,28 @@
-/* ExploreUP cinematic hero background — background-only release 2
- * Visual-only layer: keeps all existing hero content, layout, controls and behavior intact.
+/* ExploreUP cinematic hero background — background-only release 3
+ * Only the hero backdrop changes; existing content, layout, controls and behavior remain intact.
  */
 .hero{
   background-color:#071b35!important;
-  background-image:
-    linear-gradient(90deg,rgba(4,15,31,.88) 0%,rgba(4,15,31,.70) 43%,rgba(4,15,31,.30) 100%),
-    url("../images/varanasi.jpg")!important;
+  background-image:url("../images/varanasi.jpg")!important;
   background-position:center 48%!important;
   background-size:cover!important;
   background-repeat:no-repeat!important;
 }
+/* Replace the older animated mesh overlay with a readable cinematic shade.
+   Keep it behind the existing hero content and above the photo. */
+.hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,rgba(4,15,31,.74) 0%,rgba(4,15,31,.48) 48%,rgba(4,15,31,.22) 100%)!important;
+  mix-blend-mode:normal!important;
+  animation:none!important;
+}
 @media(max-width:760px){
   .hero{background-position:58% center!important}
+  .hero::before{
+    background:linear-gradient(180deg,rgba(4,15,31,.48) 0%,rgba(4,15,31,.66) 100%)!important;
+  }
 }
