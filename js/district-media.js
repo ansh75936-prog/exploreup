@@ -48,7 +48,7 @@
     if (intro) intro.textContent = "Videos are embedded only when the source description names this city. Check the source link for full context.";
     content.replaceChildren();
     const card = node("article", "district-official-video-card");
-    if (/\\bagra\\b/i.test(city)) {
+    if (/\bagra\b/i.test(city)) {
       const badge = node("span", "district-video-badge", "VERIFIED UP TRAVEL VIDEO");
       const heading = node("h3", "", "Uttar Pradesh — travel highlights");
       const frame = node("div", "district-playable-video-frame");
