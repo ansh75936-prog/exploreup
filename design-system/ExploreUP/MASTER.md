@@ -1,60 +1,105 @@
-# ExploreUP — Master Design System
+# ExploreUP — Modern Heritage Design System
 
 ## Product direction
-ExploreUP is an editorial, district-by-district travel guide to Uttar Pradesh. The interface should feel trustworthy, culturally rooted, image-led, easy to scan, and useful on mobile while preserving the existing vanilla HTML/CSS/JavaScript architecture.
+ExploreUP is a district-by-district travel discovery guide for all 75 districts of Uttar Pradesh. The experience combines an editorial travel magazine with practical discovery tools. Preserve the existing static HTML/CSS/JavaScript architecture until a separately approved Next.js migration.
 
-## Visual concept
-**Heritage editorial + modern travel utility.** Use deep indigo/navy as the trust anchor, warm antique gold for cultural emphasis, paper-white surfaces for readability, and real destination photography. Avoid generic SaaS gradients, excessive glass effects, decorative emoji as primary icons, and oversized empty hero areas.
+## Design strategy
+**Primary pattern:** Storytelling-driven travel discovery.
+**Secondary pattern:** Feature-rich destination showcase.
+**Supporting treatment:** Restrained glassmorphism for navigation, search, map details and Arya AI only.
 
-## Design tokens
-| Token | Value | Usage |
+The interface should feel culturally rooted, premium but accessible, image-led, trustworthy and easy to use on mobile.
+
+## Brand palette
+| Token | Hex | Usage |
 |---|---|---|
-| Ink / primary text | #102B4D | Headings, core text |
-| Deep navy | #08264B | Navigation, hero overlays, primary surfaces |
-| Heritage gold | #C9A24B | Highlights, primary accents |
-| Paper | #F7F8FB | Page background |
-| White | #FFFFFF | Cards and content surfaces |
-| Muted | #687B92 | Supporting text |
-| Border | #E2E9F2 | Dividers and card outlines |
-| Primary blue | #1769C2 | Interactive links and focus states |
+| Heritage saffron / primary | #A94F0B | Primary actions and emphasis |
+| Bright saffron | #FF9933 | Decorative accents and highlights |
+| Deep maroon | #5B1F2A | Brand, navigation and editorial sections |
+| Deep maroon surface | #3E1020 | Dark surfaces and overlays |
+| Antique gold | #8A5A12 | Small accents and separators |
+| Warm cream | #FFF8EC | Main page background |
+| Sandstone | #F2E6D3 | Secondary surfaces |
+| Charcoal ink | #241A18 | Main text |
+| Muted brown | #62564F | Supporting text |
+| Forest green | #23483D | Nature and eco-travel content |
+| White | #FFFFFF | Cards and elevated surfaces |
+| Focus blue | #245A78 | Keyboard focus indicator |
+
+Use WCAG AA contrast: 4.5:1 for normal text and 3:1 for large text and meaningful UI graphics. Bright saffron is decorative; use the darker primary saffron for text and controls.
 
 ## Typography
-- Display: Georgia / Georgia-like serif for occasional editorial hero titles and destination storytelling.
-- Interface: Inter with system sans-serif fallbacks.
-- Body: 16px baseline, line-height 1.5–1.7.
-- Labels: 12–14px, semibold; avoid tiny low-contrast body copy.
+- Display: **Playfair Display** (Google Fonts) for hero, district and editorial headings.
+- Interface/body: **Inter** for navigation, paragraphs, forms, cards and controls.
+- Hindi: **Noto Sans Devanagari** for Hindi and mixed-language content.
+- Body: 16px baseline, line-height 1.5–1.75, readable measure around 65–75 characters.
+- Use no more than these three families; Devanagari is a language fallback, not a competing brand font.
 
-## Layout and components
-- Mobile-first responsive layout; no horizontal page overflow.
-- Sticky navigation with clear hierarchy and visible active state.
-- Search should be the primary hero action with a visible label/accessible name and clear focus treatment.
-- Region cards use distinct but restrained tints and a minimum 44px interaction target.
-- Featured destination cards use real, locally hosted destination images and consistent image ratios.
-- District discovery is a single-column list to make 75 districts easy to scan; each row uses a real thumbnail, title, concise context, and clear open action.
-- Destination detail pages keep a predictable sub-navigation and a clear close/back affordance.
-- Preserve Arya AI as an optional assistant; it must not open automatically or obscure navigation.
+## Landing page pattern
+1. Glass/sticky navigation with clear active and keyboard states.
+2. Cinematic hero with destination photography, readable overlay, concise headline and one primary district-search action.
+3. District discovery for all 75 districts with search and region filters.
+4. Interactive Uttar Pradesh SVG map with keyboard-accessible list alternative.
+5. Featured destinations and editorial stories.
+6. Experience categories: heritage, spiritual, food, nature, craft, festivals and outdoors.
+7. Food trails and festival calendar.
+8. Journey planner and shareable itineraries.
+9. Optional Arya AI assistant; never auto-open.
+10. Practical travel information, essential services and footer.
 
-## Interaction and accessibility
-- All interactive targets should be at least 44×44 CSS px where practical.
-- Provide keyboard focus-visible styles and semantic button/link roles.
-- Never rely on hover as the only interaction cue.
-- Use loading feedback for async actions and place errors beside the relevant field.
-- Respect prefers-reduced-motion; keep transitions purposeful and subtle.
-- Keep text contrast at WCAG AA where possible; provide alt text for informative destination imagery.
-- Lazy-load below-the-fold images and set decoding="async"; reserve image dimensions to avoid layout shift.
+## Layout and spacing
+- 4px base / 8px rhythm.
+- Container max: 1280px.
+- Desktop gutters: 40–64px; tablet: 24–32px; mobile: 16–20px.
+- Section spacing: 72–112px desktop, 48–64px mobile.
+- Card radius: 16–24px; controls: 10–14px.
+- Mobile bottom navigation: maximum five destinations.
+- Touch targets: at least 44 CSS px; aim for 48 CSS px on Android-sized controls.
 
-## Performance
-- Prefer local optimized WebP/AVIF/JPEG assets over remote hotlinked images.
-- Keep hero imagery eager/high priority; lazy-load district thumbnails.
-- Avoid layout shifts by reserving image dimensions/aspect ratios.
-- Do not add a new UI framework to this static site without a separate migration decision.
+## Components
+- Buttons: primary dark saffron, secondary cream with maroon border, tertiary text action. Include hover, active, focus, disabled and loading states.
+- Destination cards: authentic photography, consistent aspect ratio, title, short context, region and clear open action.
+- Search: visible accessible label, keyboard suggestions, clear action, empty and no-result states.
+- Filters: selected state, clear-all action, mobile-friendly wrapping or horizontal scrolling.
+- District list: keep every district discoverable without relying only on the map.
+- Icons: one consistent SVG family (Lucide or custom SVG); never use emoji as structural icons.
+- Glass: translucent cream/white, moderate blur, subtle border; never compromise text contrast.
+
+## Motion
+- Micro-interactions: 150–300ms; tap feedback target 80–150ms.
+- Scroll reveals: opacity + 16–24px translate, 250–450ms, stagger related items.
+- Card hover: image scale 1.03–1.05 and subtle elevation; hover is never required for mobile.
+- Map: restrained district highlight and selected state; no continuous decorative motion.
+- Arya: user-triggered panel, short opacity/translate transition.
+- Respect prefers-reduced-motion: disable parallax, pointer tilt and continuous animation; preserve functionality.
+
+## Accessibility
+- WCAG AA contrast.
+- Semantic HTML and logical heading hierarchy.
+- Keyboard navigation and visible focus indicators.
+- Escape closes menus/dialogs; dialogs manage focus correctly.
+- Descriptive labels and alt text.
+- SVG icons have accessible names when informative; decorative SVGs are hidden from assistive technology.
+- Interactive map has a searchable list alternative.
+- No hover-only actions; test at 200% zoom.
+
+## Photography
+Use authentic Uttar Pradesh destination, architecture, food, craft, nature and festival imagery. Prefer optimized local WebP/AVIF/JPEG assets. Keep image focal points responsive, provide alt text, reserve aspect ratio, prioritize hero media and lazy-load below-the-fold images.
 
 ## Anti-patterns
-- Do not remove existing destination photos and replace them with generic placeholders.
-- Do not introduce duplicate search bars or competing hero CTAs.
-- Do not hide focus outlines, disable browser zoom, or use hover-only menus.
-- Do not rewrite district data, SEO metadata, authentication, or Arya AI behavior as part of a visual-only change.
-- Do not force horizontal scrolling on mobile.
+- Generic AI purple gradients, neon palettes and random gradients.
+- Emoji used as navigation or structural icons.
+- Mixing unrelated icon families.
+- Flat and skeuomorphic visual styles mixed without a system.
+- Excessive glassmorphism, shadows, parallax or decorative patterns.
+- More than five mobile bottom-navigation items.
+- Duplicate search bars, auto-opening assistant, map-only discovery or hover-only controls.
+- Tiny touch targets, low-contrast text, hidden focus outlines or disabled zoom.
+- Unoptimized giant videos, eager loading every district image, layout shifts and unnecessary JavaScript.
 
-## Implementation source
-The UI/UX Pro Max skill is pinned as a Git submodule at `vendor/ui-ux-pro-max-skill` and exposed at `.agents/skills/ui-ux-pro-max`. Initialize it with `git submodule update --init --recursive`.
+## Implementation notes
+- Current production site remains vanilla HTML/CSS/JavaScript. Do not add Next.js, Tailwind or Framer Motion dependencies as part of this visual foundation.
+- `css/exploreup-design-system.css` is the production token and accessibility layer.
+- Google Fonts are loaded in `index.html`.
+- Keep the existing district data, route structure, search, map, authentication, SEO and Arya AI behavior unchanged.
+- A future Next.js migration should be a separate project with route-by-route parity and regression tests.
