@@ -27,7 +27,18 @@ renderGovernmentProfile();
 window.addEventListener('DOMContentLoaded',renderGovernmentProfile,{once:true});
 
 // Supabase is optional: load it only after the local ExploreUP UI has started.
+// Resolve direct district URLs after all classic scripts, including community-admin, are available.
+const openInitialCityRoute=()=>{
+  if(typeof window.handleCityUrl==='function') window.handleCityUrl();
+};
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',openInitialCityRoute,{once:true});
+}else{
+  openInitialCityRoute();
+}
+
+// Supabase is optional and must not gate local city/deep-link navigation.
 loadSupabaseBackend().then(client=>{
   if(!client)return;
-  syncDistrictCatalog().then(()=>{renderCities(); handleCityUrl();}).catch(()=>{renderCities(); handleCityUrl();});
+  syncDistrictCatalog().then(()=>{renderCities();}).catch(()=>{renderCities();});
 });
