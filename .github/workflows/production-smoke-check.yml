@@ -74,7 +74,7 @@ jobs:
           const base = process.env.SITE_URL;
           const pages = [
             "/", "/agra.html", "/ayodhya.html", "/city.html",
-            "/favorites.html", "/feedback.html", "/index-1.html", "/lucknow.html",
+            "/favorites.html", "/feedback.html", "/lucknow.html",
             "/nearby.html", "/search.html", "/varanasi.html"
           ];
           const assets = [
@@ -98,7 +98,7 @@ jobs:
             try {
               const pageResults = await Promise.all(pages.map(request));
               const assetResults = await Promise.all(assets.map(request));
-              const [sitemapResult, robotsResult] = await Promise.all([request("/sitemap.xml"), request("/robots.txt")]);
+              const [sitemapResult, robotsResult, legacyHomeResult] = await Promise.all([request("/sitemap.xml"), request("/robots.txt"), request("/index-1.html")]);
               const badPages = pageResults
                 .map((r, i) => ({ path: pages[i], ...r }))
                 .filter(r => r.status !== 200);
@@ -130,8 +130,8 @@ jobs:
                   missingSeo.push(path + " title or meta description");
                 }
               }
-              const duplicateHome = pageResults[pages.indexOf("/index-1.html")];
-              if (!duplicateHome || !duplicateHome.url.endsWith("/")) {
+              const duplicateHome = legacyHomeResult;
+              if (duplicateHome.status !== 200 || !duplicateHome.url.endsWith("/")) {
                 missingSeo.push("Legacy index-1.html route must redirect to the canonical homepage");
               }
               const expectedSitemap = indexable.map(([, url]) => url);
