@@ -26,8 +26,10 @@ jobs:
           const fs = require("node:fs");
           const path = require("node:path");
           const html = fs.readFileSync("index.html", "utf8");
-          const scriptPaths = [...html.matchAll(/<script\\s+src=["'](\\.\\/districts\\/[^"']+\\/data\\.js)["']/g)]
-            .map(match => match[1].replace(/^\\.\\//, ""));
+          const scriptPaths = html.split("\n")
+            .filter(line => line.includes('<script src="./districts/') && line.includes('/data.js"></script>'))
+            .map(line => line.match(/src="([^"]+)"/)?.[1].replace("./", ""))
+            .filter(Boolean);
           const actualFiles = fs.readdirSync("districts", { withFileTypes: true })
             .filter(entry => entry.isDirectory() && entry.name !== "_template")
             .map(entry => path.posix.join("districts", entry.name, "data.js"))
@@ -44,9 +46,9 @@ jobs:
           const names = [];
           for (const file of actualFiles) {
             const source = fs.readFileSync(file, "utf8");
-            const pushes = source.match(/window\\.ExploreUPDistricts\\.push\\(/g) || [];
-            const name = source.match(/"name"\\s*:\\s*"([^"]+)"/);
-            if (pushes.length !== 1 || !name) {
+            const pushes = source.split("window.ExploreUPDistricts.push(").length - 1;
+            const name = source.match(/"name":"([^"]+)"/);
+            if (pushes !== 1 || !name) {
               throw new Error(`${file} must contain exactly one district data entry.`);
             }
             names.push(name[1]);
