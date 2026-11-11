@@ -22,9 +22,19 @@ const context = vm.createContext({
     shop: "Hazratganj and Chowk markets",
     budget: "A moderate city-break budget",
     time: "October to March"
+  }, {
+    name: "Kanpur Dehat",
+    tag: "Kanpur Dehat district guide & local experiences",
+    places: "Local landmarks, attractions, markets & nearby places",
+    food: "Local cuisine, regional specialities & popular eateries",
+    shop: "Local markets, handicrafts & district shopping",
+    budget: "₹1,000 – ₹3,500/day",
+    time: "Oct – Mar",
+    tip: "Check local timings, transport and seasonal conditions before visiting.",
+    about: "Kanpur Dehat is one of Uttar Pradesh’s 75 districts covered by ExploreUP."
   }],
-  contactData: { Lucknow: { hotels: [], hospitals: [] } },
-  districtServiceContacts: { Lucknow: { hotels: [], hospitals: [] } }
+  contactData: { Lucknow: { hotels: [], hospitals: [] }, "Kanpur Dehat": { hotels: [], hospitals: [] } },
+  districtServiceContacts: { Lucknow: { hotels: [], hospitals: [] }, "Kanpur Dehat": { hotels: [], hospitals: [] } }
 });
 
 const scripts = [
@@ -58,6 +68,23 @@ async function main() {
   const history = await evaluate('aryaAnswer("Lucknow history", "en")');
   assert.match(history, /Nawabs of Awadh/);
 
+  const genericPlaces = await evaluate('aryaAnswer("Kanpur Dehat places", "en")');
+  assert.match(genericPlaces, /Verified Kanpur Dehat place details are not currently available/);
+  assert.doesNotMatch(genericPlaces, /undefined/);
+
+  const genericFood = await evaluate('aryaAnswer("Food in Kanpur Dehat", "en")');
+  assert.match(genericFood, /Verified Kanpur Dehat food details are not currently available/);
+  assert.doesNotMatch(genericFood, /undefined/);
+
+  const genericOverview = await evaluate('aryaAnswer("Kanpur Dehat district guide", "en")');
+  assert.match(genericOverview, /Kanpur Dehat is one of Uttar Pradesh/);
+  assert.match(genericOverview, /Verified Kanpur Dehat culture details are not currently available/);
+  assert.doesNotMatch(genericOverview, /undefined/);
+
+  const genericTrip = await evaluate('aryaAnswer("Make a trip plan for Kanpur Dehat", "en")');
+  assert.match(genericTrip, /Verified Kanpur Dehat place details are not currently available/);
+  assert.doesNotMatch(genericTrip, /undefined/);
+
   const planner = await evaluate('aryaAnswer("Make a 2 day trip plan for Lucknow", "en")');
   assert.match(planner, /Quick Plan uses bundled ExploreUP information/);
   assert.match(planner, /suggested day-by-day plan/);
@@ -82,7 +109,8 @@ async function main() {
 
   console.log("PASS: Arya detects Hindi script, romanised Hindi and English.");
   console.log("PASS: Arya language packs safely fall back to English.");
-  console.log("PASS: district places, food and history answers use bundled knowledge.");
+  console.log("PASS: detailed district answers use bundled knowledge.");
+  console.log("PASS: districts without detailed knowledge clearly report unavailable verified details.");
   console.log("PASS: trip-planner and website-navigation answers remain available.");
   console.log("PASS: out-of-scope questions receive the ExploreUP scope response.");
   console.log("PASS: unavailable live data and translation services fail gracefully.");

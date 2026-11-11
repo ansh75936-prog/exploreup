@@ -33,13 +33,30 @@ Use the main search to find destinations, open a city/district for its full guid
  };
  if(c){
    const k=aryaKnowledge[c.name]||{};
+   const hasSpecificDetail=value=>{
+     if(typeof value!=='string'||!value.trim())return false;
+     return !/^(?:local landmarks, attractions, markets & nearby places|local cuisine, regional specialities & popular eateries|local markets, handicrafts & district shopping)$/i.test(value.trim());
+   };
+   const districtDetail=(primary,fallback,label)=>{
+     const detail=[primary,fallback].find(hasSpecificDetail);
+     return detail||`Verified ${c.name} ${label} details are not currently available in ExploreUP.`;
+   };
+   const districtDetails={
+     history:districtDetail(k.history,c.history,'history'),
+     places:districtDetail(k.places,c.places,'place'),
+     food:districtDetail(k.food,c.food,'food'),
+     culture:districtDetail(k.culture,c.culture,'culture'),
+     nature:districtDetail(k.nature,c.nature,'nature'),
+     shopping:districtDetail(c.shop,c.shopping,'shopping'),
+     tips:districtDetail(k.tips,c.tip,'travel tip')
+   };
    let base='';
-   if(/plan|planner|itinerary|trip|day/.test(x)) base=plannerKnowledge+`\n\nFor ${c.name}: the planner uses its bundled places, food and destination information to build a suggested day-by-day plan.`;
+   if(/plan|planner|itinerary|trip|day/.test(x)) base=plannerKnowledge+`\n\nFor ${c.name}: the planner uses the available district information to build a suggested day-by-day plan.\n\nPlaces: ${districtDetails.places}\n\nFood: ${districtDetails.food}\n\nTravel tip: ${districtDetails.tips}`;
    else if(/budget|cost|expense|paisa|kitna/.test(x)) base=`${c.name} — Budget Planner:\n${c.budget}.\n\nThe Budget Calculator estimates accommodation, food, transport, activities and local transport. Estimate only; actual prices vary.`;
    else if(/recommend|recommendation|interest|smart/.test(x)) base=`${c.name} — Smart Recommendations:\nChoose interests such as history, religion, nature, food, shopping, photography or family. Arya uses bundled ExploreUP knowledge for ${c.name} to suggest relevant categories.`;
    else if(/offline|quick plan|smart plan|online plan|internet/.test(x)) base=plannerKnowledge;
    else if(/food|khana|cuisine|dish|sweet|mithai|street/.test(x)) base=`${c.name} — Food & Cuisine section:
-${k.food||c.food}.`;
+${districtDetails.food}.`;
    else if(/hotel|stay|room|resort|accommodation/.test(x)){
      const staySource=(typeof districtServiceContacts!=='undefined'&&districtServiceContacts[c.name])?districtServiceContacts[c.name]:(contactData[c.name]||{}); const stays=staySource.hotels||[];
      base=`${c.name} — Hotels / Stays:
@@ -51,17 +68,17 @@ ${k.food||c.food}.`;
 `+(hospitals.length?hospitals.map((v,i)=>`${i+1}. ${v.name}${v.type?' ('+v.type+')':''} — ${v.address}${v.phone?' — Phone: '+v.phone:''}`).join('\n'):`No verified hospital address is currently stored for ${c.name} in ExploreUP. The district page also provides a Google Maps search option.`);
    }
    else if(/shopping|market|mall|buy|craft|handicraft/.test(x)) base=`${c.name} — Shopping section:
-${c.shop}.
+${districtDetails.shopping}.
 
 ExploreUP also lists available malls and shopping/map options for the destination.`;
    else if(/history|heritage/.test(x)) base=`${c.name} — History & Heritage:
-${k.history}`;
+${districtDetails.history}`;
    else if(/culture|festival|tradition|tehzeeb/.test(x)) base=`${c.name} — Culture & Local Life:
-${k.culture}`;
+${districtDetails.culture}`;
    else if(/nature|wildlife|forest|waterfall|park|river/.test(x)) base=`${c.name} — Geography & Nature:
-${k.nature}`;
+${districtDetails.nature}`;
    else if(/place|visit|tour|ghoom|ghumna|attraction|sight|temple|fort|museum/.test(x)) base=`${c.name} — Places to Explore:
-${k.places}`;
+${districtDetails.places}`;
    else if(/budget|cost|expense|paisa|kitna/.test(x)) base=`${c.name} — Budget information:
 ${c.budget}.
 
@@ -69,9 +86,9 @@ ExploreUP provides this as a planning guide; it does not provide live prices.`;
    else if(/trip|itinerary|plan|day/.test(x)) base=`${c.name} — Trip Planner:
 ${k.places}
 
-Food: ${k.food}
+Food: ${districtDetails.food}
 
-Tip: ${k.tips}`;
+Tip: ${districtDetails.tips}`;
    else if(/tip|tips|advice|kab|when|best time/.test(x)) base=`${c.name} — Travel Tip:
 ${k.tips}
 
@@ -79,17 +96,19 @@ ExploreUP lists: ${c.time}.`;
    else if(/about|overview|guide|information|info|batao|tell me|details|baare mein|ke bare mein/.test(x)) base=`${c.name}
 ${c.tag}.
 
-History: ${k.history}
+${c.about||"ExploreUP has a district guide for this destination."}
 
-Places: ${k.places}
+History: ${districtDetails.history}
 
-Food: ${k.food}
+Places: ${districtDetails.places}
 
-Culture: ${k.culture}
+Food: ${districtDetails.food}
 
-Nature: ${k.nature}
+Culture: ${districtDetails.culture}
 
-Travel tip: ${k.tips}`;
+Nature: ${districtDetails.nature}
+
+Travel tip: ${districtDetails.tips}`;
    else base=`I can help with the ExploreUP sections for ${c.name}: Places, Food, Stay & Health, Knowledge, Trip Planner, Transport and Shopping. Ask me about one of these sections.`;
    if(liveSug.length) base+=`
 
