@@ -1,0 +1,46 @@
+name: JavaScript syntax validation
+
+on:
+  pull_request:
+    paths:
+      - "**/*.js"
+      - ".github/workflows/javascript-syntax-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.js"
+      - ".github/workflows/javascript-syntax-check.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exploreup-js-syntax-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate every first-party JavaScript file
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' file; do
+            case "$file" in
+              vendor/*) continue ;;
+            esac
+            node --check "$file"
+            count=$((count + 1))
+          done < <(find . -type f -name '*.js' -not -path './.git/*' -print0)
+          echo "Validated syntax for $count JavaScript files."
