@@ -224,6 +224,9 @@ jobs:
       - name: Validate local CSS asset references
         run: node tests/css-asset-references.test.js
 
+      - name: Validate active HTML references and duplicate UI assets
+        run: node tests/site-integrity.test.js
+
       - name: Validate restored search script syntax
         run: node --check v21-step2-powerful-search.js
 
