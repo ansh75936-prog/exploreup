@@ -17,6 +17,53 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate all district data files
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const html = fs.readFileSync("index.html", "utf8");
+          const scriptPaths = [...html.matchAll(/<script\\s+src=["'](\\.\\/districts\\/[^"']+\\/data\\.js)["']/g)]
+            .map(match => match[1].replace(/^\\.\\//, ""));
+          const actualFiles = fs.readdirSync("districts", { withFileTypes: true })
+            .filter(entry => entry.isDirectory() && entry.name !== "_template")
+            .map(entry => path.posix.join("districts", entry.name, "data.js"))
+            .sort();
+          const listedFiles = [...scriptPaths].sort();
+
+          if (scriptPaths.length !== 75 || new Set(scriptPaths).size !== 75) {
+            throw new Error(`Expected 75 unique district data script tags; found ${scriptPaths.length}.`);
+          }
+          if (JSON.stringify(listedFiles) !== JSON.stringify(actualFiles)) {
+            throw new Error("Homepage district script tags do not match the district data files on disk.");
+          }
+
+          const names = [];
+          for (const file of actualFiles) {
+            const source = fs.readFileSync(file, "utf8");
+            const pushes = source.match(/window\\.ExploreUPDistricts\\.push\\(/g) || [];
+            const name = source.match(/"name"\\s*:\\s*"([^"]+)"/);
+            if (pushes.length !== 1 || !name) {
+              throw new Error(`${file} must contain exactly one district data entry.`);
+            }
+            names.push(name[1]);
+          }
+          if (names.length !== 75 || new Set(names).size !== 75) {
+            throw new Error("District data must contain 75 unique names.");
+          }
+
+          const varanasi = fs.readFileSync("districts/varanasi/data.js", "utf8");
+          if (!varanasi.includes("ExploreUP Varanasi video playback recovery")) {
+            throw new Error("Varanasi video recovery behavior is missing.");
+          }
+          console.log("PASS: 75 unique district files are registered exactly once.");
+          console.log("PASS: all 75 files contain one unique district data record.");
+          console.log("PASS: Varanasi video recovery logic is preserved.");
+          NODE
+
       - name: Verify production pages and shared assets
         env:
           SITE_URL: https://exploreup-five.vercel.app
