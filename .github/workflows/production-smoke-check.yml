@@ -117,6 +117,7 @@ jobs:
             "/js/homepage-runtime.js?v=20261111-1",
             "/js/arya-core.js?v=20261111-1",
             "/js/arya-language.js?v=20261111-1",
+            "/js/arya-answer-engine.js?v=20261111-1",
             "/js/ui-preferences.js?v=20261111-1",
             "/js/site-shell.js?v=20261111-1",
             "/js/homepage-stability.js?v=20261111-1",
@@ -168,6 +169,7 @@ jobs:
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
               const aryaLanguageSource = assetResults[assets.indexOf("/js/arya-language.js?v=20261111-1")]?.body || "";
+              const aryaAnswerEngineSource = assetResults[assets.indexOf("/js/arya-answer-engine.js?v=20261111-1")]?.body || "";
               const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
               const supabaseBootstrapSource = assetResults[assets.indexOf("/js/supabase-bootstrap.js?v=20261111-1")]?.body || "";
               const aryaOpenStateSource = assetResults[assets.indexOf("/js/arya-open-state-fix.js?v=20261111-1")]?.body || "";
@@ -248,6 +250,7 @@ jobs:
                 "feature-motion.js",
                 "arya-core.js",
                 "arya-language.js",
+                "arya-answer-engine.js",
                 "ui-preferences.js",
                 "site-shell.js",
                 "homepage-stability.js",
@@ -400,6 +403,9 @@ jobs:
                   !aryaLanguageSource.includes("async function aryaTranslateChunk(") ||
                   !aryaLanguageSource.includes("async function aryaLocalizeAnswer(")) {
                 missingHomeAssets.push("Arya language detection and translation helpers must be available");
+              }
+              if (!aryaAnswerEngineSource.includes("async function aryaAnswer(")) {
+                missingHomeAssets.push("Arya answer engine must be available");
               }
               const missingMobileLayout = [];
               if (!homepageFinalOverridesSource.includes('#cityGrid.cities{') ||
