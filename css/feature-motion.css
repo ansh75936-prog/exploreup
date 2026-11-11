@@ -1,0 +1,49 @@
+/* ExploreUP Phase 2 — feature motion layer. Additive only; no feature logic replaced. */
+:root{--eu-motion-ease:cubic-bezier(.2,.72,.25,1);--eu-motion-shadow:0 16px 42px rgba(61,28,24,.13)}
+@keyframes euRevealUp{from{opacity:0;transform:translate3d(0,22px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes euPinPop{0%{opacity:0;transform:scale(.55) translateY(8px)}75%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes euMessageIn{from{opacity:0;transform:translateY(9px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes euFabBreathe{0%,100%{box-shadow:0 10px 28px rgba(116,35,43,.24)}50%{box-shadow:0 13px 34px rgba(255,153,51,.34)}}
+.eu-motion-reveal{opacity:0;transform:translate3d(0,22px,0);transition:opacity .65s var(--eu-motion-ease),transform .65s var(--eu-motion-ease)}
+.eu-motion-reveal.eu-motion-visible{opacity:1;transform:none}
+.eu-motion-stagger>*{transition-delay:calc(var(--eu-motion-index,0)*55ms)}
+/* Interactive UP map */
+.interactive-map-section,.up-map-card{border-radius:24px;transition:transform .35s var(--eu-motion-ease),box-shadow .35s ease,border-color .35s ease}
+.interactive-map-section:hover,.up-map-card:hover{box-shadow:var(--eu-motion-shadow)}
+.map-dot,.map-node{transform-box:fill-box;transform-origin:center;transition:transform .22s ease,filter .22s ease}
+.map-dot:hover,.map-node:hover{transform:scale(1.22);filter:drop-shadow(0 5px 7px rgba(255,153,51,.42))}
+.eu-map-pin-enter{animation:euPinPop .55s var(--eu-motion-ease) both;animation-delay:var(--eu-motion-delay,0ms)}
+.map-popover{transition:opacity .2s ease,transform .2s ease;transform-origin:top center}
+.map-popover:not([hidden]){animation:euRevealUp .22s ease both}
+/* Festivals and local food trails */
+.festival,.trail,.foodcard{transform:translateZ(0);transition:transform .28s var(--eu-motion-ease),box-shadow .28s ease,border-color .28s ease}
+.festival:hover,.trail:hover,.foodcard:hover{transform:translateY(-5px);box-shadow:var(--eu-motion-shadow);border-color:rgba(255,153,51,.48)}
+.festival:focus-within,.trail:focus-within,.foodcard:focus-within{outline:2px solid rgba(255,153,51,.65);outline-offset:3px}
+.trails{scroll-snap-type:x proximity}
+.trail{scroll-snap-align:start}
+.foodgrid{align-items:stretch}
+.foodcard img{transition:transform .5s var(--eu-motion-ease)}
+.foodcard:hover img{transform:scale(1.045)}
+/* Arya AI: motion is limited to the panel and newly-added messages. */
+.arya-fab{animation:euFabBreathe 4.5s ease-in-out infinite}
+.arya-panel{transform-origin:bottom right;transition:opacity .22s ease,transform .28s var(--eu-motion-ease),box-shadow .28s ease}
+.arya-panel[hidden]{display:none!important}
+.arya-panel:not([hidden]){animation:euRevealUp .28s var(--eu-motion-ease) both}
+.arya-msg.eu-message-enter{animation:euMessageIn .26s var(--eu-motion-ease) both}
+.arya-msg.bot{border-bottom-left-radius:7px}
+.arya-msg.user{border-bottom-right-radius:7px}
+/* Planner, saved/compare surfaces and utility controls */
+#planMakerModal,.comparepanel,.comparebar,.favpanel{transition:opacity .22s ease,transform .28s var(--eu-motion-ease),box-shadow .28s ease}
+#planMakerModal:not([hidden]){animation:euRevealUp .25s var(--eu-motion-ease) both}
+.comparebar,.trip-sticky{box-shadow:0 -8px 28px rgba(61,28,24,.10)}
+.comparebar button,.trip-sticky button,.district-tools button,.map-open-btn{transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.comparebar button:hover,.trip-sticky button:hover,.district-tools button:hover,.map-open-btn:hover{transform:translateY(-2px)}
+.save:active,.share:active,.hero-btn:active{transform:scale(.97)}
+.footer{position:relative;overflow:hidden}
+.footer:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;background-image:repeating-linear-gradient(45deg,transparent 0 13px,rgba(255,255,255,.5) 13px 14px)}
+@media(hover:none){.festival:hover,.trail:hover,.foodcard:hover{transform:none;box-shadow:var(--eu-motion-shadow)}}
+@media(prefers-reduced-motion:reduce){
+ .eu-motion-reveal{opacity:1;transform:none;transition:none}
+ .eu-map-pin-enter,.arya-fab{animation:none!important}
+ .festival,.trail,.foodcard,.arya-panel,.arya-msg,.map-popover{transition:none!important;animation:none!important}
+}
