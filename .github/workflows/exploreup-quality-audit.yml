@@ -8,6 +8,7 @@ on:
       - "*.js"
       - "css/**"
       - "js/**"
+      - "tests/**"
       - ".github/workflows/exploreup-quality-audit.yml"
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "*.html"
       - "css/**"
       - "js/**"
+      - "tests/**"
       - ".github/workflows/exploreup-quality-audit.yml"
   workflow_dispatch:
 
