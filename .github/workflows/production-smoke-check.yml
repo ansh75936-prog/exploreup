@@ -166,6 +166,7 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
               const supabaseBootstrapSource = assetResults[assets.indexOf("/js/supabase-bootstrap.js?v=20261111-1")]?.body || "";
               const aryaOpenStateSource = assetResults[assets.indexOf("/js/arya-open-state-fix.js?v=20261111-1")]?.body || "";
               const homepageCardNavigationSource = assetResults[assets.indexOf("/css/homepage-card-navigation.css?v=20261111-1")]?.body || "";
@@ -405,7 +406,7 @@ jobs:
                   !homepage.includes('href="https://images.unsplash.com"') ||
                   !homepage.includes('<img width="700" height="460"') ||
                   !homepage.includes('<img width="1000" height="650"') ||
-                  !homepageRuntime.includes('<img width="1000" height="650" class="city-photo"')) {
+                  !districtRuntimeSource.includes('<img width="1000" height="650" class="city-photo"')) {
                 missingMediaStability.push("Image connections and intrinsic dimensions must be declared");
               }
 
