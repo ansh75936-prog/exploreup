@@ -1957,21 +1957,7 @@ body.dark .district-playable-video-info p{color:#b3c3d8}
 </style><script src="./js/district-media.js?v=20261111-1"></script>
 <script src="./js/home-showcase.js?v=20260930-5" defer></script>
 
-<script id="exploreup-performance-runtime">
-(function(){
-  'use strict';
-  // Keep off-screen media cheap; visible/interactive media remains unchanged.
-  const markMedia=()=>{
-    document.querySelectorAll('img:not([loading]),video:not([preload])').forEach(el=>{
-      if(el.closest('.hero,.modalhero,[data-critical-media]')) return;
-      if(el.tagName==='IMG'){el.loading='lazy';el.decoding='async';}
-      else if(el.tagName==='VIDEO'){el.preload='metadata';}
-    });
-  };
-  if('requestIdleCallback' in window) requestIdleCallback(markMedia,{timeout:1200});
-  else setTimeout(markMedia,300);
-})();
-</script>
+<script id="exploreup-performance-runtime" src="./js/performance-runtime.js?v=20261111-1"></script>
 
 <style id="exploreup-professional-polish">
 /* Site-wide visual refinement; intentionally leaves Arya AI styling and behavior untouched. */
