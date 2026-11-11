@@ -1,0 +1,15 @@
+/* ExploreUP cinematic hero background — background-only release 2
+ * Visual-only layer: keeps all existing hero content, layout, controls and behavior intact.
+ */
+.hero{
+  background-color:#071b35!important;
+  background-image:
+    linear-gradient(90deg,rgba(4,15,31,.88) 0%,rgba(4,15,31,.70) 43%,rgba(4,15,31,.30) 100%),
+    url("../images/varanasi.jpg")!important;
+  background-position:center 48%!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+@media(max-width:760px){
+  .hero{background-position:58% center!important}
+}
