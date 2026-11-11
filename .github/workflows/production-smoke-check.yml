@@ -81,7 +81,8 @@ jobs:
             "/css/exploreup-design-system.css",
             "/css/heritage-motion.css",
             "/js/feature-motion.js",
-            "/css/heritage-secondary-pages.css?v=20261111-1"
+            "/css/heritage-secondary-pages.css?v=20261111-1",
+            "/js/home-showcase.js"
           ];
 
           async function request(path) {
@@ -155,6 +156,12 @@ jobs:
               ].filter(name => !homepage.includes(name));
 
               const missingDiscovery = [];
+              const dashboard = assetResults[4]?.body || "";
+              const expectedDashboardCounts = { awadh: 22, braj: 8, purvanchal: 20, bundelkhand: 7 };
+              for (const [region, count] of Object.entries(expectedDashboardCounts)) {
+                const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
+                if (!card || Number(card[1]) !== count) missingDiscovery.push(region + " dashboard count must match " + count + " districts");
+              }
               const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
               const regionBlock = regionMatch?.[1] || "";
               const regionNames = [...regionBlock.matchAll(/^\s*[a-z]+:\[([^\]]*)\]/gm)]
@@ -205,9 +212,10 @@ jobs:
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
-                console.log("PASS: all 4 shared assets return HTTP 200.");
+                console.log("PASS: all 5 shared assets return HTTP 200.");
                 console.log("PASS: Ayodhya WebPage and BreadcrumbList JSON-LD are live.");
                 console.log("PASS: six region filters map 75 unique districts.");
+                console.log("PASS: featured region dashboard counts match the district mapping.");
                 console.log("PASS: map and filters expose accessible states; one primary search remains.");
                 console.log("PASS: search and region filters reveal matching district cards.");
                 console.log("PASS: mobile district cards use a single-column row layout.");
