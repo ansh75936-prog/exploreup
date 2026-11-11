@@ -85,13 +85,13 @@ ${c.budget}.
 
 ExploreUP provides this as a planning guide; it does not provide live prices.`;
    else if(/trip|itinerary|plan|day/.test(x)) base=`${c.name} — Trip Planner:
-${k.places}
+${districtDetails.places}
 
 Food: ${districtDetails.food}
 
 Tip: ${districtDetails.tips}`;
    else if(/\b(?:tip|tips|advice|kab|when)\b|best time/.test(x)) base=`${c.name} — Travel Tip:
-${k.tips}
+${districtDetails.tips}
 
 ExploreUP lists: ${c.time}.`;
    else if(/about|overview|guide|information|info|batao|tell me|details|baare mein|ke bare mein/.test(x)) base=`${c.name}
