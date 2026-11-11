@@ -186,7 +186,9 @@ jobs:
               if (usesExternalHomepageData && homepageDataAsset.status !== 200) missingHomeAssets.push("homepage-data.js must return HTTP 200");
               if (!homepageDataSource.includes("const cities=window.ExploreUPDistricts||[]") ||
                   !homepageDataSource.includes("const mallData=") ||
-                  !homepageDataSource.includes("const foodData=")) {
+                  !homepageDataSource.includes("const foodData=") ||
+                  !homepageDataSource.includes("const contactData=") ||
+                  !homepageDataSource.includes("const districtServiceContacts=")) {
                 missingHomeAssets.push("Homepage district, food and shopping data must load before the runtime");
               }
 
