@@ -11,6 +11,11 @@ async function openPage(browser, path = "/") {
     serviceWorkers: "block"
   });
   const page = await context.newPage();
+  await page.route("**/api/arya**", route => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ answer: "Lucknow is known for its heritage, Awadhi food and historic architecture." })
+  }));
   page.on("pageerror", error => pageErrors.push({ path, message: error.message }));
   page.on("requestfailed", request => {
     const url = request.url();
