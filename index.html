@@ -555,81 +555,35 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
   <script src="./arya-ai-ui.js?v=20260924-arya-fix"></script>
 <script src="./v21-step3-favorites.js?v=20260916-1"></script>
 <div id="exploreupShareStatus" role="status" aria-live="polite"></div>
-<script>
-(function(){
-  const btn=document.getElementById('exploreupBottomShare');
-  const status=document.getElementById('exploreupShareStatus');
-  if(!btn)return;
-  function showStatus(message){
-    if(!status)return;
-    status.textContent=message;
-    status.style.display='block';
-    clearTimeout(window.__exploreUpShareTimer);
-    window.__exploreUpShareTimer=setTimeout(()=>{status.style.display='none'},2200);
-  }
-  btn.addEventListener('click',async()=>{
-    const url=location.href;
-    const data={title:'ExploreUP — Explore Uttar Pradesh',text:'Explore Uttar Pradesh with ExploreUP: cities, places, food, stays and travel information.',url};
-    try{
-      if(navigator.share){
-        await navigator.share(data);
-        showStatus('Share dialog opened.');
-        return;
-      }
-      if(navigator.clipboard&&window.isSecureContext){
-        await navigator.clipboard.writeText(url);
-        showStatus('Link copied. Ab share kar sakte ho.');
-        return;
-      }
-      const ta=document.createElement('textarea');
-      ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
-      document.body.appendChild(ta);ta.select();
-      document.execCommand('copy');ta.remove();
-      showStatus('Link copied. Ab share kar sakte ho.');
-    }catch(e){
-      if(e&&e.name==='AbortError')return;
-      showStatus('Share nahi ho paya. Link copy karke share kar lo.');
-    }
-  });
-})();
-</script>
-<script>
-/* ExploreUP polish v1: accessibility + quick navigation */
-(function(){
-  const main=document.querySelector('main')||document.body;
-  if(!document.querySelector('.skip-link')){
-    const a=document.createElement('a');a.className='skip-link';a.href='#mainContent';a.textContent='Skip to main content';document.body.prepend(a);
-  }
-  if(!document.getElementById('mainContent')){
-    const target=document.querySelector('.wrap')||document.querySelector('.section');
-    if(target)target.id='mainContent';
-  }
-  if(!document.getElementById('backToTop')){
-    const b=document.createElement('button');b.id='backToTop';b.type='button';b.setAttribute('aria-label','Back to top');b.title='Back to top';b.textContent='↑';
-    document.body.appendChild(b);
-    b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-    const sync=()=>b.classList.toggle('show',window.scrollY>500);window.addEventListener('scroll',sync,{passive:true});sync();
-  }
-})();
-</script>
+<script src="./js/share-accessibility.js?v=20261111-1"></script>
 
 
 
 <script src="./js/district-discovery.js?v=20261111-1"></script>
 
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(reg => {
-          reg.update();
-          setInterval(() => reg.update().catch(() => {}), 60000);
-        }).catch(() => {});
-      });
-      let exploreUpReloading = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (exploreUpReloading) return;
-       <script src="./js/share-accessibility.js?v=20261111-1"></script>  p.classList.add('arya-visible');
+  <script src="./js/pwa-runtime.js?v=20261111-1"></script>
+
+<script src="./js/mobile-navigation.js?v=20261111-1"></script>
+
+<style id="arya-open-state-fix">
+.arya-panel[hidden]{display:none!important}
+.arya-panel.arya-visible{display:flex!important}
+</style>
+<script id="arya-open-state-fix-script">
+(function(){
+  'use strict';
+  const getPanel=()=>document.getElementById('aryaPanel');
+  const close=()=>{
+    const p=getPanel();
+    if(p){p.hidden=true;p.classList.remove('arya-visible');p.style.display='none';}
+    document.body.classList.remove('arya-open');
+  };
+  const open=()=>{
+    const p=getPanel();
+    if(!p)return;
+    p.hidden=false;
+    p.classList.add('arya-visible');
     p.style.display='flex';
     document.body.classList.add('arya-open');
     setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
@@ -692,7 +646,59 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
   box-shadow:0 7px 20px rgba(64,75,190,.24)!important;
 }
 .arya-suggest button{
-  bo<script src="./js/pwa-runtime.js?v=20261111-1"></script>mportant;
+  border:1px solid transparent!important;
+  border-radius:999px!important;
+  padding:8px 11px!important;
+  font-weight:800!important;
+  color:#17385f!important;
+  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#0b67d1,#7b3ff2,#ffb51b) border-box!important;
+  box-shadow:0 4px 12px rgba(40,80,140,.10)!important;
+  transition:transform .18s ease,box-shadow .18s ease!important;
+}
+.arya-suggest button:nth-child(3n+1){background:linear-gradient(#eef7ff,#eef7ff) padding-box,linear-gradient(135deg,#0b67d1,#31b7ff) border-box!important}
+.arya-suggest button:nth-child(3n+2){background:linear-gradient(#f6efff,#f6efff) padding-box,linear-gradient(135deg,#7b3ff2,#e14cff) border-box!important}
+.arya-suggest button:nth-child(3n){background:linear-gradient(#fff7df,#fff7df) padding-box,linear-gradient(135deg,#ff9f1c,#ffcf33) border-box!important}
+.arya-suggest button:hover{transform:translateY(-2px)!important;box-shadow:0 7px 16px rgba(40,80,140,.16)!important}
+.arya-input{
+  background:rgba(255,255,255,.96)!important;
+  border-top:1px solid #dce8f6!important;
+}
+.arya-input input,#aryaInput{
+  background:#f4f8ff!important;
+  border:1px solid #cbdcf1!important;
+}
+.arya-input input:focus,#aryaInput:focus{
+  border-color:#7b3ff2!important;
+  box-shadow:0 0 0 3px rgba(123,63,242,.13)!important;
+}
+.arya-input button,#aryaSend{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00)!important;
+  color:#10233f!important;
+  box-shadow:0 5px 14px rgba(255,145,0,.25)!important;
+}
+.arya-fab{
+  background:linear-gradient(135deg,#ffb51b,#ff8a00,#7b3ff2)!important;
+  color:#fff!important;
+  box-shadow:0 12px 30px rgba(84,57,160,.30)!important;
+}
+@media(max-width:620px){
+  .arya-panel{background:#f8fbff!important}
+  .arya-head{border-radius:18px 18px 0 0!important}
+}
+</style>
+
+<style id="arya-message-colour-separation">
+/* Arya AI — separate colours for user questions and Arya answers */
+.arya-msg.user{
+  background:linear-gradient(135deg,#0b67d1 0%,#2454e8 52%,#7b3ff2 100%)!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:18px 18px 5px 18px!important;
+  margin-left:auto!important;
+  box-shadow:0 7px 20px rgba(38,76,210,.28)!important;
+}
+.arya-msg.bot{
+  background:linear-gradient(135deg,#fff7df 0%,#fffaf0 45%,#eaf4ff 100%)!important;
   color:#17385f!important;
   border:1px solid #d7e5f5!important;
   border-left:4px solid #ffb51b!important;
