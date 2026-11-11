@@ -1,0 +1,53 @@
+name: ExploreUP browser smoke tests
+
+on:
+  pull_request:
+    paths:
+      - "*.html"
+      - "js/**"
+      - "css/**"
+      - "districts/**"
+      - "tests/**"
+      - "v21-*.js"
+      - ".github/workflows/browser-smoke.yml"
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Site URL to test (defaults to production)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exploreup-browser-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pinned Playwright test runner
+        run: |
+          npm init -y
+          npm install --no-save playwright@1.56.1
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Exercise core ExploreUP user flows
+        env:
+          BASE_URL: ${{ inputs.base_url || 'https://exploreup-five.vercel.app' }}
+        run: node tests/browser-smoke.test.cjs
