@@ -129,13 +129,6 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
-              const searchPage = pageResults[pages.indexOf("/search.html")]?.body || "";
-              const searchScript = assetResults[5]?.body || "";
-              if (!searchPage.includes("v21-step2-powerful-search.js") ||
-                  !searchScript.includes("function loadDistricts") ||
-                  !searchScript.includes("buildCandidates")) {
-                missingSearchReveal.push("Powerful Search page must load its district search engine");
-              }
               const ayodhya = pageResults[2].body;
               const missingSeo = [];
               const indexable = [
@@ -208,6 +201,13 @@ jobs:
               }
 
               const missingSearchReveal = [];
+              const searchPage = pageResults[pages.indexOf("/search.html")]?.body || "";
+              const searchScript = assetResults[5]?.body || "";
+              if (!searchPage.includes("v21-step2-powerful-search.js") ||
+                  !searchScript.includes("function loadDistricts") ||
+                  !searchScript.includes("buildCandidates")) {
+                missingSearchReveal.push("Powerful Search page must load its district search engine");
+              }
               if (!homepage.includes("typeof renderCities==='function'") ||
                   !homepage.includes("grid.hidden=false") ||
                   !homepage.includes("q||active!=='all'")) {
