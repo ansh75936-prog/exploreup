@@ -55,9 +55,6 @@ async function startStaticServer() {
   });
   return server;
 }
-const pageErrors = [];
-const failedRequests = [];
-
 async function openPage(browser, path = "/") {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
