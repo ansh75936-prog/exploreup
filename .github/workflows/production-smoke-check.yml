@@ -26,6 +26,7 @@ jobs:
           const fs = require("node:fs");
           const path = require("node:path");
           const html = fs.readFileSync("index.html", "utf8");
+          const homepageRuntime = fs.readFileSync("js/homepage-runtime.js", "utf8");
           const scriptPaths = html.split("\n")
             .filter(line => line.includes('<script src="./districts/') && line.includes('/data.js"></script>'))
             .map(line => line.match(/src="([^"]+)"/)?.[1].replace("./", ""))
@@ -67,9 +68,9 @@ jobs:
             const image = source.match(/["']?img["']?\s*:\s*"([^"]*)"/);
             return !image || !image[1].trim();
           });
-          const rendererStart = html.indexOf("function renderCities(){");
-          const rendererEnd = html.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
-          const renderer = html.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
+          const rendererStart = homepageRuntime.indexOf("function renderCities(){");
+          const rendererEnd = homepageRuntime.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
+          const renderer = homepageRuntime.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
           if (!renderer.includes("const imageMarkup=photo ?") ||
               !renderer.includes("${imageMarkup}") ||
               !renderer.includes("display:${fallbackDisplay}")) {
@@ -99,7 +100,8 @@ jobs:
             "/js/feature-motion.js",
             "/css/heritage-secondary-pages.css?v=20261111-1",
             "/js/home-showcase.js",
-            "/v21-step2-powerful-search.js?v=20261111-1"
+            "/v21-step2-powerful-search.js?v=20261111-1",
+            "/js/homepage-runtime.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -129,6 +131,8 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
+              const homepageRuntime = assetResults[6]?.body || "";
+              const runtime = homepageRuntime;
               const ayodhya = pageResults[2].body;
               const missingSeo = [];
               const indexable = [
@@ -179,7 +183,7 @@ jobs:
                 const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
                 if (!card || Number(card[1]) !== count) missingDiscovery.push(region + " dashboard count must match " + count + " districts");
               }
-              const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
+              const regionMatch = runtime.match(/const regionLists=\{([\s\S]*?)\n \};/);
               const regionBlock = regionMatch?.[1] || "";
               const regionNames = [...regionBlock.matchAll(/^\s*[a-z]+:\[([^\]]*)\]/gm)]
                 .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]));
@@ -208,9 +212,9 @@ jobs:
                   !searchScript.includes("buildCandidates")) {
                 missingSearchReveal.push("Powerful Search page must load its district search engine");
               }
-              if (!homepage.includes("typeof renderCities==='function'") ||
-                  !homepage.includes("grid.hidden=false") ||
-                  !homepage.includes("q||active!=='all'")) {
+              if (!runtime.includes("typeof renderCities==='function'") ||
+                  !runtime.includes("grid.hidden=false") ||
+                  !runtime.includes("q||active!=='all'")) {
                 missingSearchReveal.push("Search and region filters must reveal matching district cards");
               }
 
