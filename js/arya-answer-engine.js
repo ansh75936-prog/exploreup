@@ -32,7 +32,8 @@ Use the main search to find destinations, open a city/district for its full guid
    return `${L.welcome} ${L.ask}\n\nI can help with Uttar Pradesh travel, destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans and ExploreUP features.`;
  };
  if(c){
-   const k=aryaKnowledge[c.name]||{};
+   const knowledgeKey=c.name==="Kanpur Nagar"?"Kanpur":c.name;
+   const k=aryaKnowledge[knowledgeKey]||{};
    const hasSpecificDetail=value=>{
      if(typeof value!=='string'||!value.trim())return false;
      return !/^(?:local landmarks, attractions, markets & nearby places|local cuisine, regional specialities & popular eateries|local markets, handicrafts & district shopping)$/i.test(value.trim());
