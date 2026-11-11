@@ -64,11 +64,11 @@ jobs:
 
           const missingDistrictImages = actualFiles.filter(file => {
             const source = fs.readFileSync(file, "utf8");
-            const image = source.match(/["']?img["']?\\s*:\\s*"([^"]*)"/);
+            const image = source.match(/["']?img["']?\s*:\s*"([^"]*)"/);
             return !image || !image[1].trim();
           });
           const rendererStart = html.indexOf("function renderCities(){");
-          const rendererEnd = html.indexOf("\\nfunction ", rendererStart + 1);
+          const rendererEnd = html.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
           const renderer = html.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
           if (!renderer.includes("const imageMarkup=photo ?") ||
               !renderer.includes("${imageMarkup}") ||
