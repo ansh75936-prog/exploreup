@@ -13,7 +13,6 @@ const context = vm.createContext({
   clearTimeout,
   fetch: async () => { throw new Error("Network disabled in regression tests"); },
   document: { getElementById: () => null },
-  window: {},
   exploreSupabase: null,
   window: { ExploreUPDistricts: [] },
   cities: [],
@@ -99,7 +98,7 @@ async function main() {
     for (const query of queries) {
       const answer = await evaluate(`aryaAnswer(${JSON.stringify(query)}, "en")`);
       assert.equal(typeof answer, "string", `Expected a text answer for ${query}`);
-      assert.doesNotMatch(answer, /\\bundefined\\b/, `Unexpected undefined in answer for ${query}`);
+      assert.doesNotMatch(answer, /\bundefined\b/, `Unexpected undefined in answer for ${query}`);
       assert.doesNotMatch(answer, /Local landmarks, attractions, markets & nearby places|Local cuisine, regional specialities & popular eateries|Local markets, handicrafts & district shopping/i,
         `Generic placeholder leaked into answer for ${query}`);
     }
