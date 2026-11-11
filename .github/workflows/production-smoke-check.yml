@@ -74,20 +74,33 @@ jobs:
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
 
+              const missingDiscovery = [];
+              const regionMatch = homepage.match(/const regionLists=\\{([\\s\\S]*?)\\n \\};/);
+              const regionBlock = regionMatch?.[1] || "";
+              const regionNames = [...regionBlock.matchAll(/^\\s*[a-z]+:\\[([^\\]]*)\\]/gm)]
+                .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]));
+              const expectedRegions = ["awadh", "braj", "rohilkhand", "western", "bundelkhand", "purvanchal"];
+              if (!regionMatch || regionNames.length !== 75 || new Set(regionNames).size !== 75 ||
+                  expectedRegions.some(region => !homepage.includes('data-region="' + region + '"'))) {
+                missingDiscovery.push("Expected six region filters with 75 unique district mappings");
+              }
+
               if (!badPages.length && !badAssets.length &&
-                  !missingStyles.length && !missingHomeAssets.length && !missingSeo.length) {
+                  !missingStyles.length && !missingHomeAssets.length && !missingSeo.length &&
+                  !missingDiscovery.length) {
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
                 console.log("PASS: all 4 shared assets return HTTP 200.");
                 console.log("PASS: Ayodhya WebPage and BreadcrumbList JSON-LD are live.");
+                console.log("PASS: six region filters map 75 unique districts.");
                 process.exit(0);
               }
 
               lastError = JSON.stringify({
                 badPages, badAssets,
                 missingStyles: missingStyles.map(x => x.path),
-                missingHomeAssets, missingSeo
+                missingHomeAssets, missingSeo, missingDiscovery
               });
             } catch (error) {
               lastError = error.message;
