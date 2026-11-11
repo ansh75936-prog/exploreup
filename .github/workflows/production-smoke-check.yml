@@ -136,6 +136,10 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[6]?.body || "";
+          const contentAssetPath = "/js/district-content.js?v=20261111-1";
+          const usesExternalDistrictContent = homepage.includes("district-content.js");
+          const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
+          const contentSource = usesExternalDistrictContent ? contentAsset.body : homepageRuntime;
           const dataAssetPath = "/js/homepage-data.js?v=20261111-1";
           const usesExternalHomepageData = homepage.includes("homepage-data.js");
           const homepageDataAsset = usesExternalHomepageData ? await request(dataAssetPath) : { status: 200, body: "" };
@@ -183,6 +187,13 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalDistrictContent && contentAsset.status !== 200) missingHomeAssets.push("district-content.js must return HTTP 200");
+              if (!contentSource.includes("function renderFood(") ||
+                  !contentSource.includes("function escapeHtml(") ||
+                  !contentSource.includes("function renderContacts(") ||
+                  !contentSource.includes("function renderMalls(")) {
+                missingHomeAssets.push("District food, contact and shopping renderers must load before use");
+              }
               if (usesExternalHomepageData && homepageDataAsset.status !== 200) missingHomeAssets.push("homepage-data.js must return HTTP 200");
               if (!homepageDataSource.includes("const cities=window.ExploreUPDistricts||[]") ||
                   !homepageDataSource.includes("const mallData=") ||
