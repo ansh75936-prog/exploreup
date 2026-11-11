@@ -77,7 +77,7 @@ async function main() {
     }
 
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
     const agraCard = page.locator("#cityGrid .city").filter({ has: page.locator(".citytext h3", { hasText: /^Agra$/ }) });
     await agraCard.click();
     await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
