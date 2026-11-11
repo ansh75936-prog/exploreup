@@ -1206,16 +1206,7 @@ try{trackVisit()}catch(e){console.warn('ExploreUP analytics startup skipped:',e)
 <div class="arya-body" id="aryaBody"><div class="arya-msg bot">Namaste! I’m Arya. I only answer questions about ExploreUP. Ask about destinations, places, food, hotels, hospitals, shopping, transport, history, culture, trip plans, reviews or website features.</div><div class="arya-suggest"><button onclick="aryaQuick('Lucknow ke baare mein batao')">Lucknow</button><button onclick="aryaQuick('Varanasi ka food batao')">Varanasi food</button><button onclick="aryaQuick('2 day trip plan Agra')">2-day Agra</button><button onclick="openPlanMaker()">🧭 Plan Maker</button><button onclick="aryaQuick('hotels in Ayodhya')">Ayodhya hotels</button></div></div>
 <div class="arya-input"><input autocomplete="off" id="aryaInput" placeholder="Ask Arya about ExploreUP..."/><button onclick="askArya()">Ask</button></div>
 </div>
-<script>
-// ExploreUP V19 consolidated service renderer
-(function(){
- function ensureServiceCards(){try{const modal=document.getElementById('modal'),h=document.getElementById('hotelContacts'),p=document.getElementById('hospitalContacts');if(!modal||modal.style.display!=='block'||typeof renderContacts!=='function'||!currentExploreCity)return;if(h&&!h.innerHTML.trim()||p&&!p.innerHTML.trim())renderContacts(currentExploreCity);[h,p].forEach(g=>g&&g.querySelectorAll('.contact-card').forEach(c=>{c.style.display='block';c.style.visibility='visible';c.style.opacity='1'}))}catch(e){console.warn('ExploreUP service renderer:',e)}}
- document.addEventListener('DOMContentLoaded',()=>{const modal=document.getElementById('modal');if(modal&&window.MutationObserver)new MutationObserver(ensureServiceCards).observe(modal,{attributes:true,attributeFilter:['style','aria-hidden'],subtree:true,childList:true});setTimeout(ensureServiceCards,300)},{once:true});
- window.addEventListener('load',ensureServiceCards);
-})();
-window.addEventListener('online',()=>{const s=document.getElementById('planStatus');if(s&&document.getElementById('planMakerModal')?.classList.contains('show'))s.textContent='🌐 Internet connected. Smart Plan is available.'});
-window.addEventListener('offline',()=>{const s=document.getElementById('planStatus');if(s&&document.getElementById('planMakerModal')?.classList.contains('show'))s.textContent='📴 You are offline. Use Quick Plan, or reconnect for Smart Plan.'});
-</script>
+<script src="./js/service-renderer.js?v=20261111-1"></script>
 <script>
 /* ExploreUP stability batch v1: feedback/suggestion storage + form safety. */
 (function(){
