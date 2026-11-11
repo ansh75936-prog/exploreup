@@ -95,6 +95,7 @@ jobs:
             "/nearby.html", "/search.html", "/varanasi.html"
           ];
           const assets = [
+            "/css/homepage-base.css?v=20261111-1",
             "/css/exploreup-design-system.css",
             "/css/heritage-motion.css",
             "/js/feature-motion.js",
@@ -195,6 +196,7 @@ jobs:
                 missingSeo.push("Ayodhya JSON-LD / canonical URL");
               }
               const missingHomeAssets = [
+                "homepage-base.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
                 "feature-motion.js"
