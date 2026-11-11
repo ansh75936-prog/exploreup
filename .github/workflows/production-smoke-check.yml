@@ -110,9 +110,18 @@ jobs:
                 missingMobileLayout.push("Mobile district cards must use a single-column row layout");
               }
 
+              const missingMediaStability = [];
+              if (!homepage.includes('href="https://fonts.gstatic.com"') ||
+                  !homepage.includes('href="https://images.unsplash.com"') ||
+                  !homepage.includes('<img width="700" height="460"') ||
+                  !homepage.includes('<img width="1000" height="650"') ||
+                  !homepage.includes('<img width="1000" height="650" class="city-photo"')) {
+                missingMediaStability.push("Image connections and intrinsic dimensions must be declared");
+              }
+
               if (!badPages.length && !badAssets.length &&
                   !missingStyles.length && !missingHomeAssets.length && !missingSeo.length &&
-                  !missingDiscovery.length && !missingAccessibility.length && !missingSearchReveal.length && !missingMobileLayout.length) {
+                  !missingDiscovery.length && !missingAccessibility.length && !missingSearchReveal.length && !missingMobileLayout.length && !missingMediaStability.length) {
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
@@ -122,6 +131,7 @@ jobs:
                 console.log("PASS: map and filters expose accessible states; one primary search remains.");
                 console.log("PASS: search and region filters reveal matching district cards.");
                 console.log("PASS: mobile district cards use a single-column row layout.");
+                console.log("PASS: image preconnects and intrinsic dimensions are present.");
                 process.exit(0);
               }
 
