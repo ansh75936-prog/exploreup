@@ -221,6 +221,9 @@ jobs:
           console.log("Audit report generated.");
           NODE
 
+      - name: Validate local CSS asset references
+        run: node tests/css-asset-references.test.js
+
       - name: Validate restored search script syntax
         run: node --check v21-step2-powerful-search.js
 
