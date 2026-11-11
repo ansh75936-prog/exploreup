@@ -105,7 +105,8 @@ jobs:
             "/v21-step2-powerful-search.js?v=20261111-1",
             "/js/homepage-runtime.js?v=20261111-1",
             "/js/arya-core.js?v=20261111-1",
-            "/js/ui-preferences.js?v=20261111-1"
+            "/js/ui-preferences.js?v=20261111-1",
+            "/js/site-shell.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -148,6 +149,7 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const siteShellSource = assetResults[assets.indexOf("/js/site-shell.js?v=20261111-1")]?.body || "";
           const contentAssetPath = "/js/district-content.js?v=20261111-1";
           const usesExternalDistrictContent = homepage.includes("district-content.js");
           const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
@@ -209,8 +211,16 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js",
                 "arya-core.js",
-                "ui-preferences.js"
+                "ui-preferences.js",
+                "site-shell.js"
               ].filter(name => !homepage.includes(name));
+              if (!siteShellSource.includes("function toggleReportPanel(") ||
+                  !siteShellSource.includes("async function submitInfoReport(") ||
+                  !siteShellSource.includes("async function installExploreUP(") ||
+                  !siteShellSource.includes("function setupOfflineState(") ||
+                  !siteShellSource.includes("function renderGovernmentProfile(")) {
+                missingHomeAssets.push("Site shell report, PWA, offline and government profile functions must be available");
+              }
               if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
               if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
               if (usesExternalMobileNavigation && mobileNavigationAsset.status !== 200) missingHomeAssets.push("mobile-navigation.js must return HTTP 200");
