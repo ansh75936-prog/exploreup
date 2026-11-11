@@ -61,6 +61,13 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
+              const ayodhya = pageResults[2].body;
+              const missingSeo = [];
+              if (!ayodhya.includes('application/ld+json') ||
+                  !ayodhya.includes('"BreadcrumbList"') ||
+                  !ayodhya.includes('https://exploreup-five.vercel.app/ayodhya.html')) {
+                missingSeo.push("Ayodhya JSON-LD / canonical URL");
+              }
               const missingHomeAssets = [
                 "exploreup-design-system.css",
                 "heritage-motion.css",
@@ -68,18 +75,19 @@ jobs:
               ].filter(name => !homepage.includes(name));
 
               if (!badPages.length && !badAssets.length &&
-                  !missingStyles.length && !missingHomeAssets.length) {
+                  !missingStyles.length && !missingHomeAssets.length && !missingSeo.length) {
                 console.log("PASS: all 10 production pages return HTTP 200.");
                 console.log("PASS: homepage design and motion assets are referenced.");
                 console.log("PASS: all secondary pages reference the heritage stylesheet.");
                 console.log("PASS: all 4 shared assets return HTTP 200.");
+                console.log("PASS: Ayodhya WebPage and BreadcrumbList JSON-LD are live.");
                 process.exit(0);
               }
 
               lastError = JSON.stringify({
                 badPages, badAssets,
                 missingStyles: missingStyles.map(x => x.path),
-                missingHomeAssets
+                missingHomeAssets, missingSeo
               });
             } catch (error) {
               lastError = error.message;
