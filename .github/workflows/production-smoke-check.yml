@@ -131,6 +131,10 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
+          const mobileNavigationPath = "/js/mobile-navigation.js?v=20261111-1";
+          const usesExternalMobileNavigation = homepage.includes("mobile-navigation.js");
+          const mobileNavigationAsset = usesExternalMobileNavigation ? await request(mobileNavigationPath) : { status: 200, body: "" };
+          const mobileNavigationSource = usesExternalMobileNavigation ? mobileNavigationAsset.body : homepage;
           const discoveryAssetPath = "/js/district-discovery.js?v=20261111-1";
           const usesExternalDiscovery = homepage.includes("district-discovery.js");
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
@@ -195,6 +199,12 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalMobileNavigation && mobileNavigationAsset.status !== 200) missingHomeAssets.push("mobile-navigation.js must return HTTP 200");
+              if (!mobileNavigationSource.includes("initMobileMenu") ||
+                  !mobileNavigationSource.includes("closeMenu") ||
+                  !mobileNavigationSource.includes("keydown")) {
+                missingHomeAssets.push("Mobile navigation must expose its drawer, close and keyboard handlers");
+              }
               if (usesExternalCommunity && communityAsset.status !== 200) missingHomeAssets.push("community-admin.js must return HTTP 200");
               if (!communitySource.includes("function renderSuggestions(") ||
                   !communitySource.includes("async function submitSuggestion(") ||
