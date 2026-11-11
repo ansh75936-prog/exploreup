@@ -2484,6 +2484,16 @@ window.addEventListener('offline',()=>{const s=document.getElementById('planStat
  function filter(){
    const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
    const active=document.querySelector('.region-btn.active')?.dataset.region||'all';
+   const grid=document.getElementById('cityGrid');
+   if(grid&&!grid.children.length&&typeof renderCities==='function')renderCities();
+   if(grid&&(q||active!=='all')&&grid.hidden){
+     grid.hidden=false;
+     [document.getElementById('euViewAll'),document.getElementById('euViewAllFeatured')].filter(Boolean).forEach(btn=>{
+       btn.setAttribute('aria-expanded','true');
+       btn.setAttribute('aria-controls','cityGrid');
+       btn.textContent='Hide Districts ↑';
+     });
+   }
    const cards=[...document.querySelectorAll('#cityGrid .city')];let shown=0;
    cards.forEach(card=>{const name=card.querySelector('.citytext h3')?.textContent?.trim()||'';const ok=(!q||name.toLowerCase().includes(q))&&(active==='all'||regionOf(name)===active);card.classList.toggle('is-hidden',!ok);if(ok)shown++});
    const status=document.getElementById('districtFilterStatus');if(status)status.textContent=shown===0?'No districts match. Clear the search or choose All to see districts.':(shown===75&&!q&&active==='all')?'Showing all 75 districts':'Showing '+shown+' of 75 districts'+(active!=='all'?' · '+active.charAt(0).toUpperCase()+active.slice(1):'')+(q?' · matching “'+q+'”':'');
