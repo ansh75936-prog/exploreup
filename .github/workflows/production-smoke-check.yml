@@ -26,7 +26,7 @@ jobs:
           const fs = require("node:fs");
           const path = require("node:path");
           const html = fs.readFileSync("index.html", "utf8");
-          const homepageRuntime = fs.readFileSync("js/homepage-runtime.js", "utf8");
+          const districtRuntime = fs.readFileSync("js/district-runtime.js", "utf8");
           const scriptPaths = html.split("\n")
             .filter(line => line.includes('<script src="./districts/') && line.includes('/data.js"></script>'))
             .map(line => line.match(/src="([^"]+)"/)?.[1].replace("./", ""))
@@ -68,9 +68,9 @@ jobs:
             const image = source.match(/["']?img["']?\s*:\s*"([^"]*)"/);
             return !image || !image[1].trim();
           });
-          const rendererStart = homepageRuntime.indexOf("function renderCities(){");
-          const rendererEnd = homepageRuntime.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
-          const renderer = homepageRuntime.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
+          const rendererStart = districtRuntime.indexOf("function renderCities(){");
+          const rendererEnd = districtRuntime.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
+          const renderer = districtRuntime.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
           if (!renderer.includes("const imageMarkup=photo ?") ||
               !renderer.includes("${imageMarkup}") ||
               !renderer.includes("display:${fallbackDisplay}")) {
