@@ -75,9 +75,9 @@ jobs:
               ].filter(name => !homepage.includes(name));
 
               const missingDiscovery = [];
-              const regionMatch = homepage.match(/const regionLists=\\{([\\s\\S]*?)\\n \\};/);
+              const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
               const regionBlock = regionMatch?.[1] || "";
-              const regionNames = [...regionBlock.matchAll(/^\\s*[a-z]+:\\[([^\\]]*)\\]/gm)]
+              const regionNames = [...regionBlock.matchAll(/^\s*[a-z]+:\[([^\]]*)\]/gm)]
                 .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]));
               const expectedRegions = ["awadh", "braj", "rohilkhand", "western", "bundelkhand", "purvanchal"];
               if (!regionMatch || regionNames.length !== 75 || new Set(regionNames).size !== 75 ||
