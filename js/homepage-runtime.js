@@ -42,7 +42,7 @@ const exploreModal=document.getElementById('modal');if(exploreModal)exploreModal
 try{renderCities()}catch(e){console.warn('ExploreUP city render failed:',e)}
 const b=document.getElementById('destinationCountBadge'); if(b)b.textContent=(window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?'75 districts':`${cities.length} destinations`;
 const districtCatalogReady=Promise.resolve();
-handleCityUrl();
+// City deep links are initialized by site-shell after community-admin is available.
 
 window.addEventListener('error',e=>{console.warn('ExploreUP runtime warning:',e.error||e.message);});
 window.addEventListener('unhandledrejection',e=>{console.warn('ExploreUP async warning:',e.reason);e.preventDefault();});
