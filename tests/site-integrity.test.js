@@ -106,6 +106,57 @@ assert.deepEqual(duplicateIds, [], "Active HTML pages contain duplicate element 
 assert.deepEqual(duplicateScripts, [], "An active page loads the same JavaScript file more than once.");
 assert.deepEqual(duplicateStylesheets, [], "An active page loads the same stylesheet more than once.");
 
+const referencedScripts = new Set();
+const referencedStylesheets = new Set();
+for (const page of htmlFiles) {
+  const source = fs.readFileSync(page, "utf8");
+  for (const match of source.matchAll(/<script\\b[^>]*\\bsrc\\s*=\\s*["']([^"']+)["'][^>]*>/gi)) {
+    const resolved = resolveLocalReference(page, match[1]);
+    if (resolved) referencedScripts.add(resolved);
+  }
+  for (const match of source.matchAll(/<link\\b(?=[^>]*\\brel\\s*=\\s*["'][^"']*stylesheet[^"']*["'])(?=[^>]*\\bhref\\s*=\\s*["']([^"']+)["'])[^>]*>/gi)) {
+    const resolved = resolveLocalReference(page, match[1]);
+    if (resolved) referencedStylesheets.add(resolved);
+  }
+}
+
+for (const owner of allFiles.filter(file => /\\.js$/i.test(file))) {
+  const source = fs.readFileSync(owner, "utf8");
+  for (const match of source.matchAll(/(?:\\.src|\\bsrc)\\s*=\\s*["']([^"']+\\.js(?:[?#][^"']*)?)["']/gi)) {
+    const resolved = resolveLocalReference(owner, match[1]);
+    if (resolved) referencedScripts.add(resolved);
+  }
+  for (const match of source.matchAll(/serviceWorker\\.register\\(\\s*["']([^"']+\\.js(?:[?#][^"']*)?)["']/gi)) {
+    const resolved = resolveLocalReference(owner, match[1]);
+    if (resolved) referencedScripts.add(resolved);
+  }
+}
+
+for (const owner of allFiles.filter(file => /\\.css$/i.test(file))) {
+  const source = fs.readFileSync(owner, "utf8");
+  for (const match of source.matchAll(/@import\\s+(?:url\\(\\s*)?["']([^"']+\\.css(?:[?#][^"']*)?)["']/gi)) {
+    const resolved = resolveLocalReference(owner, match[1]);
+    if (resolved) referencedStylesheets.add(resolved);
+  }
+}
+
+const unreferencedScripts = allFiles
+  .filter(file => /\\.js$/i.test(file))
+  .map(file => path.relative(root, file).split(path.sep).join("/"))
+  .filter(file => !file.startsWith("api/") && !file.startsWith("tests/") &&
+    !file.startsWith("districts/") && !file.startsWith("vendor/") &&
+    file !== "sw.js" && !referencedScripts.has(file))
+  .sort();
+
+const unreferencedStylesheets = allFiles
+  .filter(file => /\\.css$/i.test(file))
+  .map(file => path.relative(root, file).split(path.sep).join("/"))
+  .filter(file => !referencedStylesheets.has(file))
+  .sort();
+
+assert.deepEqual(unreferencedScripts, [], "First-party runtime JavaScript files must be referenced by a page or a dynamic loader.");
+assert.deepEqual(unreferencedStylesheets, [], "First-party CSS files must be referenced by an active page or stylesheet import.");
+
 console.log(
   `PASS: checked ${htmlFiles.length} active HTML pages, ${scriptReferences} script tags, ${stylesheetReferences} stylesheet links and ${localReferences} local href/src references.`
 );
