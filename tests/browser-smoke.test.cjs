@@ -110,6 +110,11 @@ async function main() {
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75, null, { timeout: 20000 });
     assert.equal(await page.locator("#cityGrid .city").count(), 75, "View All must render all 75 districts");
     assert.equal(await reveal.getAttribute("aria-expanded"), "true", "View All must expose its expanded state");
+    await reveal.click();
+    await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
+    assert.equal(await reveal.getAttribute("aria-expanded"), "false", "View All must hide the district grid on the second click");
+    await reveal.click();
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75);
 
     const districtSearch = page.locator("#searchInput");
     await districtSearch.fill("Agra");
