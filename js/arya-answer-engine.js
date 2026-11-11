@@ -90,7 +90,7 @@ ${k.places}
 Food: ${districtDetails.food}
 
 Tip: ${districtDetails.tips}`;
-   else if(/tip|tips|advice|kab|when|best time/.test(x)) base=`${c.name} — Travel Tip:
+   else if(/\\b(?:tip|tips|advice|kab|when)\\b|best time/.test(x)) base=`${c.name} — Travel Tip:
 ${k.tips}
 
 ExploreUP lists: ${c.time}.`;
