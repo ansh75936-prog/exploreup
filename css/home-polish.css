@@ -178,7 +178,7 @@ body{background:#f3f7fc;color:var(--eu-ink)}
 .eu-why-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:13px;background:#eaf3ff;color:#0758a8;font-size:19px}
 .eu-why-item strong{display:block;font-size:13px;color:#17436f}
 .eu-why-item small{display:block;font-size:11px;color:#6d7e92;margin-top:3px}
-.eu-trip-promo{margin-top:18px;min-height:112px;border-radius:16px;padding:16px;color:#fff;background:linear-gradient(105deg,#08264bdf,#08264b40),url('./images/ayodhya-ram-mandir-card.jpg') center 42%/cover;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.eu-trip-promo{margin-top:18px;min-height:112px;border-radius:16px;padding:16px;color:#fff;background:linear-gradient(105deg,#08264bdf,#08264b40),url('../images/ayodhya-ram-mandir-card.jpg') center 42%/cover;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
 .eu-trip-promo strong{font-size:18px}
 .eu-trip-promo small{font-size:12px;margin:4px 0 10px}
 .eu-trip-promo button{border:0;border-radius:30px;background:var(--eu-gold);color:#102b4d;font-weight:800;padding:9px 14px}
