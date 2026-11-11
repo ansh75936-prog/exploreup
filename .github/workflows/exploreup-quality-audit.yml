@@ -1,0 +1,234 @@
+name: ExploreUP full quality audit
+
+on:
+  pull_request:
+    paths:
+      - "districts/**/data.js"
+      - "*.html"
+      - "*.js"
+      - "css/**"
+      - "js/**"
+      - ".github/workflows/exploreup-quality-audit.yml"
+  push:
+    branches: [main]
+    paths:
+      - "districts/**/data.js"
+      - "*.html"
+      - "css/**"
+      - "js/**"
+      - ".github/workflows/exploreup-quality-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exploreup-quality-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Audit district images, internal references and page metadata
+        run: |
+          node <<'NODE'
+          import fs from "node:fs";
+          import path from "node:path";
+          const root = process.cwd();
+
+          function walk(dir) {
+            return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) {
+                if ([".git", "node_modules", ".vercel"].includes(entry.name)) return [];
+                return walk(full);
+              }
+              return [full];
+            });
+          }
+
+          const allFiles = walk(root);
+          const relativeFiles = new Set(allFiles.map(file => path.relative(root, file).split(path.sep).join("/")));
+          const htmlFiles = allFiles.filter(file => file.endsWith(".html"));
+          const districtFiles = allFiles.filter(file =>
+            /(^|[\\/])districts[\\/][^\\/]+[\\/]data\.js$/.test(file) &&
+            !file.includes(path.sep + "_template" + path.sep)
+          );
+
+          const images = [];
+          const dataErrors = [];
+          for (const file of districtFiles) {
+            const source = fs.readFileSync(file, "utf8");
+            const img = source.match(/["']?img["']?\s*:\s*["']([^"']*)["']/);
+            const name = source.match(/["']?name["']?\s*:\s*["']([^"']*)["']/);
+            if (!img || !img[1].trim() || !name || !name[1].trim()) {
+              dataErrors.push({ file: path.relative(root, file), issue: "missing district name or image URL" });
+              continue;
+            }
+            images.push({
+              district: name[1],
+              file: path.relative(root, file),
+              url: img[1].trim()
+            });
+          }
+
+          const urlGroups = new Map();
+          for (const item of images) {
+            urlGroups.set(item.url, [...(urlGroups.get(item.url) || []), item.district]);
+          }
+          const duplicates = [...urlGroups.entries()]
+            .filter(([, districts]) => districts.length > 1)
+            .map(([url, districts]) => ({ url, districts }));
+
+          const localImageErrors = [];
+          const remoteImages = [];
+          for (const item of images) {
+            if (/^https?:\/\//i.test(item.url)) {
+              remoteImages.push(item);
+            } else {
+              const localPath = decodeURIComponent(item.url.split(/[?#]/)[0]).replace(/^\.\//, "").replace(/^\//, "");
+              if (!relativeFiles.has(localPath)) {
+                localImageErrors.push({ district: item.district, url: item.url, issue: "local image file not found" });
+              }
+            }
+          }
+
+          async function mapLimit(items, limit, worker) {
+            const results = new Array(items.length);
+            let next = 0;
+            async function run() {
+              while (true) {
+                const index = next++;
+                if (index >= items.length) return;
+                results[index] = await worker(items[index]);
+              }
+            }
+            await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
+            return results;
+          }
+
+          const remoteResults = await mapLimit(remoteImages, 4, async item => {
+            const started = Date.now();
+            try {
+              const response = await fetch(item.url, {
+                method: "GET",
+                redirect: "follow",
+                signal: AbortSignal.timeout(12000),
+                headers: { "user-agent": "ExploreUP-Image-Audit/1.0" }
+              });
+              const result = {
+                district: item.district,
+                url: item.url,
+                finalUrl: response.url,
+                status: response.status,
+                contentType: response.headers.get("content-type") || "",
+                contentLength: response.headers.get("content-length") || "",
+                durationMs: Date.now() - started
+              };
+              await response.body?.cancel();
+              if (!response.ok || !result.contentType.toLowerCase().startsWith("image/")) {
+                result.issue = !response.ok ? "non-2xx response" : "response is not an image content type";
+              }
+              return result;
+            } catch (error) {
+              return {
+                district: item.district,
+                url: item.url,
+                durationMs: Date.now() - started,
+                issue: error.name === "TimeoutError" ? "request timeout" : String(error.message || error)
+              };
+            }
+          });
+
+          const internalRefs = [];
+          const metadataIssues = [];
+          for (const file of htmlFiles) {
+            const source = fs.readFileSync(file, "utf8");
+            const title = source.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim();
+            const description = source.match(/<meta\b(?=[^>]*\bname=["']description["'])(?=[^>]*\bcontent=["'][^"']+["'])[^>]*>/i);
+            if (!title || !description) metadataIssues.push({
+              page: path.relative(root, file),
+              missing: [!title ? "title" : null, !description ? "meta description" : null].filter(Boolean)
+            });
+
+            const refs = [...source.matchAll(/\b(?:src|href)=["']([^"']+)["']/gi)].map(match => match[1]);
+            for (const ref of refs) {
+              if (!ref || /^(?:#|https?:|mailto:|tel:|javascript:|data:|blob:|\/\/)/i.test(ref) ||
+                  ref.includes("\${") || ref.includes("{{")) continue;
+              let clean;
+              try { clean = decodeURIComponent(ref.split(/[?#]/)[0]); }
+              catch { clean = ref.split(/[?#]/)[0]; }
+              if (!clean) continue;
+              const pageDir = path.posix.dirname(path.relative(root, file).split(path.sep).join("/"));
+              const target = clean.startsWith("/")
+                ? clean.replace(/^\//, "")
+                : path.posix.normalize(path.posix.join(pageDir === "." ? "" : pageDir, clean));
+              if (!relativeFiles.has(target) && !relativeFiles.has(path.posix.join(target, "index.html"))) {
+                internalRefs.push({ page: path.relative(root, file), ref, resolved: target });
+              }
+            }
+          }
+
+          const failedRemote = remoteResults.filter(item => item.issue);
+          const report = {
+            generatedAt: new Date().toISOString(),
+            districtFiles: districtFiles.length,
+            districtImages: images.length,
+            remoteImageCount: remoteImages.length,
+            localImageCount: images.length - remoteImages.length,
+            duplicateImageUrls: duplicates,
+            districtDataErrors: dataErrors,
+            localImageErrors,
+            remoteImageResults: remoteResults,
+            internalReferenceIssues: internalRefs,
+            metadataIssues
+          };
+          fs.writeFileSync("district-image-audit.json", JSON.stringify(report, null, 2));
+
+          const summary = [
+            "# ExploreUP quality audit",
+            "",
+            "- District records: **" + districtFiles.length + "**",
+            "- District image URLs: **" + images.length + "** (" + remoteImages.length + " remote, " + (images.length - remoteImages.length) + " local)",
+            "- Duplicate image URLs: **" + duplicates.length + "**",
+            "- Remote image checks with warnings: **" + failedRemote.length + "/" + remoteResults.length + "**",
+            "- Missing local images: **" + localImageErrors.length + "**",
+            "- District data errors: **" + dataErrors.length + "**",
+            "- Internal reference warnings: **" + internalRefs.length + "**",
+            "- Page metadata warnings: **" + metadataIssues.length + "**",
+            "",
+            "## Remote image warnings",
+            ...(failedRemote.length ? failedRemote.slice(0, 30).map(item =>
+              "- " + item.district + ": " + item.issue + " (" + (item.status || "no HTTP status") + ") — " + item.url
+            ) : ["- None"]),
+            "",
+            "## Internal reference warnings",
+            ...(internalRefs.length ? internalRefs.slice(0, 30).map(item =>
+              "- " + item.page + ": " + item.ref + " → " + item.resolved
+            ) : ["- None"]),
+            "",
+            "Full per-image results are attached as the district-image-audit artifact.",
+            "",
+            "> External image warnings are report-only because third-party hosts may rate-limit automated checks."
+          ].join("\n");
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + "\n");
+          console.log(summary);
+          console.log("Audit report generated.");
+          NODE
+
+      - name: Validate restored search script syntax
+        run: node --check v21-step2-powerful-search.js
+
+      - name: Upload complete audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: district-image-audit
+          path: district-image-audit.json
+          if-no-files-found: ignore
+          retention-days: 14
