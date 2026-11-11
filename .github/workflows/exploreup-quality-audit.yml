@@ -57,7 +57,7 @@ jobs:
           const allFiles = walk(root);
           const relativeFiles = new Set(allFiles.map(file => path.relative(root, file).split(path.sep).join("/")));
           const redirectedHtml = new Set((JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8")).redirects || [])
-            .map(item => String(item.source || "").replace(/^\\//, "").replace(/\\/$/, ""));
+            .map(item => String(item.source || "").replace(/^\//, "").replace(/\/$/, ""));
           const htmlFiles = allFiles.filter(file => file.endsWith(".html") &&
             !redirectedHtml.has(path.relative(root, file).split(path.sep).join("/")));
           const districtFiles = allFiles.filter(file =>
