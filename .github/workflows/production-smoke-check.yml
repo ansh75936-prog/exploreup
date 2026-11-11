@@ -27,16 +27,22 @@ jobs:
           const path = require("node:path");
           const html = fs.readFileSync("index.html", "utf8");
           const districtRuntime = fs.readFileSync("js/district-runtime.js", "utf8");
-          const scriptPaths = html.split("\n")
-            .filter(line => line.includes('<script src="./districts/') && line.includes('/data.js"></script>'))
-            .map(line => line.match(/src="([^"]+)"/)?.[1].replace("./", ""))
-            .filter(Boolean);
+          const scriptPaths = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)]
+            .map(match => match[1].match(/\\bsrc=["']\\.\\/districts\\/([^"']+)["']/i)?.[1])
+            .filter(Boolean)
+            .map(relativePath => path.posix.join("districts", relativePath));
           const actualFiles = fs.readdirSync("districts", { withFileTypes: true })
             .filter(entry => entry.isDirectory() && entry.name !== "_template")
             .map(entry => path.posix.join("districts", entry.name, "data.js"))
             .sort();
           const listedFiles = [...scriptPaths].sort();
 
+          const bootstrapTag = '<script src="./js/supabase-bootstrap.js?v=20261111-1"></script>';
+          const firstDistrictTag = '<script src="./districts/lucknow/data.js"></script>';
+          if (!html.includes(bootstrapTag) || !html.includes(firstDistrictTag) ||
+              html.indexOf(bootstrapTag) > html.indexOf(firstDistrictTag)) {
+            throw new Error("Supabase bootstrap must close before the first district data script begins.");
+          }
           if (scriptPaths.length !== 75 || new Set(scriptPaths).size !== 75) {
             throw new Error(`Expected 75 unique district data script tags; found ${scriptPaths.length}.`);
           }
@@ -115,7 +121,9 @@ jobs:
             "/js/homepage-stability.js?v=20261111-1",
             "/js/share-accessibility.js?v=20261111-1",
             "/js/pwa-runtime.js?v=20261111-1",
-            "/js/district-runtime.js?v=20261111-1"
+            "/js/district-runtime.js?v=20261111-1",
+            "/js/supabase-bootstrap.js?v=20261111-1",
+            "/js/arya-open-state-fix.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -158,6 +166,9 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
+              const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
+              const supabaseBootstrapSource = assetResults[assets.indexOf("/js/supabase-bootstrap.js?v=20261111-1")]?.body || "";
+              const aryaOpenStateSource = assetResults[assets.indexOf("/js/arya-open-state-fix.js?v=20261111-1")]?.body || "";
               const homepageCardNavigationSource = assetResults[assets.indexOf("/css/homepage-card-navigation.css?v=20261111-1")]?.body || "";
               const homepageMotionPreferencesSource = assetResults[assets.indexOf("/css/homepage-motion-preferences.css?v=20261111-1")]?.body || "";
               const aryaDistrictMediaSource = assetResults[assets.indexOf("/css/arya-and-district-media.css?v=20261111-1")]?.body || "";
@@ -239,7 +250,9 @@ jobs:
                 "homepage-stability.js",
                 "share-accessibility.js",
                 "pwa-runtime.js",
-                "district-runtime.js"
+                "district-runtime.js",
+                "supabase-bootstrap.js",
+                "arya-open-state-fix.js"
               ].filter(name => !homepage.includes(name));
               if (!siteShellSource.includes("function toggleReportPanel(") ||
                   !siteShellSource.includes("async function submitInfoReport(") ||
@@ -254,6 +267,17 @@ jobs:
                   !districtRuntimeSource.includes("function toggleAllDistricts(") ||
                   !districtRuntimeSource.includes("async function openCity(")) {
                 missingHomeAssets.push("District catalog, search, rendering and modal functions must be available");
+              }
+              if (!supabaseBootstrapSource.includes("const SUPABASE_URL=") ||
+                  !supabaseBootstrapSource.includes("function loadSupabaseBackend(") ||
+                  !supabaseBootstrapSource.includes("const exploreStorage=")) {
+                missingHomeAssets.push("Supabase bootstrap and shared storage helpers must be available");
+              }
+              if (!aryaOpenStateSource.includes("const getPanel") ||
+                  !aryaOpenStateSource.includes("const close") ||
+                  !aryaOpenStateSource.includes("const open") ||
+                  !aryaOpenStateSource.includes("DOMContentLoaded")) {
+                missingHomeAssets.push("Arya open/close state controller must be available");
               }
               if (!stabilitySource.includes("window.__exploreUpLocalSuggestionFallback") ||
                   !stabilitySource.includes("window.__exploreUpReadSuggestionLocal") ||
@@ -382,7 +406,7 @@ jobs:
                   !homepage.includes('href="https://images.unsplash.com"') ||
                   !homepage.includes('<img width="700" height="460"') ||
                   !homepage.includes('<img width="1000" height="650"') ||
-                  !homepageRuntime.includes('<img width="1000" height="650" class="city-photo"')) {
+                  !districtRuntimeSource.includes('<img width="1000" height="650" class="city-photo"')) {
                 missingMediaStability.push("Image connections and intrinsic dimensions must be declared");
               }
 
