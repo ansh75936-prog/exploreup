@@ -1,7 +1,60 @@
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
+const fs = require("node:fs");
+const http = require("node:http");
+const path = require("node:path");
 
-const baseUrl = (process.env.BASE_URL || "https://exploreup-five.vercel.app").replace(/\/$/, "");
+const root = path.resolve(__dirname, "..");
+let baseUrl = (process.env.BASE_URL || "").replace(/\/$/, "");
+const pageErrors = [];
+const failedRequests = [];
+
+async function startStaticServer() {
+  const mimeTypes = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".mp4": "video/mp4",
+    ".ico": "image/x-icon"
+  };
+  const server = http.createServer((request, response) => {
+    let pathname;
+    try {
+      pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
+    } catch {
+      response.writeHead(400).end("Bad request");
+      return;
+    }
+    const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
+    let file = path.resolve(root, relative);
+    if (!file.startsWith(root + path.sep)) {
+      response.writeHead(403).end("Forbidden");
+      return;
+    }
+    try {
+      if (fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
+      const body = fs.readFileSync(file);
+      response.writeHead(200, {
+        "Content-Type": mimeTypes[path.extname(file).toLowerCase()] || "application/octet-stream",
+        "Cache-Control": "no-store"
+      });
+      response.end(body);
+    } catch {
+      response.writeHead(404).end("Not found");
+    }
+  });
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  return server;
+}
 const pageErrors = [];
 const failedRequests = [];
 
@@ -41,6 +94,11 @@ async function openPage(browser, path = "/") {
 }
 
 async function main() {
+  let localServer;
+  if (!process.env.BASE_URL) {
+    localServer = await startStaticServer();
+    baseUrl = `http://127.0.0.1:${localServer.address().port}`;
+  }
   const browser = await chromium.launch({ headless: true });
   let context;
   let page;
@@ -170,6 +228,7 @@ async function main() {
   } finally {
     if (context) await context.close();
     await browser.close();
+    if (localServer) await new Promise(resolve => localServer.close(resolve));
   }
 }
 
