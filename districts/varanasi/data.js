@@ -96,4 +96,4 @@ window.ExploreUPDistricts.push({"name":"Varanasi","tag":"Ghats, spirituality & B
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true});
   else start();
-})();\n
+})();
