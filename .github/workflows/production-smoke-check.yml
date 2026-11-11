@@ -117,6 +117,8 @@ jobs:
             "/js/homepage-runtime.js?v=20261111-1",
             "/js/arya-core.js?v=20261111-1",
             "/js/arya-language.js?v=20261111-1",
+            "/js/arya-district-knowledge.js?v=20261111-1",
+            "/js/arya-live-context.js?v=20261111-1",
             "/js/arya-answer-engine.js?v=20261111-1",
             "/js/ui-preferences.js?v=20261111-1",
             "/js/site-shell.js?v=20261111-1",
@@ -170,6 +172,8 @@ jobs:
               const homepageRuntime = assetResults[assets.indexOf("/js/homepage-runtime.js?v=20261111-1")]?.body || "";
               const aryaLanguageSource = assetResults[assets.indexOf("/js/arya-language.js?v=20261111-1")]?.body || "";
               const aryaAnswerEngineSource = assetResults[assets.indexOf("/js/arya-answer-engine.js?v=20261111-1")]?.body || "";
+              const aryaDistrictKnowledgeSource = assetResults[assets.indexOf("/js/arya-district-knowledge.js?v=20261111-1")]?.body || "";
+              const aryaLiveContextSource = assetResults[assets.indexOf("/js/arya-live-context.js?v=20261111-1")]?.body || "";
               const districtRuntimeSource = assetResults[assets.indexOf("/js/district-runtime.js?v=20261111-1")]?.body || "";
               const supabaseBootstrapSource = assetResults[assets.indexOf("/js/supabase-bootstrap.js?v=20261111-1")]?.body || "";
               const aryaOpenStateSource = assetResults[assets.indexOf("/js/arya-open-state-fix.js?v=20261111-1")]?.body || "";
@@ -250,6 +254,8 @@ jobs:
                 "feature-motion.js",
                 "arya-core.js",
                 "arya-language.js",
+                "arya-district-knowledge.js",
+                "arya-live-context.js",
                 "arya-answer-engine.js",
                 "ui-preferences.js",
                 "site-shell.js",
@@ -406,6 +412,13 @@ jobs:
               }
               if (!aryaAnswerEngineSource.includes("async function aryaAnswer(")) {
                 missingHomeAssets.push("Arya answer engine must be available");
+              }
+              if (!aryaDistrictKnowledgeSource.includes("const aryaKnowledge={") ||
+                  !aryaDistrictKnowledgeSource.includes('"Varanasi"')) {
+                missingHomeAssets.push("Arya district knowledge data must be available");
+              }
+              if (!aryaLiveContextSource.includes("async function getAryaLiveContext(")) {
+                missingHomeAssets.push("Arya live context loader must be available");
               }
               const missingMobileLayout = [];
               if (!homepageFinalOverridesSource.includes('#cityGrid.cities{') ||
