@@ -102,7 +102,8 @@ jobs:
             "/css/heritage-secondary-pages.css?v=20261111-1",
             "/js/home-showcase.js",
             "/v21-step2-powerful-search.js?v=20261111-1",
-            "/js/homepage-runtime.js?v=20261111-1"
+            "/js/homepage-runtime.js?v=20261111-1",
+            "/js/arya-core.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -199,7 +200,8 @@ jobs:
                 "homepage-base.css",
                 "exploreup-design-system.css",
                 "heritage-motion.css",
-                "feature-motion.js"
+                "feature-motion.js",
+                "arya-core.js"
               ].filter(name => !homepage.includes(name));
               if (usesExternalMobileNavigation && mobileNavigationAsset.status !== 200) missingHomeAssets.push("mobile-navigation.js must return HTTP 200");
               if (!mobileNavigationSource.includes("initMobileMenu") ||
