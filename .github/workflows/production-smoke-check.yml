@@ -90,7 +90,7 @@ jobs:
               signal: AbortSignal.timeout(15000),
               headers: { "user-agent": "ExploreUP-Production-Smoke-Check/1.0" }
             });
-            return { status: response.status, body: await response.text() };
+            return { status: response.status, body: await response.text(), url: response.url };
           }
 
           let lastError = "Production deployment did not become ready";
@@ -130,9 +130,9 @@ jobs:
                   missingSeo.push(path + " title or meta description");
                 }
               }
-              const duplicateHome = pageResults[pages.indexOf("/index-1.html")]?.body || "";
-              if (!duplicateHome.includes('name="robots"') || !/content=["']noindex,follow/i.test(duplicateHome)) {
-                missingSeo.push("Duplicate index-1.html must be noindex,follow");
+              const duplicateHome = pageResults[pages.indexOf("/index-1.html")];
+              if (!duplicateHome || !duplicateHome.url.endsWith("/")) {
+                missingSeo.push("Legacy index-1.html route must redirect to the canonical homepage");
               }
               const expectedSitemap = indexable.map(([, url]) => url);
               const sitemapUrls = [...sitemapResult.body.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
