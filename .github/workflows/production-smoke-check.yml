@@ -136,6 +136,10 @@ jobs:
           const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
           const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[6]?.body || "";
+          const dataAssetPath = "/js/homepage-data.js?v=20261111-1";
+          const usesExternalHomepageData = homepage.includes("homepage-data.js");
+          const homepageDataAsset = usesExternalHomepageData ? await request(dataAssetPath) : { status: 200, body: "" };
+          const homepageDataSource = usesExternalHomepageData ? homepageDataAsset.body : homepageRuntime;
               const runtime = homepageRuntime;
               const ayodhya = pageResults[2].body;
               const missingSeo = [];
@@ -179,6 +183,12 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalHomepageData && homepageDataAsset.status !== 200) missingHomeAssets.push("homepage-data.js must return HTTP 200");
+              if (!homepageDataSource.includes("const cities=window.ExploreUPDistricts||[]") ||
+                  !homepageDataSource.includes("const mallData=") ||
+                  !homepageDataSource.includes("const foodData=")) {
+                missingHomeAssets.push("Homepage district, food and shopping data must load before the runtime");
+              }
 
               const missingDiscovery = [];
           if (usesExternalDiscovery && discoveryAsset.status !== 200) missingDiscovery.push("District discovery feature asset must return HTTP 200.");
