@@ -233,10 +233,10 @@ jobs:
               }
 
               const missingAccessibility = [];
-              if (!homepage.includes('aria-pressed="true"') ||
-                  !homepage.includes('aria-hidden=') ||
-                  !homepage.includes('pointer-events=') ||
-                  !homepage.includes('role="group" aria-label="Interactive schematic map')) {
+              if (!discoverySource.includes('aria-pressed') ||
+                  !discoverySource.includes('aria-hidden=') ||
+                  !discoverySource.includes('pointer-events=') ||
+                  !discoverySource.includes('role="group" aria-label="Interactive schematic map')) {
                 missingAccessibility.push("District filters and map nodes must expose accessible states");
               }
               if ((homepage.match(/id="searchInput"/g) || []).length !== 1) {
@@ -251,9 +251,9 @@ jobs:
                   !searchScript.includes("buildCandidates")) {
                 missingSearchReveal.push("Powerful Search page must load its district search engine");
               }
-              if (!homepage.includes("typeof renderCities==='function'") ||
-                  !homepage.includes("grid.hidden=false") ||
-                  !homepage.includes("q||active!=='all'")) {
+              if (!discoverySource.includes("typeof renderCities==='function'") ||
+                  !discoverySource.includes("grid.hidden=false") ||
+                  !discoverySource.includes("q||active!=='all'")) {
                 missingSearchReveal.push("Search and region filters must reveal matching district cards");
               }
 
