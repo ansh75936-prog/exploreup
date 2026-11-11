@@ -36,8 +36,8 @@ jobs:
       - name: Audit district images, internal references and page metadata
         run: |
           node <<'NODE'
-          const fs = require("node:fs");
-          const path = require("node:path");
+          import fs from "node:fs";
+          import path from "node:path";
           const root = process.cwd();
 
           function walk(dir) {
