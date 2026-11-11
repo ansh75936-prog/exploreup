@@ -1,0 +1,69 @@
+/* ExploreUP Modern Heritage — secondary-page alignment
+   Shared visual layer for district and utility pages. No feature behavior is changed. */
+:root{
+  --eu-primary:#A94F0B;
+  --eu-saffron:#FF9933;
+  --eu-maroon:#5B1F2A;
+  --eu-maroon-deep:#3E1020;
+  --eu-cream:#FFF8EC;
+  --eu-paper:#FFF8EC;
+  --eu-ink:#241A18;
+  --eu-muted:#62564F;
+  --eu-border:#E5D6C2;
+  --eu-font-display:"Playfair Display",Georgia,serif;
+  --eu-font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+html{scroll-padding-top:84px}
+body{
+  color:var(--eu-ink)!important;
+  background:var(--eu-cream)!important;
+  font-family:var(--eu-font-body)!important;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.section-title{
+  font-family:var(--eu-font-display)!important;
+  letter-spacing:-.025em;
+  line-height:1.2;
+}
+.top,.nav,.foot,.footer{
+  background:var(--eu-maroon-deep)!important;
+}
+.brand span,.logo span{color:var(--eu-saffron)!important}
+.back{
+  border-color:rgba(255,255,255,.32)!important;
+}
+:where(.card,.panel,.content-card,.intro,.item,.compare,.tips,.tip,.tip-card,.compareItem,.citytool,.empty){
+  border-color:var(--eu-border)!important;
+  border-radius:20px!important;
+  box-shadow:0 12px 32px rgba(62,16,32,.07);
+}
+:where(.card,.panel,.content-card,.intro,.item,.compare,.tips,.tip,.tip-card,.compareItem,.citytool){
+  background:#fff!important;
+}
+:where(.muted,.hint,.status,.caption small){color:var(--eu-muted)}
+:where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear,.back,.tabs a){
+  font-family:var(--eu-font-body);
+  touch-action:manipulation;
+}
+:where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear){
+  min-height:44px;
+}
+:where(input,select,textarea){font:inherit;max-width:100%}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{
+  outline:3px solid #245A78!important;
+  outline-offset:3px!important;
+}
+:where(a,button){-webkit-tap-highlight-color:transparent}
+:where(.tabs a,.back){
+  border-radius:999px;
+}
+@media(max-width:700px){
+  body{line-height:1.6}
+  :where(button,.btn,.go,.submit,.place-source,.compareBtn,.clear){min-height:48px}
+  :where(.wrap,main){max-width:100%;width:92%}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
