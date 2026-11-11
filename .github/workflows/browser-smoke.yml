@@ -1,6 +1,16 @@
 name: ExploreUP browser smoke tests
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "js/**"
+      - "css/**"
+      - "districts/**"
+      - "tests/**"
+      - "v21-*.js"
+      - ".github/workflows/browser-smoke.yml"
   pull_request:
     paths:
       - "*.html"
@@ -50,4 +60,5 @@ jobs:
       - name: Exercise core ExploreUP user flows
         env:
           BASE_URL: ${{ inputs.base_url || 'https://exploreup-five.vercel.app' }}
+          EXPECT_REMOVED_ASSET: ${{ github.event_name == 'push' && 'arya-ai-bridge.js' || '' }}
         run: node tests/browser-smoke.test.cjs
