@@ -61,9 +61,25 @@ jobs:
           if (!varanasi.includes("ExploreUP Varanasi video playback recovery")) {
             throw new Error("Varanasi video recovery behavior is missing.");
           }
+
+          const missingDistrictImages = actualFiles.filter(file => {
+            const source = fs.readFileSync(file, "utf8");
+            const image = source.match(/["']?img["']?\s*:\s*"([^"]*)"/);
+            return !image || !image[1].trim();
+          });
+          const rendererStart = html.indexOf("function renderCities(){");
+          const rendererEnd = html.indexOf(String.fromCharCode(10) + "function ", rendererStart + 1);
+          const renderer = html.slice(rendererStart, rendererEnd > rendererStart ? rendererEnd : rendererStart + 5000);
+          if (!renderer.includes("const imageMarkup=photo ?") ||
+              !renderer.includes("${imageMarkup}") ||
+              !renderer.includes("display:${fallbackDisplay}")) {
+            throw new Error("District cards must render a visible fallback without an empty image request.");
+          }
+
           console.log("PASS: 75 unique district files are registered exactly once.");
           console.log("PASS: all 75 files contain one unique district data record.");
           console.log("PASS: Varanasi video recovery logic is preserved.");
+          console.log(`PASS: ${missingDistrictImages.length} districts without supplied photos use the designed fallback and do not request an empty image URL.`);
           NODE
 
       - name: Verify production pages and shared assets
