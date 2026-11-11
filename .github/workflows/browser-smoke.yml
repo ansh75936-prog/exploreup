@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: "Site URL to test (defaults to production)"
+        description: "Optional deployed site URL (default: test the checked-out repository locally)"
         required: false
         type: string
 
@@ -57,8 +57,14 @@ jobs:
       - name: Install Chromium
         run: npx playwright install chromium
 
-      - name: Exercise core ExploreUP user flows
+      - name: Exercise core ExploreUP user flows against this commit
         env:
-          BASE_URL: ${{ inputs.base_url || 'https://exploreup-five.vercel.app' }}
-          EXPECT_REMOVED_ASSET: ${{ github.event_name == 'push' && 'arya-ai-bridge.js' || '' }}
+          BASE_URL: ${{ inputs.base_url || '' }}
+        run: node tests/browser-smoke.test.cjs
+
+      - name: Verify production after a main-branch deployment
+        if: github.event_name == 'push'
+        env:
+          BASE_URL: https://exploreup-five.vercel.app
+          EXPECT_REMOVED_ASSET: arya-ai-bridge.js
         run: node tests/browser-smoke.test.cjs
