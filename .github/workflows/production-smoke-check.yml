@@ -140,6 +140,10 @@ jobs:
           const usesExternalDistrictContent = homepage.includes("district-content.js");
           const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
           const contentSource = usesExternalDistrictContent ? contentAsset.body : homepageRuntime;
+          const plannerAssetPath = "/js/trip-planner.js?v=20261111-1";
+          const usesExternalPlanner = homepage.includes("trip-planner.js");
+          const plannerAsset = usesExternalPlanner ? await request(plannerAssetPath) : { status: 200, body: "" };
+          const plannerSource = usesExternalPlanner ? plannerAsset.body : homepageRuntime;
           const dataAssetPath = "/js/homepage-data.js?v=20261111-1";
           const usesExternalHomepageData = homepage.includes("homepage-data.js");
           const homepageDataAsset = usesExternalHomepageData ? await request(dataAssetPath) : { status: 200, body: "" };
@@ -187,6 +191,12 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalPlanner && plannerAsset.status !== 200) missingHomeAssets.push("trip-planner.js must return HTTP 200");
+              if (!plannerSource.includes("function makeAryaPlan(") ||
+                  !plannerSource.includes("function calculateTripBudget(") ||
+                  !plannerSource.includes("function makeSmartRecommendations(")) {
+                missingHomeAssets.push("Trip planner generation and budget functions must be available");
+              }
               if (usesExternalDistrictContent && contentAsset.status !== 200) missingHomeAssets.push("district-content.js must return HTTP 200");
               if (!contentSource.includes("function renderFood(") ||
                   !contentSource.includes("function escapeHtml(") ||
