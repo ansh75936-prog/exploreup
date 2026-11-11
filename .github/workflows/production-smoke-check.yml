@@ -131,6 +131,10 @@ jobs:
                 .filter(r => !r.body.includes("/css/heritage-secondary-pages.css"));
 
               const homepage = pageResults[0].body;
+          const discoveryAssetPath = "/js/district-discovery.js?v=20261111-1";
+          const usesExternalDiscovery = homepage.includes("district-discovery.js");
+          const discoveryAsset = usesExternalDiscovery ? await request(discoveryAssetPath) : { status: 200, body: "" };
+          const discoverySource = usesExternalDiscovery ? discoveryAsset.body : homepage;
               const homepageRuntime = assetResults[6]?.body || "";
               const runtime = homepageRuntime;
               const ayodhya = pageResults[2].body;
@@ -177,13 +181,15 @@ jobs:
               ].filter(name => !homepage.includes(name));
 
               const missingDiscovery = [];
+          if (usesExternalDiscovery && discoveryAsset.status !== 200) missingDiscovery.push("District discovery feature asset must return HTTP 200.");
+          if (!discoverySource.includes("window.exploreUpPhase2")) missingDiscovery.push("District tabs and itinerary export must be present.");
               const dashboard = assetResults[4]?.body || "";
               const expectedDashboardCounts = { awadh: 22, braj: 8, purvanchal: 20, bundelkhand: 7 };
               for (const [region, count] of Object.entries(expectedDashboardCounts)) {
                 const card = dashboard.match(new RegExp('data-region-jump="' + region + '"[\\s\\S]*?<small>(\\d+) Districts</small>'));
                 if (!card || Number(card[1]) !== count) missingDiscovery.push(region + " dashboard count must match " + count + " districts");
               }
-              const regionMatch = homepage.match(/const regionLists=\{([\s\S]*?)\n \};/);
+              const regionMatch = discoverySource.match(/const regionLists=\{([\s\S]*?)\n \};/);
               const regionBlock = regionMatch?.[1] || "";
               const regionNames = [...regionBlock.matchAll(/^\s*[a-z]+:\[([^\]]*)\]/gm)]
                 .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(item => item[1]));
