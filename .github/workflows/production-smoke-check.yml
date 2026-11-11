@@ -140,6 +140,10 @@ jobs:
           const usesExternalDistrictContent = homepage.includes("district-content.js");
           const contentAsset = usesExternalDistrictContent ? await request(contentAssetPath) : { status: 200, body: "" };
           const contentSource = usesExternalDistrictContent ? contentAsset.body : homepageRuntime;
+          const communityAssetPath = "/js/community-admin.js?v=20261111-1";
+          const usesExternalCommunity = homepage.includes("community-admin.js");
+          const communityAsset = usesExternalCommunity ? await request(communityAssetPath) : { status: 200, body: "" };
+          const communitySource = usesExternalCommunity ? communityAsset.body : homepageRuntime;
           const plannerAssetPath = "/js/trip-planner.js?v=20261111-1";
           const usesExternalPlanner = homepage.includes("trip-planner.js");
           const plannerAsset = usesExternalPlanner ? await request(plannerAssetPath) : { status: 200, body: "" };
@@ -191,6 +195,15 @@ jobs:
                 "heritage-motion.css",
                 "feature-motion.js"
               ].filter(name => !homepage.includes(name));
+              if (usesExternalCommunity && communityAsset.status !== 200) missingHomeAssets.push("community-admin.js must return HTTP 200");
+              if (!communitySource.includes("function renderSuggestions(") ||
+                  !communitySource.includes("async function submitSuggestion(") ||
+                  !communitySource.includes("async function submitReview(") ||
+                  !communitySource.includes("function openAdminPanel(") ||
+                  !communitySource.includes("async function checkAdminSession(") ||
+                  !communitySource.includes("async function loadAdminData(")) {
+                missingHomeAssets.push("Community submissions, reviews and admin moderation functions must be available");
+              }
               if (usesExternalPlanner && plannerAsset.status !== 200) missingHomeAssets.push("trip-planner.js must return HTTP 200");
               if (!plannerSource.includes("function makeAryaPlan(") ||
                   !plannerSource.includes("function calculateTripBudget(") ||
