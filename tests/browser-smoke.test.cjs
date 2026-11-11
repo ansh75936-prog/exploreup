@@ -23,6 +23,20 @@ async function openPage(browser, path = "/") {
   });
   const response = await page.goto(baseUrl + path, { waitUntil: "domcontentloaded", timeout: 45000 });
   assert.ok(response && response.status() === 200, `${path} should return HTTP 200`);
+  if (path === "/" && process.env.EXPECT_REMOVED_ASSET) {
+    const removedAsset = process.env.EXPECT_REMOVED_ASSET;
+    let deployed = false;
+    for (let attempt = 0; attempt < 24; attempt++) {
+      if (!(await page.content()).includes(removedAsset)) {
+        deployed = true;
+        break;
+      }
+      await page.waitForTimeout(5000);
+      const refreshed = await page.reload({ waitUntil: "domcontentloaded", timeout: 45000 });
+      assert.ok(refreshed && refreshed.status() === 200, "Production must continue returning HTTP 200 while deployment updates");
+    }
+    assert.ok(deployed || !(await page.content()).includes(removedAsset), "Production deployment did not publish the latest code within 2 minutes");
+  }
   return { context, page };
 }
 
