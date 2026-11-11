@@ -104,7 +104,8 @@ jobs:
             "/js/home-showcase.js",
             "/v21-step2-powerful-search.js?v=20261111-1",
             "/js/homepage-runtime.js?v=20261111-1",
-            "/js/arya-core.js?v=20261111-1"
+            "/js/arya-core.js?v=20261111-1",
+            "/js/ui-preferences.js?v=20261111-1"
           ];
 
           async function request(path) {
@@ -207,7 +208,8 @@ jobs:
                 "exploreup-design-system.css",
                 "heritage-motion.css",
                 "feature-motion.js",
-                "arya-core.js"
+                "arya-core.js",
+                "ui-preferences.js"
               ].filter(name => !homepage.includes(name));
               if (usesExternalImageFallback && imageFallbackAsset.status !== 200) missingHomeAssets.push("image-fallback.js must return HTTP 200");
               if (!imageFallbackSource.includes("function exploreUpImageFallback(img)")) missingHomeAssets.push("Global image fallback handler must be available");
