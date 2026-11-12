@@ -107,3 +107,11 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
 .servicebar button:focus-visible{outline:3px solid #93C5FD;outline-offset:3px}
 .region-filters .region-btn:not(.active) span{color:#40566D!important}
 .region-filters .region-btn.active span{color:#FFFFFF!important}
+
+/* Accessible contrast for inactive region filters */
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active) {
+  color: #40566D !important;
+}
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active) span {
+  color: inherit !important;
+}
