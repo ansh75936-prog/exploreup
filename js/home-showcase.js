@@ -54,7 +54,7 @@
   });
  }
  function featuredCard(name,sub,icon){
-  return '<article class="eu-featured-card" data-feature-city="'+name+'" role="button" tabindex="0" aria-label="Explore '+name+' district guide"><div class="eu-featured-photo" aria-hidden="true"><span>'+icon+'</span></div><div class="eu-featured-info"><div><strong>'+name+'</strong><small>'+sub+'</small></div><span class="arrow" aria-hidden="true">→</span></div></article>';
+  return '<article class="eu-featured-card" data-feature-city="'+name+'" role="button" tabindex="0" aria-label="'+name+' — Explore district guide"><div class="eu-featured-photo" aria-hidden="true"><span>'+icon+'</span></div><div class="eu-featured-info"><div><strong>'+name+'</strong><small>'+sub+'</small></div><span class="arrow" aria-hidden="true">→</span></div></article>';
  }
  function setupHero(){
   const hero=document.querySelector(".hero");if(!hero||hero.dataset.euSlideshowReady==="1")return;
@@ -63,7 +63,7 @@
   const layers=slides.map((s,i)=>{const el=document.createElement("div");el.className="eu-hero-slide"+(i===0?" is-active":"");el.style.backgroundPosition=s.position;stack.appendChild(el);return el;});
   hero.appendChild(stack);
   const caption=document.createElement("div");caption.className="eu-hero-location";caption.setAttribute("aria-live","polite");caption.innerHTML='<span class="eu-live-dot"></span><span class="eu-hero-city"></span><span class="eu-hero-subtitle"></span>';hero.appendChild(caption);
-  const toggle=document.createElement("button");toggle.type="button";toggle.className="eu-slideshow-toggle";toggle.setAttribute("aria-pressed","false");toggle.setAttribute("aria-label","Pause featured destination slideshow");toggle.textContent="Ⅱ Pause slides";hero.appendChild(toggle);
+  const toggle=document.createElement("button");toggle.type="button";toggle.className="eu-slideshow-toggle";toggle.setAttribute("aria-pressed","false");toggle.setAttribute("aria-label","Ⅱ Pause slides — featured destination slideshow");toggle.textContent="Ⅱ Pause slides";hero.appendChild(toggle);
   let current=0,paused=!!reduced,timer=null;
   function show(i){
    current=i%slides.length;const s=slides[current],layer=layers[current];
@@ -77,7 +77,7 @@
   function stop(){if(timer){window.clearInterval(timer);timer=null;}}
   function start(){stop();if(!paused&&!document.hidden)timer=window.setInterval(()=>show((current+1)%slides.length),6500);}
   toggle.hidden=!!reduced;
-  toggle.addEventListener("click",()=>{paused=!paused;toggle.setAttribute("aria-pressed",String(paused));toggle.textContent=paused?"▶ Play slides":"Ⅱ Pause slides";toggle.setAttribute("aria-label",paused?"Play featured destination slideshow":"Pause featured destination slideshow");if(paused)stop();else start();});
+  toggle.addEventListener("click",()=>{paused=!paused;toggle.setAttribute("aria-pressed",String(paused));toggle.textContent=paused?"▶ Play slides":"Ⅱ Pause slides";toggle.setAttribute("aria-label",paused?"▶ Play slides — featured destination slideshow":"Pause featured destination slideshow");if(paused)stop();else start();});
   document.addEventListener("visibilitychange",()=>{if(document.hidden)stop();else start();});
   show(0);start();
  }
