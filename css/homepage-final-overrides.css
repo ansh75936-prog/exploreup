@@ -115,3 +115,8 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
 #districtDiscovery .district-tools .region-filters .region-btn:not(.active) span {
   color: inherit !important;
 }
+
+/* Keep region count labels fully opaque for WCAG contrast */
+#districtDiscovery .district-tools .region-filters .region-btn span {
+  opacity: 1 !important;
+}
