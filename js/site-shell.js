@@ -45,8 +45,11 @@ function hydrateOnlineDistrictCatalog(){
       syncDistrictCatalog().then(()=>{renderCities();}).catch(()=>{renderCities();});
     });
   };
-  if('requestIdleCallback' in window) window.requestIdleCallback(load,{timeout:3500});
-  else window.setTimeout(load,1800);
+  // A short post-load grace period ensures the hero gets the first render opportunity.
+  window.setTimeout(()=>{
+    if('requestIdleCallback' in window) window.requestIdleCallback(load,{timeout:2500});
+    else load();
+  },1800);
 }
 if(document.readyState==='complete') hydrateOnlineDistrictCatalog();
 else window.addEventListener('load',hydrateOnlineDistrictCatalog,{once:true});
