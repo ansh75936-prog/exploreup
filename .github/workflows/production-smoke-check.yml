@@ -3,6 +3,8 @@ name: ExploreUP production smoke check
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -26,21 +28,25 @@ jobs:
           const fs = require("node:fs");
           const path = require("node:path");
           const html = fs.readFileSync("index.html", "utf8");
+          // Script-order validation intentionally ignores optional attributes such as defer.
           const districtRuntime = fs.readFileSync("js/district-runtime.js", "utf8");
           const scriptPaths = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
             .map(match => match[1].match(/\bsrc=["']\.\/districts\/([^"']+)["']/i)?.[1])
             .filter(Boolean)
-            .map(relativePath => path.posix.join("districts", relativePath));
+            .map(relativePath => path.posix.join("districts", relativePath.split(/[?#]/)[0]));
           const actualFiles = fs.readdirSync("districts", { withFileTypes: true })
             .filter(entry => entry.isDirectory() && entry.name !== "_template")
             .map(entry => path.posix.join("districts", entry.name, "data.js"))
             .sort();
           const listedFiles = [...scriptPaths].sort();
 
-          const bootstrapTag = '<script src="./js/supabase-bootstrap.js?v=20261111-1"></script>';
-          const firstDistrictTag = '<script src="./districts/lucknow/data.js"></script>';
-          if (!html.includes(bootstrapTag) || !html.includes(firstDistrictTag) ||
-              html.indexOf(bootstrapTag) > html.indexOf(firstDistrictTag)) {
+          const bootstrapTag = html.match(/<script\b[^>]*\bsrc=["']\.\/js\/supabase-bootstrap\.js(?:\?[^"']*)?["'][^>]*>/i);
+          const firstDistrictTag = html.match(/<script\b[^>]*\bsrc=["']\.\/districts\/[^"']+\/data\.js(?:\?[^"']*)?["'][^>]*>/i);
+          const bootstrapClose = bootstrapTag
+            ? html.indexOf("</script>", bootstrapTag.index)
+            : -1;
+          if (!bootstrapTag || !firstDistrictTag || bootstrapClose < 0 ||
+              bootstrapClose > firstDistrictTag.index) {
             throw new Error("Supabase bootstrap must close before the first district data script begins.");
           }
           if (scriptPaths.length !== 75 || new Set(scriptPaths).size !== 75) {
@@ -64,9 +70,12 @@ jobs:
             throw new Error("District data must contain 75 unique names.");
           }
 
-          const varanasi = fs.readFileSync("districts/varanasi/data.js", "utf8");
-          if (!varanasi.includes("ExploreUP Varanasi video playback recovery")) {
-            throw new Error("Varanasi video recovery behavior is missing.");
+          if (!districtRuntime.includes("const videoSources=[") ||
+              !districtRuntime.includes("heroVideo.onerror=()=>") ||
+              !districtRuntime.includes("if(videoSourceIndex<videoSources.length-1)") ||
+              !districtRuntime.includes("videoSourceIndex++") ||
+              !districtRuntime.includes("loadVideoSource();")) {
+            throw new Error("Varanasi hero video fallback and retry behavior is missing.");
           }
 
           const missingDistrictImages = actualFiles.filter(file => {
