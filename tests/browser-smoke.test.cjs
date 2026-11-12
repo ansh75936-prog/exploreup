@@ -69,7 +69,10 @@ async function openPage(browser, path = "/") {
   page.on("pageerror", error => pageErrors.push({ path, message: error.message }));
   page.on("requestfailed", request => {
     const url = request.url();
-    if (url.startsWith(baseUrl)) failedRequests.push({ path, url, error: request.failure()?.errorText || "request failed" });
+    const error = request.failure()?.errorText || "request failed";
+    // Chromium reports normal navigation/teardown cancellations as ERR_ABORTED.
+    // They are not failed application assets and should not fail this smoke test.
+    if (url.startsWith(baseUrl) && error !== "net::ERR_ABORTED") failedRequests.push({ path, url, error });
   });
   const response = await page.goto(baseUrl + path, { waitUntil: "domcontentloaded", timeout: 45000 });
   assert.ok(response && response.status() === 200, `${path} should return HTTP 200`);
