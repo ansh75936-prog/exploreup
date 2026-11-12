@@ -11,10 +11,14 @@
   const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
   if(reducedMotion&&reducedMotion.matches)return;
 
-  const palette=['#ff9933','#ffffff','#138808','#ffcc70','#4fc3f7'];
   const mobile=window.matchMedia&&window.matchMedia('(max-width: 767px)').matches;
-  const count=mobile?10:32;
-  const frameInterval=mobile?1000/16:1000/24;
+  // The CSS gradient, grid and floating orbs stay animated on mobile; skip only the
+  // decorative canvas particles to keep the initial mobile render lightweight.
+  if(mobile)return;
+
+  const palette=['#ff9933','#ffffff','#138808','#ffcc70','#4fc3f7'];
+  const count=32;
+  const frameInterval=1000/24;
   const pixelRatio=Math.min(window.devicePixelRatio||1,1.25);
 
   let width=0,height=0,particles=[],raf=0,frameTimer=0;
@@ -66,7 +70,7 @@
       context.globalAlpha=p.alpha;
       context.fill();
 
-      if(!mobile&&i%2===0){
+      if(i%2===0){
         for(let j=i+1;j<particles.length;j++){
           const q=particles[j];
           const dx=p.x-q.x;
