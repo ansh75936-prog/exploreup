@@ -8,6 +8,13 @@
 
   const originalLabel = button.textContent;
 
+  function armMapsReturn() {
+    window.ExploreUPMapsReturn?.arm?.();
+  }
+  function clearMapsReturn() {
+    window.ExploreUPMapsReturn?.clear?.();
+  }
+
   function showStatus(message, linkUrl) {
     status.replaceChildren(document.createTextNode(message));
     if (linkUrl) {
@@ -15,6 +22,7 @@
       link.href = linkUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
+      link.addEventListener('click', armMapsReturn);
       link.textContent = ' Open nearby places in Google Maps';
       status.appendChild(link);
     }
@@ -29,6 +37,7 @@
     // Open a tab during the user gesture so the browser does not block
     // the Maps page after the asynchronous location permission prompt.
     const mapsTab = window.open('about:blank', '_blank');
+    if (mapsTab && !mapsTab.closed) armMapsReturn();
 
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
@@ -42,6 +51,7 @@
 
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
           if (mapsTab && !mapsTab.closed) mapsTab.close();
+          clearMapsReturn();
           showStatus('Your browser returned an invalid location. Please try again.');
           button.disabled = false;
           button.removeAttribute('aria-busy');
@@ -64,6 +74,7 @@
       },
       (error) => {
         if (mapsTab && !mapsTab.closed) mapsTab.close();
+        clearMapsReturn();
 
         let message = 'Unable to get your location. Please try again.';
         if (error && error.code === error.PERMISSION_DENIED) {
