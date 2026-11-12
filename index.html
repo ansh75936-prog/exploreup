@@ -71,8 +71,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./css/exploreup-design-system.css?v=20261111-1">
-<link rel="stylesheet" href="./css/hero-background.css?v=20261111-3">
+<link rel="stylesheet" href="./css/hero-background.css?v=20261112-1">
 <script src="./js/feature-motion.js?v=20261111-1" defer></script>
+<script src="./js/hero-cinematic-background.js?v=20261112-1" defer></script>
 </head>
 <body id="top"><div id="offlineBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10060;padding:8px 12px;text-align:center;background:#7f1d1d;color:#fff;font:700 12px system-ui">📴 Offline mode — ExploreUP is using bundled information.</div><div style="position:fixed;right:10px;bottom:10px;z-index:99999;padding:6px 9px;border-radius:9px;background:#111;color:#fff;font:700 11px system-ui;opacity:.78">ExploreUP V20 • Enhanced Planner</div>
 <header class="nav" style="position:relative">
@@ -82,6 +83,12 @@
 <div class="actions"><button class="adminbtn" onclick="openAdminPanel()">Admin</button><div class="circle">⌕</div></div>
 </header>
 <section class="hero">
+<div class="hero-cinematic" aria-hidden="true">
+  <div class="hero-cinematic-image"></div>
+  <div class="hero-cinematic-aurora"><span class="hero-blob hero-blob-one"></span><span class="hero-blob hero-blob-two"></span><span class="hero-blob hero-blob-three"></span></div>
+  <div class="hero-cinematic-particles" id="heroCinematicParticles"></div>
+  <div class="hero-cinematic-fireflies" id="heroCinematicFireflies"></div>
+</div>
 <div>
 <div class="eyebrow" style="font-size:clamp(28px,4vw,42px);letter-spacing:0;margin-bottom:8px">Uttar Pradesh</div>
 <h1>Beyond Ordinary,<em>Explore Extraordinary</em></h1>

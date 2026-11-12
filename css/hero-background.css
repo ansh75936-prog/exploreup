@@ -1,28 +1,21 @@
-/* ExploreUP cinematic hero background — background-only release 3
- * Only the hero backdrop changes; existing content, layout, controls and behavior remain intact.
- */
-.hero{
-  background-color:#071b35!important;
-  background-image:url("../images/varanasi.jpg")!important;
-  background-position:center 48%!important;
-  background-size:cover!important;
-  background-repeat:no-repeat!important;
-}
-/* Replace the older animated mesh overlay with a readable cinematic shade.
-   Keep it behind the existing hero content and above the photo. */
-.hero::before{
-  content:""!important;
-  position:absolute!important;
-  inset:0!important;
-  z-index:0!important;
-  pointer-events:none!important;
-  background:linear-gradient(90deg,rgba(4,15,31,.74) 0%,rgba(4,15,31,.48) 48%,rgba(4,15,31,.22) 100%)!important;
-  mix-blend-mode:normal!important;
-  animation:none!important;
-}
-@media(max-width:760px){
-  .hero{background-position:58% center!important}
-  .hero::before{
-    background:linear-gradient(180deg,rgba(4,15,31,.48) 0%,rgba(4,15,31,.66) 100%)!important;
-  }
-}
+/* ExploreUP homepage — spiritual cinematic animated background
+   Background layers only. Existing hero copy, controls, search and layout stay intact. */
+.hero{position:relative!important;isolation:isolate!important;overflow:hidden!important;background-color:#050300!important;background-image:none!important}
+.hero .hero-cinematic{position:absolute!important;inset:0!important;z-index:0!important;overflow:hidden!important;pointer-events:none!important}
+.hero-cinematic-image{position:absolute;inset:-8%;background-image:url("../images/varanasi.jpg");background-position:center 48%;background-size:cover;background-repeat:no-repeat;filter:saturate(1.15) contrast(1.05);transform:translateZ(0);animation:eu-hero-kenburns 25s ease-in-out infinite alternate;will-change:transform}
+.hero-cinematic-image::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 0%,rgba(10,5,0,.48) 55%,rgba(5,2,10,.88) 100%),linear-gradient(135deg,rgba(20,10,0,.48) 0%,rgba(140,50,0,.25) 50%,rgba(10,5,20,.62) 100%)}
+@keyframes eu-hero-kenburns{0%{transform:scale(1) translate3d(0,0,0) rotate(0deg)}100%{transform:scale(1.18) translate3d(-1.5%,-1%,0) rotate(.35deg)}}
+.hero-cinematic-aurora{position:absolute;inset:0;overflow:hidden}
+.hero-blob{position:absolute;display:block;border-radius:50%;filter:blur(80px);opacity:.42;animation:eu-hero-float-blob 18s ease-in-out infinite;will-change:transform}
+.hero-blob-one{width:420px;height:420px;background:#ff8c00;top:-150px;left:-120px}
+.hero-blob-two{width:500px;height:500px;background:#ffb347;right:-160px;bottom:-210px;animation-delay:-6s}
+.hero-blob-three{width:360px;height:360px;background:#d946ef;top:36%;left:62%;opacity:.22;animation-delay:-11s}
+@keyframes eu-hero-float-blob{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(45px,-32px,0) scale(1.12)}66%{transform:translate3d(-38px,40px,0) scale(.92)}}
+.hero-cinematic-particles,.hero-cinematic-fireflies{position:absolute;inset:0;overflow:hidden}
+.hero-cinematic-particles span{position:absolute;bottom:-12px;display:block;border-radius:50%;background:radial-gradient(circle,#ffe4a1 0%,rgba(255,210,122,.42) 55%,transparent 100%);opacity:0;animation:eu-hero-float-up linear infinite;will-change:transform,opacity}
+@keyframes eu-hero-float-up{0%{transform:translate3d(0,0,0) scale(.5);opacity:0}15%{opacity:.9}85%{opacity:.75}100%{transform:translate3d(var(--eu-dx,20px),-115vh,0) scale(1.25);opacity:0}}
+.hero-cinematic-fireflies span{position:absolute;display:block;width:5px;height:5px;border-radius:50%;background:#fff3c4;box-shadow:0 0 12px 4px rgba(255,210,100,.72),0 0 28px 7px rgba(255,180,50,.32);opacity:0;animation:eu-hero-firefly-drift ease-in-out infinite;will-change:transform,opacity}
+@keyframes eu-hero-firefly-drift{0%{opacity:0;transform:translate3d(0,0,0) scale(.5)}20%{opacity:1}50%{opacity:.85;transform:translate3d(var(--eu-mx,40px),var(--eu-my,-60px),0) scale(1)}80%{opacity:.55}100%{opacity:0;transform:translate3d(var(--eu-ex,80px),var(--eu-ey,-120px),0) scale(.4)}}
+.hero>*:not(.hero-cinematic){position:relative;z-index:2}
+@media(max-width:760px){.hero-cinematic-image{background-position:58% center}.hero-blob{filter:blur(64px);opacity:.34}.hero-blob-one{width:300px;height:300px}.hero-blob-two{width:340px;height:340px}.hero-blob-three{width:240px;height:240px}}
+@media(prefers-reduced-motion:reduce){.hero-cinematic-image,.hero-blob,.hero-cinematic-particles span,.hero-cinematic-fireflies span{animation:none!important}.hero-cinematic-image{transform:scale(1.04)}.hero-cinematic-particles,.hero-cinematic-fireflies{display:none}}
