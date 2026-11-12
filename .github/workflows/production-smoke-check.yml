@@ -3,6 +3,8 @@ name: ExploreUP production smoke check
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -37,10 +39,13 @@ jobs:
             .sort();
           const listedFiles = [...scriptPaths].sort();
 
-          const bootstrapTag = '<script src="./js/supabase-bootstrap.js?v=20261111-1"></script>';
-          const firstDistrictTag = '<script src="./districts/lucknow/data.js"></script>';
-          if (!html.includes(bootstrapTag) || !html.includes(firstDistrictTag) ||
-              html.indexOf(bootstrapTag) > html.indexOf(firstDistrictTag)) {
+          const bootstrapTag = html.match(/<script\\b[^>]*\\bsrc=["']\\.\\/js\\/supabase-bootstrap\\.js(?:\\?[^"']*)?["'][^>]*>/i);
+          const firstDistrictTag = html.match(/<script\\b[^>]*\\bsrc=["']\\.\\/districts\\/[^"']+\\/data\\.js(?:\\?[^"']*)?["'][^>]*>/i);
+          const bootstrapClose = bootstrapTag
+            ? html.indexOf("</script>", bootstrapTag.index)
+            : -1;
+          if (!bootstrapTag || !firstDistrictTag || bootstrapClose < 0 ||
+              bootstrapClose > firstDistrictTag.index) {
             throw new Error("Supabase bootstrap must close before the first district data script begins.");
           }
           if (scriptPaths.length !== 75 || new Set(scriptPaths).size !== 75) {
