@@ -33,7 +33,7 @@ jobs:
           const scriptPaths = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
             .map(match => match[1].match(/\bsrc=["']\.\/districts\/([^"']+)["']/i)?.[1])
             .filter(Boolean)
-            .map(relativePath => path.posix.join("districts", relativePath));
+            .map(relativePath => path.posix.join("districts", relativePath.split(/[?#]/)[0]));
           const actualFiles = fs.readdirSync("districts", { withFileTypes: true })
             .filter(entry => entry.isDirectory() && entry.name !== "_template")
             .map(entry => path.posix.join("districts", entry.name, "data.js"))
