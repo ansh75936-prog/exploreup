@@ -112,3 +112,44 @@
 @media(max-width:760px){
   .hero-cinematic-image{background-position:58% center}
 }
+
+
+/* Restore the original full-width mobile homepage composition.
+   The cinematic treatment stays strictly behind the hero; content returns
+   to the previous single-column flow without changing desktop layout. */
+@media (max-width: 620px) {
+  .hero {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 42px 14px 70px !important;
+    text-align: left !important;
+  }
+  .hero > div:not(.hero-cinematic):not(.hero-arya) {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  .hero h1 {
+    max-width: 100% !important;
+    font-size: clamp(42px, 10vw, 58px) !important;
+    line-height: 1.02 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+  .hero p {
+    max-width: 100% !important;
+  }
+  .hero .search,
+  .hero .home-trust,
+  .hero .hero-buttons {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* The floating Arya assistant remains available; remove only the
+     separate desktop-style preview card from the mobile hero flow. */
+  .hero > .hero-arya {
+    display: none !important;
+  }
+}
