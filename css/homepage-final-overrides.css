@@ -138,14 +138,12 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
   opacity: 1 !important;
 }
 
-/* Keep the mobile hero title paintable immediately while retaining a subtle entrance motion. */
-@keyframes eu-hero-title-enter{
-  from{opacity:1;transform:translate3d(0,8px,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
-}
+/* Keep the mobile hero title visible immediately; decorative motion remains in the background. */
 @media(max-width:760px){
   .eu-motion-ready .hero h1{
-    animation:eu-hero-title-enter .28s ease-out both!important;
+    animation:none!important;
     animation-delay:0s!important;
+    opacity:1!important;
+    transform:none!important;
   }
 }
