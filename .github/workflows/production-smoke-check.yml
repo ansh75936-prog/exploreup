@@ -39,8 +39,8 @@ jobs:
             .sort();
           const listedFiles = [...scriptPaths].sort();
 
-          const bootstrapTag = html.match(/<script\\b[^>]*\\bsrc=["']\\.\\/js\\/supabase-bootstrap\\.js(?:\\?[^"']*)?["'][^>]*>/i);
-          const firstDistrictTag = html.match(/<script\\b[^>]*\\bsrc=["']\\.\\/districts\\/[^"']+\\/data\\.js(?:\\?[^"']*)?["'][^>]*>/i);
+          const bootstrapTag = html.match(/<script\b[^>]*\bsrc=["']\.\/js\/supabase-bootstrap\.js(?:\?[^"']*)?["'][^>]*>/i);
+          const firstDistrictTag = html.match(/<script\b[^>]*\bsrc=["']\.\/districts\/[^"']+\/data\.js(?:\?[^"']*)?["'][^>]*>/i);
           const bootstrapClose = bootstrapTag
             ? html.indexOf("</script>", bootstrapTag.index)
             : -1;
