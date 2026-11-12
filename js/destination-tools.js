@@ -1,7 +1,9 @@
 let favs=[];try{const v=JSON.parse(exploreStorage.get('exploreup_favs')||'[]');favs=Array.isArray(v)?v:[]}catch(e){favs=[];try{exploreStorage.set('exploreup_favs','[]')}catch(_e){}}
 function updateFavs(){
- document.getElementById('favCount').textContent=favs.length;
- document.getElementById('favList').innerHTML=favs.length?favs.map((x,i)=>`<div class="favitem">${x} <button onclick="removeFav(${i})" style="float:right;border:0;background:none;cursor:pointer">×</button></div>`).join(''):'<div class="empty">No favourite places saved yet.</div>';
+ const count=document.getElementById('favCount');
+ const list=document.getElementById('favList');
+ if(count)count.textContent=String(favs.length);
+ if(list)list.innerHTML=favs.length?favs.map((x,i)=>`<div class="favitem">${x} <button onclick="removeFav(${i})" style="float:right;border:0;background:none;cursor:pointer">×</button></div>`).join(''):'<div class="empty">No favourite places saved yet.</div>';
 }
 function toggleSave(btn,name){
  const i=favs.indexOf(name);
@@ -10,7 +12,7 @@ function toggleSave(btn,name){
  exploreStorage.set('exploreup_favs',JSON.stringify(favs));updateFavs();
 }
 function removeFav(i){favs.splice(i,1);exploreStorage.set('exploreup_favs',JSON.stringify(favs));updateFavs();document.querySelectorAll('.save').forEach(b=>{const n=b.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];if(n&&!favs.includes(n)){b.classList.remove('saved');b.textContent='♡'}})}
-function toggleFavPanel(){const p=document.getElementById('favPanel');p.style.display=p.style.display==='block'?'none':'block';updateFavs()}
+function toggleFavPanel(){const p=document.getElementById('favPanel');if(!p)return;p.style.display=p.style.display==='block'?'none':'block';updateFavs()}
 async function shareItem(name){
  const text=`Explore ${name} on ExploreUP — Every City Has a Story`;
  if(navigator.share){try{await navigator.share({title:name,text,url:location.href})}catch(e){}}
