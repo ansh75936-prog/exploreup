@@ -153,3 +153,45 @@
     display: none !important;
   }
 }
+
+
+/* Full-page floating tricolour orbs background.
+   Decorative only: it is fixed behind the page and never participates in layout. */
+html,body{min-height:100%;background:#0a0f1e!important}
+body{position:relative;isolation:isolate}
+.bg-orbs{
+  position:fixed!important;inset:0!important;z-index:-1!important;
+  display:block!important;pointer-events:none!important;overflow:hidden!important;
+  background:#0a0f1e!important;
+}
+.bg-orbs span{
+  position:absolute;display:block;border-radius:50%;
+  filter:blur(90px);opacity:.5;
+  animation:eu-float-orb 14s ease-in-out infinite;
+  will-change:transform;
+}
+.bg-orbs span:nth-child(1){
+  width:45vmax;height:45vmax;background:#ff9933;top:-10%;left:-10%;
+}
+.bg-orbs span:nth-child(2){
+  width:40vmax;height:40vmax;background:#138808;bottom:-15%;right:-10%;
+  animation-delay:-4s;
+}
+.bg-orbs span:nth-child(3){
+  width:35vmax;height:35vmax;background:#4fc3f7;top:40%;left:50%;
+  animation-delay:-8s;
+}
+@keyframes eu-float-orb{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(6%,-8%) scale(1.1)}
+  66%{transform:translate(-5%,6%) scale(.95)}
+}
+/* Replace the previous photo/hero-only animation; preserve all hero content. */
+.hero{background:transparent!important;background-image:none!important}
+.hero .hero-cinematic{display:none!important}
+@media(prefers-reduced-motion:reduce){
+  .bg-orbs span{animation:none!important}
+}
+@media(max-width:760px){
+  .bg-orbs span{filter:blur(72px);opacity:.42}
+}
