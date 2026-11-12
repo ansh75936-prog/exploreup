@@ -54,6 +54,16 @@ const htmlFiles = allFiles
   .sort();
 
 assert.ok(htmlFiles.length > 0, "No active HTML pages were found.");
+
+const homepage = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const backgroundStylesheets = [...homepage.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']*home-live-background\.css[^"']*)["'])[^>]*>/gi)];
+assert.equal(backgroundStylesheets.length, 1, "Homepage must load its live background stylesheet exactly once.");
+assert.match(homepage, /<div\s+id=["']liveBg["'][^>]*>/i, "Homepage must contain the dedicated live background layer.");
+assert.match(homepage, /<script\b[^>]*src=["'][^"']*home-live-background\.js(?:[?#][^"']*)?["'][^>]*>/i, "Homepage must load the live background particle runtime.");
+const backgroundCss = fs.readFileSync(path.join(root, "css", "home-live-background.css"), "utf8");
+assert.match(backgroundCss, /#liveBg\s*\{[^}]*position\s*:\s*fixed/s, "Live background must remain fixed to the viewport.");
+assert.match(backgroundCss, /#liveBg\s*\{[^}]*pointer-events\s*:\s*none/s, "Live background must never intercept page interaction.");
+
 assert.ok(
   redirectedPages.has("index-1.html"),
   "The legacy index-1.html page must remain explicitly redirected before it is excluded from active-page checks."
