@@ -91,3 +91,19 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
 @media (prefers-reduced-motion:reduce){
   #cityGrid .city,#cityGrid .city-photo{transition:none!important}
 }
+
+
+/* WCAG AA contrast and native action semantics for the dark homepage. */
+.breadcrumb{color:#A8B8CD!important}
+.breadcrumb b{color:#93C5FD!important}
+.sectionhead h2,.section h2,.home-map-title,.home-regions-title{color:#FFD09C!important}
+.sectionhead p,.district-filter-status,#districtFilterStatus{color:#A8B8CD!important}
+.servicebar button{
+ display:inline-flex;align-items:center;gap:6px;padding:10px 14px;
+ border:1px solid #dce6f2;border-radius:12px;background:#fff;color:#123b67;
+ font:inherit;font-size:13px;font-weight:750;cursor:pointer;text-align:left;
+}
+.servicebar button:hover{border-color:#8bb7e8;transform:translateY(-2px)}
+.servicebar button:focus-visible{outline:3px solid #93C5FD;outline-offset:3px}
+.region-filters .region-btn:not(.active) span{color:#40566D!important}
+.region-filters .region-btn.active span{color:#FFFFFF!important}
