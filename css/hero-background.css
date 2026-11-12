@@ -15,7 +15,7 @@
 }
 .hero-cinematic-image{
   position:absolute;inset:-8%;
-  background-image:url("../images/varanasi.jpg");
+  background-image:url("https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=2400&auto=format&fit=crop");
   background-position:center 48%;background-size:cover;background-repeat:no-repeat;
   filter:saturate(1.18) contrast(1.06) brightness(1.12);
   transform:translateZ(0);
@@ -85,49 +85,24 @@
 }
 
 
-/* Correct the cinematic layer stacking after the legacy hero child rule.
-   The background must cover the whole hero without participating in flex layout. */
+/* Background-only layer: keep it outside the existing hero layout flow. */
 .hero>.hero-cinematic{
   position:absolute!important;
   inset:0!important;
   z-index:0!important;
+  display:block!important;
   width:100%!important;
   height:100%!important;
   max-width:none!important;
+  margin:0!important;
+  padding:0!important;
   flex:none!important;
+  pointer-events:none!important;
 }
-
-/* Restore a readable, natural single-column layout on phones.
-   Desktop/tablet layout remains unchanged. */
+.hero-cinematic-image{
+  background-image:url("https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=2400&auto=format&fit=crop")!important;
+}
+.hero>*:not(.hero-cinematic){position:relative;z-index:2}
 @media(max-width:760px){
-  .hero{
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:stretch!important;
-    justify-content:center!important;
-    gap:24px!important;
-    min-height:0!important;
-    padding:32px 18px 40px!important;
-  }
-  .hero>.hero-cinematic{position:absolute!important}
-  .hero>div:not(.hero-cinematic):first-of-type{
-    width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
-    flex:0 0 auto!important;
-  }
-  .hero-arya{
-    width:min(100%,410px)!important;
-    max-width:410px!important;
-    flex:0 1 auto!important;
-    align-self:center!important;
-    margin:0 auto!important;
-    transform:none!important;
-  }
-  .hero h1{
-    max-width:100%!important;
-    font-size:clamp(38px,10vw,50px)!important;
-    overflow-wrap:normal;
-  }
-  .hero p{max-width:100%!important}
+  .hero-cinematic-image{background-position:58% center}
 }
