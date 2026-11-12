@@ -1,28 +1,47 @@
-/* ExploreUP cinematic hero background — background-only release 3
- * Only the hero backdrop changes; existing content, layout, controls and behavior remain intact.
+/* ExploreUP cinematic hero background — animated background-only release 4
+ * Existing hero content, layout, controls and behavior remain unchanged.
  */
 .hero{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
   background-color:#071b35!important;
-  background-image:url("../images/varanasi.jpg")!important;
-  background-position:center 48%!important;
-  background-size:cover!important;
-  background-repeat:no-repeat!important;
+  background-image:none!important;
 }
-/* Replace the older animated mesh overlay with a readable cinematic shade.
-   Keep it behind the existing hero content and above the photo. */
+/* The photo and its shade live on the existing decorative pseudo-element.
+   Slow scale/pan motion creates a subtle cinematic background without moving content. */
 .hero::before{
   content:""!important;
   position:absolute!important;
   inset:0!important;
   z-index:0!important;
   pointer-events:none!important;
-  background:linear-gradient(90deg,rgba(4,15,31,.74) 0%,rgba(4,15,31,.48) 48%,rgba(4,15,31,.22) 100%)!important;
+  background-image:
+    linear-gradient(90deg,rgba(4,15,31,.70) 0%,rgba(4,15,31,.43) 48%,rgba(4,15,31,.20) 100%),
+    url("../images/varanasi.jpg")!important;
+  background-position:center,center 48%!important;
+  background-size:cover,cover!important;
+  background-repeat:no-repeat!important;
   mix-blend-mode:normal!important;
-  animation:none!important;
+  transform:scale(1.035);
+  transform-origin:center center;
+  will-change:transform;
+  animation:eu-hero-background-drift 28s ease-in-out infinite alternate!important;
+}
+.hero>div:first-child,.hero>*{position:relative;z-index:1}
+@keyframes eu-hero-background-drift{
+  0%{transform:scale(1.035) translate3d(0,0,0)}
+  100%{transform:scale(1.13) translate3d(-1.1%,.5%,0)}
 }
 @media(max-width:760px){
-  .hero{background-position:58% center!important}
   .hero::before{
-    background:linear-gradient(180deg,rgba(4,15,31,.48) 0%,rgba(4,15,31,.66) 100%)!important;
+    background-image:
+      linear-gradient(180deg,rgba(4,15,31,.44) 0%,rgba(4,15,31,.68) 100%),
+      url("../images/varanasi.jpg")!important;
+    background-position:center,58% center!important;
+    animation-duration:32s!important;
   }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero::before{animation:none!important;transform:none!important;will-change:auto!important}
 }
