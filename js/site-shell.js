@@ -37,8 +37,19 @@ if(document.readyState==='loading'){
   openInitialCityRoute();
 }
 
-// Supabase is optional and must not gate local city/deep-link navigation.
-loadSupabaseBackend().then(client=>{
-  if(!client)return;
-  syncDistrictCatalog().then(()=>{renderCities();}).catch(()=>{renderCities();});
-});
+// Supabase is optional. Load it only after the initial page has painted and the browser is idle.
+function hydrateOnlineDistrictCatalog(){
+  const load=()=>{
+    loadSupabaseBackend().then(client=>{
+      if(!client)return;
+      syncDistrictCatalog().then(()=>{renderCities();}).catch(()=>{renderCities();});
+    });
+  };
+  // A short post-load grace period ensures the hero gets the first render opportunity.
+  window.setTimeout(()=>{
+    if('requestIdleCallback' in window) window.requestIdleCallback(load,{timeout:2500});
+    else load();
+  },1800);
+}
+if(document.readyState==='complete') hydrateOnlineDistrictCatalog();
+else window.addEventListener('load',hydrateOnlineDistrictCatalog,{once:true});

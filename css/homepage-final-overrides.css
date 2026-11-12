@@ -137,3 +137,13 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
   color: inherit !important;
   opacity: 1 !important;
 }
+
+/* Keep the mobile hero title visible immediately; decorative motion remains in the background. */
+@media(max-width:760px){
+  .eu-motion-ready .hero h1{
+    animation:none!important;
+    animation-delay:0s!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}

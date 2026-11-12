@@ -49,3 +49,5 @@ body{position:relative;isolation:isolate}
 html{background:#0a0f1e!important}
 body{background:transparent!important}
 #liveBg{z-index:-1!important}
+/* Mobile keeps the animated gradient, grid and orbs without a canvas layer. */
+@media(max-width:767px){#liveBg #lbCanvas{display:none!important}}
