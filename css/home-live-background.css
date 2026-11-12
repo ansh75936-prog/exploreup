@@ -42,6 +42,9 @@ body{position:relative;isolation:isolate}
   #liveBg #lbCanvas{display:none}
 }
 
+/* Let the animated background show through the hero; preserve all hero content and layout. */
+.hero{background:transparent!important;background-image:none!important}
+
 /* Keep the background visible while leaving the original homepage layout untouched. */
 html{background:#0a0f1e!important}
 body{background:transparent!important}
