@@ -194,12 +194,15 @@ async function openCity(name, options={}){
  saveRecentDestination(c.name);
  const modal=document.getElementById('modal');
  if(!modal){console.warn('ExploreUP modal container is missing.');return;}
+ const setModalText=(id,value)=>{const node=document.getElementById(id);if(node)node.textContent=value==null?'':String(value);};
  modal.style.display='block';
  document.body.style.overflow='hidden';
  modal.setAttribute('aria-hidden','false');
  try{trackDistrict(c.name)}catch(e){console.warn('ExploreUP district analytics skipped:',e)}
- document.getElementById('modalState').textContent='WELCOME TO';
- document.getElementById('modalTitle').textContent=c.name; if(window.exploreUpPhase2) exploreUpPhase2.setMapLinks(c.name); try{renderContacts(c.name)}catch(e){console.warn('V10 service render:',e)}
+ setModalText('modalState','WELCOME TO');
+ setModalText('modalTitle',c.name);
+ if(window.exploreUpPhase2) exploreUpPhase2.setMapLinks(c.name);
+ try{renderContacts(c.name)}catch(e){console.warn('V10 service render:',e)}
  document.title=`${c.name} Tourism Guide | ExploreUP`;
  const cityUrl='https://exploreup-five.vercel.app/?city='+encodeURIComponent(districtSlug(c.name));
  const canonical=document.getElementById('canonicalLink'); if(canonical)canonical.href=cityUrl;
@@ -211,11 +214,13 @@ async function openCity(name, options={}){
  if(ogTitle) ogTitle.setAttribute('content',`${c.name} Tourism Guide | ExploreUP`);
  const ogDesc=document.querySelector('meta[property="og:description"]');
  if(ogDesc) ogDesc.setAttribute('content',`Discover ${c.name}, Uttar Pradesh with places to visit, food, stays, services, shopping and travel information.`);
- document.getElementById('aboutCityName').textContent=c.name;
- document.getElementById('mDistance').textContent=c.distance; document.getElementById('mFee').textContent=c.fee;
- document.getElementById('mTime').textContent=c.time; document.getElementById('mRating').textContent=c.rating;
+ let aboutCityName=document.getElementById('aboutCityName');
+ if(!aboutCityName){const overview=document.getElementById('districtOverview');if(overview){aboutCityName=document.createElement('span');aboutCityName.id='aboutCityName';overview.appendChild(aboutCityName);}}
+ if(aboutCityName)aboutCityName.textContent=c.name;
+ setModalText('mDistance',c.distance); setModalText('mFee',c.fee);
+ setModalText('mTime',c.time); setModalText('mRating',c.rating);
  document.getElementById('breadcrumb').innerHTML=`Home <span>›</span> <b>Cities</b> <span>›</span> <b>${c.name}</b>`;
- document.getElementById('modalSubtitle').textContent=c.tag;
+ setModalText('modalSubtitle',c.tag);
  const hero=document.getElementById('modalHero');
  const heroVideo=document.getElementById('districtHeroVideo');
  const heroSound=document.getElementById('districtHeroSound');
