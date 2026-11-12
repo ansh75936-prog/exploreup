@@ -13,11 +13,11 @@
 
   const palette=['#ff9933','#ffffff','#138808','#ffcc70','#4fc3f7'];
   const mobile=window.matchMedia&&window.matchMedia('(max-width: 767px)').matches;
-  const count=mobile?14:34;
-  const frameInterval=1000/24;
+  const count=mobile?10:32;
+  const frameInterval=mobile?1000/16:1000/24;
   const pixelRatio=Math.min(window.devicePixelRatio||1,1.25);
 
-  let width=0,height=0,particles=[],raf=0,lastFrameAt=0;
+  let width=0,height=0,particles=[],raf=0,frameTimer=0;
 
   function resize(){
     width=window.innerWidth;
@@ -42,17 +42,12 @@
     });
   }
 
-  function draw(now){
+  function draw(){
+    raf=0;
     if(document.hidden||(reducedMotion&&reducedMotion.matches)){
       stop();
       return;
     }
-
-    if(now-lastFrameAt<frameInterval){
-      raf=window.requestAnimationFrame(draw);
-      return;
-    }
-    lastFrameAt=now;
 
     context.clearRect(0,0,width,height);
 
@@ -71,7 +66,7 @@
       context.globalAlpha=p.alpha;
       context.fill();
 
-      if(i%2===0){
+      if(!mobile&&i%2===0){
         for(let j=i+1;j<particles.length;j++){
           const q=particles[j];
           const dx=p.x-q.x;
@@ -91,12 +86,13 @@
     }
 
     context.globalAlpha=1;
-    raf=window.requestAnimationFrame(draw);
+    frameTimer=window.setTimeout(function(){
+      if(!document.hidden)raf=window.requestAnimationFrame(draw);
+    },frameInterval);
   }
 
   function start(){
     if(!raf&&!document.hidden&&!(reducedMotion&&reducedMotion.matches)){
-      lastFrameAt=0;
       raf=window.requestAnimationFrame(draw);
     }
   }
@@ -105,6 +101,10 @@
     if(raf){
       window.cancelAnimationFrame(raf);
       raf=0;
+    }
+    if(frameTimer){
+      window.clearTimeout(frameTimer);
+      frameTimer=0;
     }
   }
 
