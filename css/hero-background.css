@@ -86,17 +86,23 @@
 
 
 /* Background-only layer: keep it outside the existing hero layout flow. */
-.hero>.hero-cinematic{
+/* The legacy .hero>div:first-child rule is more specific than .hero>*.
+   Override it explicitly so the decorative layer never becomes a flex column. */
+.hero>div.hero-cinematic:first-child{
   position:absolute!important;
   inset:0!important;
   z-index:0!important;
   display:block!important;
-  width:100%!important;
-  height:100%!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
   max-width:none!important;
+  max-height:none!important;
   margin:0!important;
   padding:0!important;
   flex:none!important;
+  align-self:auto!important;
   pointer-events:none!important;
 }
 .hero-cinematic-image{
