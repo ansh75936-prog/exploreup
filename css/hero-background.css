@@ -15,7 +15,7 @@
 }
 .hero-cinematic-image{
   position:absolute;inset:-8%;
-  background-image:url("https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=2400&auto=format&fit=crop");
+  background-image:url("../images/varanasi.jpg");
   background-position:center 48%;background-size:cover;background-repeat:no-repeat;
   filter:saturate(1.18) contrast(1.06) brightness(1.12);
   transform:translateZ(0);
@@ -70,7 +70,7 @@
   100%{opacity:0;transform:translate3d(var(--eu-ex,80px),var(--eu-ey,-120px),0) scale(.4)}
 }
 /* Preserve the current hero's content stacking and layout. */
-.hero>*:not(.hero-cinematic){position:relative;z-index:2}
+.hero>*:not(.hero-cinematic){z-index:2}
 @media(max-width:760px){
   .hero-cinematic-image{background-position:58% center}
   .hero-blob{filter:blur(64px);opacity:.22}
