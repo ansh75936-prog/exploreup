@@ -120,3 +120,20 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
 #districtDiscovery .district-tools .region-filters .region-btn span {
   opacity: 1 !important;
 }
+
+/* Preserve readable contrast in hover and keyboard-focus states */
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active),
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active):hover,
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active):focus-visible {
+  color: #40566D !important;
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active) span,
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active):hover span,
+#districtDiscovery .district-tools .region-filters .region-btn:not(.active):focus-visible span {
+  color: inherit !important;
+  opacity: 1 !important;
+}
