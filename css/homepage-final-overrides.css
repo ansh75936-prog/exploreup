@@ -137,3 +137,15 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
   color: inherit !important;
   opacity: 1 !important;
 }
+
+/* Keep the mobile hero title paintable immediately while retaining a subtle entrance motion. */
+@keyframes eu-hero-title-enter{
+  from{opacity:1;transform:translate3d(0,8px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@media(max-width:760px){
+  .eu-motion-ready .hero h1{
+    animation:eu-hero-title-enter .28s ease-out both!important;
+    animation-delay:0s!important;
+  }
+}
