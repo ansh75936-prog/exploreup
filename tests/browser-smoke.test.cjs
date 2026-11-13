@@ -120,6 +120,10 @@ async function main() {
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75);
 
     const districtSearch = page.locator("#searchInput");
+    await districtSearch.fill("Gautam   Buddha Nagar");
+    await page.waitForFunction(() => document.querySelector("#results")?.innerText.includes("Gautam Buddha Nagar"), null, { timeout: 10000 });
+    assert.ok((await page.locator("#results").innerText()).includes("Gautam Buddha Nagar"), "District search should normalize repeated whitespace");
+    await districtSearch.fill("");
     await districtSearch.fill("Agra");
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
     assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 2, "Agra search should also match Prayagraj by substring");
@@ -137,6 +141,7 @@ async function main() {
     if (await mapNode.count()) {
       await mapNode.click();
       assert.ok(await page.locator("#mapPopover.show").count(), "Map marker should open its district popover");
+      assert.equal(await page.locator("#mapPopover .map-open-btn").count(), 1, "District map popover should render a working open button");
     }
 
     await districtSearch.fill("Agra");
