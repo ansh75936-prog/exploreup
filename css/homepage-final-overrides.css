@@ -147,3 +147,31 @@ body.dark .suggestbox,body.dark .panel,body.dark .blog,body.dark .gem,body.dark 
     transform:none!important;
   }
 }
+
+
+/* Mobile scroll performance: keep the heritage atmosphere without large blurred layers. */
+@media(max-width:767px){
+  #liveBg::before{
+    inset:0!important;
+    background-size:200% 200%!important;
+    animation:none!important;
+  }
+  #liveBg .lb-orb{
+    filter:none!important;
+    opacity:.14!important;
+    will-change:transform;
+  }
+  #liveBg .lb-orb1{width:34vmax!important;height:34vmax!important}
+  #liveBg .lb-orb2{width:30vmax!important;height:30vmax!important}
+  #liveBg .lb-orb3,#liveBg .lb-orb4{display:none!important}
+  #liveBg .lb-grid{
+    animation:none!important;
+    opacity:.14!important;
+  }
+}
+@media(hover:none) and (pointer:coarse){
+  .blog:hover,.gem:hover,.contact-card:hover,.foodcard:hover,.mallcard:hover,.panel:hover,
+  .district:hover,.servicebar a:hover,.favbar:hover{
+    transform:none!important;
+  }
+}
