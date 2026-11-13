@@ -230,6 +230,14 @@ async function main() {
     });
     assert.ok(scrollState.pageHeight > scrollState.viewport, "Homepage should be taller than the mobile viewport");
     assert.ok(scrollState.moved, "The mobile homepage should remain vertically scrollable after closing Arya");
+    const mobileMotionCost = await page.evaluate(() => ({
+      orbFilter: getComputedStyle(document.querySelector("#liveBg .lb-orb1")).filter,
+      hiddenDecorativeOrbs: getComputedStyle(document.querySelector("#liveBg .lb-orb3")).display === "none",
+      gridAnimation: getComputedStyle(document.querySelector("#liveBg .lb-grid")).animationName
+    }));
+    assert.equal(mobileMotionCost.orbFilter, "none", "Mobile background orbs should not use expensive blur filters");
+    assert.equal(mobileMotionCost.hiddenDecorativeOrbs, true, "Extra mobile background orbs should be disabled");
+    assert.equal(mobileMotionCost.gridAnimation, "none", "Mobile grid animation should not repaint during scrolling");
 
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
