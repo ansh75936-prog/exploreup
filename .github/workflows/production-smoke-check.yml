@@ -99,8 +99,10 @@ jobs:
           NODE
 
       - name: Verify production pages and shared assets
+        if: github.event_name != 'pull_request'
         env:
           SITE_URL: https://exploreup-five.vercel.app
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
           node --input-type=module <<'NODE'
           const base = process.env.SITE_URL;
@@ -139,11 +141,19 @@ jobs:
             "/js/arya-open-state-fix.js?v=20261111-1"
           ];
 
+          const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+          if (!bypassSecret) {
+            throw new Error("Missing GitHub Actions secret VERCEL_AUTOMATION_BYPASS_SECRET. Configure a Vercel Protection Bypass for Automation secret in repository Actions secrets.");
+          }
+
           async function request(path) {
             const response = await fetch(new URL(path, base), {
               redirect: "follow",
               signal: AbortSignal.timeout(15000),
-              headers: { "user-agent": "ExploreUP-Production-Smoke-Check/1.0" }
+              headers: {
+                "user-agent": "ExploreUP-Production-Smoke-Check/1.0",
+                "x-vercel-protection-bypass": bypassSecret
+              }
             });
             return { status: response.status, body: await response.text(), url: response.url };
           }
