@@ -2,7 +2,7 @@ async function searchSite(){
  const input=document.getElementById('searchInput'), box=document.getElementById('results');
  if(!input||!box)return;
  const raw=input.value.trim();
- const q=raw.toLowerCase().normalize('NFKC').replace(/[’']/g,"'").replace(/\\s+/g,' ');
+ const q=raw.toLowerCase().normalize('NFKC').replace(/[’']/g,"'").replace(/\s+/g,' ');
  if(!q){box.style.display='none';box.innerHTML='';return;}
  try{recordOnlineEvent('search',null,{query:q.slice(0,120)});}catch(e){}
  const source=(window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length?window.__exploreUpDistrictCities:cities)||[];

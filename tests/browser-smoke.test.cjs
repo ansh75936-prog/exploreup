@@ -120,6 +120,10 @@ async function main() {
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75);
 
     const districtSearch = page.locator("#searchInput");
+    await districtSearch.fill("Gautam   Buddha Nagar");
+    await page.waitForFunction(() => document.querySelector("#results")?.innerText.includes("Gautam Buddha Nagar"), null, { timeout: 10000 });
+    assert.ok((await page.locator("#results").innerText()).includes("Gautam Buddha Nagar"), "District search should normalize repeated whitespace");
+    await districtSearch.fill("");
     await districtSearch.fill("Agra");
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
     assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 2, "Agra search should also match Prayagraj by substring");
@@ -137,6 +141,7 @@ async function main() {
     if (await mapNode.count()) {
       await mapNode.click();
       assert.ok(await page.locator("#mapPopover.show").count(), "Map marker should open its district popover");
+      assert.equal(await page.locator("#mapPopover .map-open-btn").count(), 1, "District map popover should render a working open button");
     }
 
     await districtSearch.fill("Agra");
@@ -215,6 +220,16 @@ async function main() {
     await page.waitForFunction(previous => document.querySelectorAll("#aryaBody .arya-msg.bot").length > previous, before, { timeout: 15000 });
     await page.locator(".arya-close[aria-label='Close Arya']").click();
     assert.equal(await page.locator("#aryaPanel").evaluate(el => el.hidden), true, "Arya should close cleanly");
+    assert.equal(await page.locator("body").evaluate(el => el.classList.contains("arya-open")), false, "Closing Arya must release the page scroll lock");
+    const scrollState = await page.evaluate(() => {
+      const before = window.scrollY;
+      window.scrollTo(0, Math.max(0, document.documentElement.scrollHeight - window.innerHeight));
+      const after = window.scrollY;
+      window.scrollTo(0, before);
+      return { pageHeight: document.documentElement.scrollHeight, viewport: window.innerHeight, moved: after > before };
+    });
+    assert.ok(scrollState.pageHeight > scrollState.viewport, "Homepage should be taller than the mobile viewport");
+    assert.ok(scrollState.moved, "The mobile homepage should remain vertically scrollable after closing Arya");
 
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
