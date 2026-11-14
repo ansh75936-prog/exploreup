@@ -106,6 +106,23 @@ async function main() {
   try {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
+    const skipLink = page.locator(".eu-skip-link");
+    assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
+    await skipLink.focus();
+    assert.equal(await skipLink.evaluate(el => getComputedStyle(el).transform), "matrix(1, 0, 0, 1, 0, 0)", "Skip link must become visible on keyboard focus");
+    await page.keyboard.press("Enter");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mainContent", "Skip link must move keyboard focus to main content");
+
+    // Verify natural vertical scrolling and narrow-screen layout boundaries.
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(150);
+    assert.ok(await page.evaluate(() => window.scrollY > 0), "Homepage must scroll vertically");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.setViewportSize({ width: 360, height: 800 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "360px viewport must not introduce horizontal page overflow");
+    const viewAllBounds = await page.locator("#euViewAll").boundingBox();
+    assert.ok(viewAllBounds && viewAllBounds.x >= 0 && viewAllBounds.x + viewAllBounds.width <= 360, "View All control must remain fully visible at 360px");
+    await page.setViewportSize({ width: 390, height: 844 });
 
     // District directory: reveal/hide, all 75 records, search, region filtering and map.
     const reveal = page.locator("#euViewAll");
