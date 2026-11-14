@@ -112,6 +112,17 @@ async function main() {
       ))]
     );
     assert.deepEqual(brokenHashLinks, [], "Every in-page navigation link must point to an existing section");
+    const unresolvedInlineActions = await page.locator("[onclick]").evaluateAll(elements => {
+      const names = new Set();
+      elements.forEach(element => {
+        const source = element.getAttribute("onclick") || "";
+        for (const match of source.matchAll(/(?:^|[;{}]\s*)([A-Za-z_$][\w$]*)\s*\(/g)) {
+          if (typeof window[match[1]] !== "function") names.add(match[1]);
+        }
+      });
+      return [...names].sort();
+    });
+    assert.deepEqual(unresolvedInlineActions, [], "Every inline action must resolve to a loaded function");
     const skipLink = page.locator(".eu-skip-link");
     assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
     await skipLink.focus();
