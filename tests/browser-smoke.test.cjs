@@ -106,6 +106,12 @@ async function main() {
   try {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
+    const skipLink = page.locator(".eu-skip-link");
+    assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
+    await skipLink.focus();
+    assert.equal(await skipLink.evaluate(el => getComputedStyle(el).transform), "matrix(1, 0, 0, 1, 0, 0)", "Skip link must become visible on keyboard focus");
+    await page.keyboard.press("Enter");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mainContent", "Skip link must move keyboard focus to main content");
 
     // Verify natural vertical scrolling and narrow-screen layout boundaries.
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
