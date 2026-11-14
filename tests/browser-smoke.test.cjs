@@ -114,6 +114,8 @@ async function main() {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.setViewportSize({ width: 360, height: 800 });
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "360px viewport must not introduce horizontal page overflow");
+    const viewAllBounds = await page.locator("#euViewAll").boundingBox();
+    assert.ok(viewAllBounds && viewAllBounds.x >= 0 && viewAllBounds.x + viewAllBounds.width <= 360, "View All control must remain fully visible at 360px");
     await page.setViewportSize({ width: 390, height: 844 });
 
     // District directory: reveal/hide, all 75 records, search, region filtering and map.

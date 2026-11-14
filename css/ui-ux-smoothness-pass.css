@@ -22,7 +22,7 @@ button:disabled{cursor:not-allowed!important}
 @media(max-width:700px){
   html{scroll-padding-top:68px}
   .section{padding-block:clamp(24px,6vw,34px)}
-  .sectionhead{align-items:flex-start!important;gap:12px!important}
+  .sectionhead{align-items:flex-start!important;gap:12px!important;flex-wrap:wrap!important}
   .sectionhead>div{flex:1 1 100%}
   .sectionhead .view{flex:0 0 auto;width:auto!important;max-width:100%;white-space:nowrap}
   .district-tools{padding:12px!important}
