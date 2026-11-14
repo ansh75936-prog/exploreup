@@ -144,7 +144,7 @@ assert.equal(districtNames.size, 75, "All 75 district names must be unique.");
 assert.deepEqual(missingDistrictImages, [], "District data must not point to missing local image assets.");
 const districtRuntime = fs.readFileSync(path.join(root, "js", "district-runtime.js"), "utf8");
 if (remoteDistrictImages.length) {
-  assert.match(districtRuntime, /loremflickr\.com/i, "Unverified random-photo URLs must be rejected by the district runtime.");
+  assert.ok(districtRuntime.includes("/loremflickr\\.com/i"), "Unverified random-photo URLs must be rejected by the district runtime.");
   assert.match(districtRuntime, /needs-verified-photo/, "Unverified district images must expose the branded fallback state.");
 }
 assert.deepEqual(missingReferences, [], "Active HTML pages contain broken local href/src references.");
