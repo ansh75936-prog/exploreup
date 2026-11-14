@@ -148,6 +148,7 @@ async function main() {
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75, null, { timeout: 20000 });
     assert.equal(await page.locator("#cityGrid .city").count(), 75, "View All must render all 75 districts");
     assert.equal(await page.locator('#cityGrid img[src*="loremflickr.com"]').count(), 0, "Random, unverified photo URLs must never be rendered in district cards");
+    assert.ok(await page.locator("#cityGrid .city-photo-fallback:visible").count() >= 60, "Districts without verified local photos must show the branded fallback");
     // A failed district photo must reveal the branded fallback instead of a blank card.
     const firstDistrictCard = page.locator("#cityGrid .city").first();
     await firstDistrictCard.locator(".city-photo").evaluate(img => {
