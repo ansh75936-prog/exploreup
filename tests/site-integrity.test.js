@@ -112,18 +112,18 @@ for (const page of htmlFiles) {
 }
 
 const districtDataFiles = allFiles
-  .filter(file => /^districts\\/[^/]+\\/data\\.js$/i.test(path.relative(root, file).split(path.sep).join("/")))
+  .filter(file => /^districts\/[^/]+\/data\.js$/i.test(path.relative(root, file).split(path.sep).join("/")))
   .sort();
 const districtNames = new Set();
 const missingDistrictImages = [];
 const remoteDistrictImages = [];
 for (const file of districtDataFiles) {
   const source = fs.readFileSync(file, "utf8");
-  const match = source.match(/ExploreUPDistricts\\.push\\((\\{[\\s\\S]*?\\})\\);/);
-  assert.ok(match, `District data file must contain one JSON district record: ${path.relative(root, file)}`);
+  const match = source.match(/ExploreUPDistricts\.push\((\{[\s\S]*?\})\);/);
+  assert.ok(match, "District data file must contain one JSON district record: " + path.relative(root, file));
   const district = JSON.parse(match[1]);
-  assert.ok(district.name, `District name is required in ${path.relative(root, file)}`);
-  assert.ok(!districtNames.has(district.name.toLowerCase()), `Duplicate district record: ${district.name}`);
+  assert.ok(district.name, "District name is required in " + path.relative(root, file));
+  assert.ok(!districtNames.has(district.name.toLowerCase()), "Duplicate district record: " + district.name);
   districtNames.add(district.name.toLowerCase());
 
   const image = String(district.img || "").trim();
@@ -142,7 +142,7 @@ assert.equal(districtNames.size, 75, "All 75 district names must be unique.");
 assert.deepEqual(missingDistrictImages, [], "District data must not point to missing local image assets.");
 const districtRuntime = fs.readFileSync(path.join(root, "js", "district-runtime.js"), "utf8");
 if (remoteDistrictImages.length) {
-  assert.match(districtRuntime, /loremflickr\\.com/i, "Unverified random-photo URLs must be rejected by the district runtime.");
+  assert.match(districtRuntime, /loremflickr\.com/i, "Unverified random-photo URLs must be rejected by the district runtime.");
   assert.match(districtRuntime, /needs-verified-photo/, "Unverified district images must expose the branded fallback state.");
 }
 assert.deepEqual(missingReferences, [], "Active HTML pages contain broken local href/src references.");
