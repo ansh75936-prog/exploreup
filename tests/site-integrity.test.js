@@ -1,6 +1,7 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
 const vercel = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
@@ -119,9 +120,10 @@ const missingDistrictImages = [];
 const remoteDistrictImages = [];
 for (const file of districtDataFiles) {
   const source = fs.readFileSync(file, "utf8");
-  const match = source.match(/ExploreUPDistricts\.push\((\{[\s\S]*?\})\);/);
-  assert.ok(match, "District data file must contain one JSON district record: " + path.relative(root, file));
-  const district = JSON.parse(match[1]);
+  const districtContext = { window: { ExploreUPDistricts: [] } };
+  vm.runInNewContext(source, districtContext, { timeout: 1000, filename: path.relative(root, file) });
+  assert.equal(districtContext.window.ExploreUPDistricts.length, 1, "District data file must register exactly one record: " + path.relative(root, file));
+  const district = districtContext.window.ExploreUPDistricts[0];
   assert.ok(district.name, "District name is required in " + path.relative(root, file));
   assert.ok(!districtNames.has(district.name.toLowerCase()), "Duplicate district record: " + district.name);
   districtNames.add(district.name.toLowerCase());
