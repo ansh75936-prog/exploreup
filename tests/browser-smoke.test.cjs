@@ -255,6 +255,20 @@ async function main() {
     assert.equal(await page.locator("#mobileMenu").getAttribute("role"), "dialog", "Mobile menu should expose dialog semantics");
     assert.equal(await page.locator("#mobileMenu").getAttribute("aria-hidden"), "false", "Open menu should be available to assistive technology");
     await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
+
+    // The drawer must keep keyboard focus inside while it is open.
+    await page.locator("#mobileMenu a[href]").last().focus();
+    await page.keyboard.press("Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileBackItem", "Tab from the final menu item must wrap to the first item");
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(await page.locator("#mobileMenu a[href]").last().evaluate(el => document.activeElement === el), true, "Shift+Tab from the first menu item must wrap to the final item");
+    await page.keyboard.press("Escape");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("aria-hidden"), "true", "Escape must close the mobile menu");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Escape must restore focus to the menu trigger");
+    assert.equal(await page.evaluate(() => document.body.style.overflow), "", "Escape must release the page scroll lock");
+
+    await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileLanguageItem").click();
     assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing the menu should restore focus to its trigger");
     assert.equal(await page.evaluate(() => document.body.style.overflow), "", "Closing the mobile menu must release the page scroll lock");
