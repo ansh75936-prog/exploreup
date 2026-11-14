@@ -233,6 +233,7 @@ async function main() {
     await page.waitForFunction(previous => document.querySelectorAll("#aryaBody .arya-msg.bot").length > previous, before, { timeout: 15000 });
     await page.locator(".arya-close[aria-label='Close Arya']").click();
     assert.equal(await page.locator("#aryaPanel").evaluate(el => el.hidden), true, "Arya should close cleanly");
+    assert.notEqual(await page.evaluate(() => getComputedStyle(document.body).overflowY), "hidden", "Closing Arya must restore page scrolling");
 
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
@@ -242,6 +243,10 @@ async function main() {
     await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileLanguageItem").click();
     assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing the menu should restore focus to its trigger");
+    assert.equal(await page.evaluate(() => document.body.style.overflow), "", "Closing the mobile menu must release the page scroll lock");
+    await page.evaluate(() => window.scrollTo({top: Math.min(500, document.documentElement.scrollHeight), behavior: "instant"}));
+    await page.waitForTimeout(100);
+    assert.ok(await page.evaluate(() => window.scrollY > 0), "Page must remain vertically scrollable after closing the mobile menu");
     assert.equal(await page.locator("html").getAttribute("lang"), "hi", "Language control should switch to Hindi");
     await page.locator("#mobileMenuBtn").click();
     await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
