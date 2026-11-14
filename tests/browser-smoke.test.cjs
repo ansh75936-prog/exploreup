@@ -109,7 +109,8 @@ async function main() {
     const skipLink = page.locator(".eu-skip-link");
     assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
     await skipLink.focus();
-    assert.equal(await skipLink.evaluate(el => getComputedStyle(el).transform), "matrix(1, 0, 0, 1, 0, 0)", "Skip link must become visible on keyboard focus");
+    await page.waitForFunction(() => { const link = document.querySelector(".eu-skip-link"); return link && link.getBoundingClientRect().top >= 0; }, null, { timeout: 1500 });
+    assert.ok(await skipLink.evaluate(el => el.getBoundingClientRect().top >= 0), "Skip link must become visible on keyboard focus");
     await page.keyboard.press("Enter");
     assert.equal(await page.evaluate(() => document.activeElement?.id), "mainContent", "Skip link must move keyboard focus to main content");
 
