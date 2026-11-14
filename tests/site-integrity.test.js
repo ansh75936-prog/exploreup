@@ -112,7 +112,7 @@ for (const page of htmlFiles) {
 }
 
 const districtDataFiles = allFiles
-  .filter(file => /^districts\/[^/]+\/data\.js$/i.test(path.relative(root, file).split(path.sep).join("/")))
+  .filter(file => { const relative = path.relative(root, file).split(path.sep).join("/"); return /^districts\/[^/]+\/data\.js$/i.test(relative) && !relative.startsWith("districts/_template/"); })
   .sort();
 const districtNames = new Set();
 const missingDistrictImages = [];
