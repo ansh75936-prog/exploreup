@@ -1,0 +1,28 @@
+/* Branded, non-misleading visual fallback for district photos that fail to load. */
+#cityGrid .city-photo-fallback{
+  display:none;position:absolute;inset:0;z-index:0;overflow:hidden;
+  align-items:flex-start;justify-content:flex-end;flex-direction:column;
+  gap:8px;padding:24px 20px 82px;color:#fff;
+  background:
+    radial-gradient(ellipse at 78% 20%,rgba(255,255,255,.24),transparent 27%),
+    linear-gradient(145deg,#123f70 0%,#285b83 46%,#17264b 100%);
+  isolation:isolate;
+}
+#cityGrid .city-photo-fallback::before{
+  content:"";position:absolute;width:230px;height:230px;right:-55px;top:-92px;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  box-shadow:0 0 0 22px rgba(255,255,255,.045),0 0 0 48px rgba(255,255,255,.035);
+}
+#cityGrid .city-photo-fallback::after{
+  content:"";position:absolute;left:-8%;right:-8%;bottom:20px;height:42%;
+  background:linear-gradient(145deg,transparent 0 28%,rgba(255,255,255,.11) 28% 29%,transparent 29% 43%,rgba(255,255,255,.08) 43% 44%,transparent 44%),
+    linear-gradient(0deg,rgba(4,17,39,.55),transparent);
+  clip-path:polygon(0 55%,18% 22%,34% 54%,53% 8%,73% 50%,88% 24%,100% 58%,100% 100%,0 100%);
+}
+#cityGrid .city-photo-fallback span{
+  position:relative;z-index:1;font-size:clamp(16px,2vw,20px);font-weight:850;
+  letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.35);
+}
+#cityGrid .city-photo-fallback{font-size:30px}
+#cityGrid .city-photo-fallback[style*="display: flex"]{display:flex!important}
+@media(prefers-reduced-motion:reduce){#cityGrid .city-photo-fallback::before{box-shadow:none}}
