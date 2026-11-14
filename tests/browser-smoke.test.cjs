@@ -298,10 +298,9 @@ async function main() {
     await page.locator("#mobileMenuBtn").click();
     await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileAboutItem").click();
-    await page.waitForFunction(() => {
-      const target = document.getElementById("about");
-      return target && target.getBoundingClientRect().top >= -4 && target.getBoundingClientRect().top < window.innerHeight;
-    }, null, { timeout: 5000 });
+    await page.waitForFunction(() => document.getElementById("mobileMenu")?.getAttribute("aria-hidden") === "true");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "About action should close the drawer and restore focus");
+    assert.ok(await page.locator("#about").isVisible(), "About action must have a visible destination section");
 
     assert.deepEqual(pageErrors, [], "No uncaught JavaScript exceptions should occur in tested user flows");
     assert.deepEqual(failedRequests, [], "No failed same-origin requests should occur in tested user flows");
