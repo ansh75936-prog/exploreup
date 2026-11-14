@@ -237,10 +237,16 @@ async function main() {
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
     assert.ok(await page.locator("#mobileMenu.show").count(), "Mobile menu should open");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("role"), "dialog", "Mobile menu should expose dialog semantics");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("aria-hidden"), "false", "Open menu should be available to assistive technology");
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileLanguageItem").click();
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing the menu should restore focus to its trigger");
     assert.equal(await page.locator("html").getAttribute("lang"), "hi", "Language control should switch to Hindi");
     await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileDarkItem").click();
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Dark-mode action should return focus to the menu trigger");
     assert.ok(await page.locator("body.dark").count(), "Dark-mode control should apply the dark theme");
     await page.locator("#mobileMenuBtn").click();
     await page.locator("#mobileDarkItem").click();
