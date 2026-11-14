@@ -43,7 +43,14 @@
     if(!title||!hero)return;
     const name=title.textContent.trim();
     const src=localImages[name];
-    if(src)hero.style.backgroundImage='linear-gradient(transparent,#06162d88),url("'+src+'")';
+    if(src){
+      const backgroundImage='linear-gradient(transparent,#06162d88),url("'+src+'")';
+      // This file observes style attributes. Avoid writing an identical value,
+      // otherwise the observer can retrigger itself while a local-image guide is open.
+      if(hero.style.backgroundImage!==backgroundImage)hero.style.backgroundImage=backgroundImage;
+      if(hero.style.backgroundSize!=='cover')hero.style.backgroundSize='cover';
+      if(hero.style.backgroundPosition!=='center')hero.style.backgroundPosition='center';
+    }
   }
   function applyAll(){try{applyCards();applyProfile();}catch(e){console.warn('ExploreUP local image patch warning:',e)}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyAll,{once:true});else applyAll();

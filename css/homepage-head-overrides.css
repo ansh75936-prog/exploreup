@@ -34,6 +34,12 @@ body.dark #backToTop{background:var(--gold);color:#071b35}
 /* ExploreUP Phase 2: district tabs + itinerary export */
 .district-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0 6px;position:sticky;top:0;z-index:8;background:var(--card)}.district-tab{border:1px solid var(--line);background:var(--bg);color:var(--text);padding:10px 14px;border-radius:12px;font-weight:850;cursor:pointer}.district-tab.active,.district-tab:hover{background:var(--navy);color:#fff;border-color:var(--navy)}.district-tab-hint{font-size:12px;color:var(--muted);margin-bottom:12px}.itinerary-export{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.itinerary-export button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 13px;border-radius:10px;font-weight:800;cursor:pointer}.itinerary-export button:hover{background:var(--navy);color:#fff}.phase2-print{display:none}@media print{body *{visibility:hidden!important}.phase2-print,.phase2-print *{visibility:visible!important}.phase2-print{display:block!important;position:absolute;left:0;top:0;width:100%;padding:25px;background:#fff;color:#111}.phase2-print h1{font-size:26px}.phase2-print .print-meta{margin-bottom:15px}}
 
+/* Keep the document itself as the mobile vertical scroll surface. */
+@media (hover:none) and (pointer:coarse){
+  html{overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y}
+  body{min-height:100%;touch-action:pan-y}
+}
+
 /* ExploreUP installed/PWA mobile layout hardening */
 @media (hover:none) and (pointer:coarse){
   html,body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:hidden!important;-webkit-text-size-adjust:100%!important}

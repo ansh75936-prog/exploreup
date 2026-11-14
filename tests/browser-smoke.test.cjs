@@ -106,12 +106,63 @@ async function main() {
   try {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
+    const brokenHashLinks = await page.locator('a[href^="#"]').evaluateAll(links =>
+      [...new Set(links.map(link => link.getAttribute("href")).filter(href =>
+        href && href.length > 1 && !document.querySelector(href)
+      ))]
+    );
+    assert.deepEqual(brokenHashLinks, [], "Every in-page navigation link must point to an existing section");
+    const unresolvedInlineActions = await page.locator("[onclick]").evaluateAll(elements => {
+      const names = new Set();
+      elements.forEach(element => {
+        const source = element.getAttribute("onclick") || "";
+        for (const match of source.matchAll(/(?:^|[;{}]\s*)([A-Za-z_$][\w$]*)\s*\(/g)) {
+          if (typeof window[match[1]] !== "function") names.add(match[1]);
+        }
+      });
+      return [...names].sort();
+    });
+    assert.deepEqual(unresolvedInlineActions, [], "Every inline action must resolve to a loaded function");
+    const skipLink = page.locator(".eu-skip-link");
+    assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
+    await skipLink.focus();
+    await page.waitForFunction(() => { const link = document.querySelector(".eu-skip-link"); return link && link.getBoundingClientRect().top >= 0; }, null, { timeout: 1500 });
+    assert.ok(await skipLink.evaluate(el => el.getBoundingClientRect().top >= 0), "Skip link must become visible on keyboard focus");
+    await page.keyboard.press("Enter");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mainContent", "Skip link must move keyboard focus to main content");
+
+    // Verify natural vertical scrolling and narrow-screen layout boundaries.
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(150);
+    assert.ok(await page.evaluate(() => window.scrollY > 0), "Homepage must scroll vertically");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.setViewportSize({ width: 360, height: 800 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "360px viewport must not introduce horizontal page overflow");
+    const viewAllBounds = await page.locator("#euViewAll").boundingBox();
+    assert.ok(viewAllBounds && viewAllBounds.x >= 0 && viewAllBounds.x + viewAllBounds.width <= 360, "View All control must remain fully visible at 360px");
+    await page.setViewportSize({ width: 390, height: 844 });
 
     // District directory: reveal/hide, all 75 records, search, region filtering and map.
     const reveal = page.locator("#euViewAll");
     await reveal.click();
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75, null, { timeout: 20000 });
     assert.equal(await page.locator("#cityGrid .city").count(), 75, "View All must render all 75 districts");
+    assert.equal(await page.locator('#cityGrid img[src*="loremflickr.com"]').count(), 0, "Random, unverified photo URLs must never be rendered in district cards");
+    assert.ok(await page.locator("#cityGrid .city-photo-fallback:visible").count() >= 60, "Districts without verified local photos must show the branded fallback");
+    // A failed district photo must reveal the branded fallback instead of a blank card.
+    const firstDistrictCard = page.locator("#cityGrid .city").first();
+    await firstDistrictCard.locator(".city-photo").evaluate(img => {
+      if (typeof img.onerror === "function") img.onerror.call(img);
+      else throw new Error("District photo error handler is missing");
+    });
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#cityGrid .city");
+      const image = card?.querySelector(".city-photo");
+      const fallback = card?.querySelector(".city-photo-fallback");
+      return image && fallback && image.style.display === "none" && fallback.style.display === "flex";
+    }, null, { timeout: 1500 });
+    assert.ok(await firstDistrictCard.locator(".city-photo-fallback").isVisible(), "Broken district photos must show the branded fallback");
+
     assert.equal(await reveal.getAttribute("aria-expanded"), "true", "View All must expose its expanded state");
     await reveal.click();
     await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
@@ -215,18 +266,54 @@ async function main() {
     await page.waitForFunction(previous => document.querySelectorAll("#aryaBody .arya-msg.bot").length > previous, before, { timeout: 15000 });
     await page.locator(".arya-close[aria-label='Close Arya']").click();
     assert.equal(await page.locator("#aryaPanel").evaluate(el => el.hidden), true, "Arya should close cleanly");
+    assert.notEqual(await page.evaluate(() => getComputedStyle(document.body).overflowY), "hidden", "Closing Arya must restore page scrolling");
 
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
     assert.ok(await page.locator("#mobileMenu.show").count(), "Mobile menu should open");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("role"), "dialog", "Mobile menu should expose dialog semantics");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("aria-hidden"), "false", "Open menu should be available to assistive technology");
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
+
+    // The drawer must keep keyboard focus inside while it is open.
+    const menuTabStops = page.locator('#mobileMenu button:not([disabled]), #mobileMenu a[href], #mobileMenu input:not([disabled]), #mobileMenu select:not([disabled]), #mobileMenu textarea:not([disabled]), #mobileMenu [tabindex]:not([tabindex="-1"])');
+    await menuTabStops.last().focus();
+    await page.keyboard.press("Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileBackItem", "Tab from the final menu item must wrap to the first item");
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(await menuTabStops.last().evaluate(el => document.activeElement === el), true, "Shift+Tab from the first menu item must wrap to the final item");
+    await page.keyboard.press("Escape");
+    assert.equal(await page.locator("#mobileMenu").getAttribute("aria-hidden"), "true", "Escape must close the mobile menu");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Escape must restore focus to the menu trigger");
+    assert.equal(await page.evaluate(() => document.body.style.overflow), "", "Escape must release the page scroll lock");
+
+    await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileLanguageItem").click();
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing the menu should restore focus to its trigger");
+    assert.equal(await page.evaluate(() => document.body.style.overflow), "", "Closing the mobile menu must release the page scroll lock");
+    await page.evaluate(() => window.scrollTo({top: Math.min(500, document.documentElement.scrollHeight), behavior: "instant"}));
+    await page.waitForTimeout(100);
+    assert.ok(await page.evaluate(() => window.scrollY > 0), "Page must remain vertically scrollable after closing the mobile menu");
     assert.equal(await page.locator("html").getAttribute("lang"), "hi", "Language control should switch to Hindi");
     await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
     await page.locator("#mobileDarkItem").click();
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Dark-mode action should return focus to the menu trigger");
     assert.ok(await page.locator("body.dark").count(), "Dark-mode control should apply the dark theme");
     await page.locator("#mobileMenuBtn").click();
     await page.locator("#mobileDarkItem").click();
     assert.equal(await page.locator("body.dark").count(), 0, "Dark-mode control should restore the light theme");
+
+    // Both desktop and drawer About navigation must land on a real section.
+    assert.equal(await page.locator('.navlinks a[href="#about"]').count(), 1, "Desktop About navigation must exist");
+    assert.equal(await page.locator("#about").count(), 1, "About navigation target must exist");
+    await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
+    await page.locator("#mobileAboutItem").click();
+    await page.waitForFunction(() => document.getElementById("mobileMenu")?.getAttribute("aria-hidden") === "true");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "About action should close the drawer and restore focus");
+    assert.ok(await page.locator("#about").isVisible(), "About action must have a visible destination section");
 
     assert.deepEqual(pageErrors, [], "No uncaught JavaScript exceptions should occur in tested user flows");
     assert.deepEqual(failedRequests, [], "No failed same-origin requests should occur in tested user flows");

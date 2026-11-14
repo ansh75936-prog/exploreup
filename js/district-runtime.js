@@ -55,6 +55,14 @@ function safeOpenCity(name){
 // Supabase is optional and may enrich data later, but it must never be required to show districts.
 (function ensureAll75Districts(){
   try{
+    // loremflickr returns random, non-district-specific photos and is unreliable in production.
+    // Use the existing branded district-card fallback instead of showing a misleading image.
+    cities.forEach(city=>{
+      if(city && typeof city.img==='string' && /loremflickr\.com/i.test(city.img)){
+        city.img='';
+        city.imageStatus='needs-verified-photo';
+      }
+    });
     if(typeof districtServiceContacts!=='undefined'){
       const alias={'gautam buddha nagar':'Gautam Buddh Nagar'};
       const byName=new Map(cities.map(c=>[normalizeCityQuery(c.name),c]));
