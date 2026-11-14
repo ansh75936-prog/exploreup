@@ -111,6 +111,40 @@ for (const page of htmlFiles) {
   }
 }
 
+const districtDataFiles = allFiles
+  .filter(file => /(^|[\\\\/])districts[\\\\/][^\\\\/]+[\\\\/]data\\.js$/i.test(file))
+  .sort();
+const districtNames = new Set();
+const missingDistrictImages = [];
+const remoteDistrictImages = [];
+for (const file of districtDataFiles) {
+  const source = fs.readFileSync(file, "utf8");
+  const match = source.match(/ExploreUPDistricts\\.push\\((\\{[\\s\\S]*?\\})\\);/);
+  assert.ok(match, `District data file must contain one JSON district record: ${path.relative(root, file)}`);
+  const district = JSON.parse(match[1]);
+  assert.ok(district.name, `District name is required in ${path.relative(root, file)}`);
+  assert.ok(!districtNames.has(district.name.toLowerCase()), `Duplicate district record: ${district.name}`);
+  districtNames.add(district.name.toLowerCase());
+
+  const image = String(district.img || "").trim();
+  if (!image) continue;
+  if (/^https?:/i.test(image)) {
+    remoteDistrictImages.push({ district: district.name, image });
+    continue;
+  }
+  const resolvedImage = resolveLocalReference(file, image);
+  if (resolvedImage && !existsAsPageOrAsset(resolvedImage)) {
+    missingDistrictImages.push({ district: district.name, image, resolved: resolvedImage });
+  }
+}
+assert.equal(districtDataFiles.length, 75, "Exactly 75 district data files must be present.");
+assert.equal(districtNames.size, 75, "All 75 district names must be unique.");
+assert.deepEqual(missingDistrictImages, [], "District data must not point to missing local image assets.");
+const districtRuntime = fs.readFileSync(path.join(root, "js", "district-runtime.js"), "utf8");
+if (remoteDistrictImages.length) {
+  assert.match(districtRuntime, /loremflickr\\.com/i, "Unverified random-photo URLs must be rejected by the district runtime.");
+  assert.match(districtRuntime, /needs-verified-photo/, "Unverified district images must expose the branded fallback state.");
+}
 assert.deepEqual(missingReferences, [], "Active HTML pages contain broken local href/src references.");
 assert.deepEqual(duplicateIds, [], "Active HTML pages contain duplicate element IDs.");
 assert.deepEqual(duplicateScripts, [], "An active page loads the same JavaScript file more than once.");
@@ -171,4 +205,6 @@ console.log(
   `PASS: checked ${htmlFiles.length} active HTML pages, ${scriptReferences} script tags, ${stylesheetReferences} stylesheet links and ${localReferences} local href/src references.`
 );
 console.log("PASS: no duplicate IDs, duplicate script loads or duplicate stylesheet loads in active pages.");
+console.log("PASS: all 75 district data files are present and uniquely named; local district image paths resolve.");
+console.log(`INFO: ${remoteDistrictImages.length} district photo URLs remain external and use the verified-photo fallback until authentic local assets are added.`);
 console.log("PASS: the archived index-1.html page is excluded only because vercel.json permanently redirects it.");
