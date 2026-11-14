@@ -28,7 +28,11 @@
     const menu=document.createElement('aside');
     menu.id='mobileMenu';
     menu.className='mobile-menu';
+    menu.setAttribute('role','dialog');
+    menu.setAttribute('aria-modal','true');
     menu.setAttribute('aria-label','ExploreUP menu');
+    menu.setAttribute('aria-hidden','true');
+    menu.inert=true;
     menu.innerHTML=`
       <div class="mobile-menu-section">
         <button class="mobile-menu-back" id="mobileBackItem" type="button" aria-label="Go back">← Back</button>
@@ -52,12 +56,16 @@
     document.body.appendChild(menu);
 
     function closeMenu(){
+      const wasOpen=menu.classList.contains('show');
       menu.classList.remove('show');
       sync();
+      if(wasOpen) btn.focus({preventScroll:true});
     }
 
     function sync(){
       const open=menu.classList.contains('show');
+      menu.inert=!open;
+      menu.setAttribute('aria-hidden',String(!open));
       btn.classList.toggle('is-open',open);
       btn.setAttribute('aria-expanded',String(open));
       btn.setAttribute('aria-label',open?'Close menu':'Open menu');
@@ -72,8 +80,10 @@
     }
 
     btn.addEventListener('click',function(){
+      const opening=!menu.classList.contains('show');
       menu.classList.toggle('show');
       sync();
+      if(opening) window.requestAnimationFrame(()=>menu.querySelector('button:not([disabled]),a[href]')?.focus({preventScroll:true}));
     });
 
     backdrop.addEventListener('click',closeMenu);
@@ -221,7 +231,20 @@
     });
 
     document.addEventListener('keydown',function(e){
-      if(e.key==='Escape') closeMenu();
+      if(!menu.classList.contains('show')) return;
+      if(e.key==='Escape'){
+        e.preventDefault();
+        closeMenu();
+        return;
+      }
+      if(e.key==='Tab'){
+        const items=Array.from(menu.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+          .filter(el=>el.getClientRects().length);
+        if(!items.length){e.preventDefault();return;}
+        const first=items[0],last=items[items.length-1];
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+      }
     });
   }
 
