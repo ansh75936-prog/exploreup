@@ -5,6 +5,8 @@
     const p=getPanel();
     if(p){p.hidden=true;p.classList.remove('arya-visible');p.style.display='none';}
     document.body.classList.remove('arya-open');
+    const menuOpen=!!document.querySelector('#mobileMenu.show');
+    document.body.style.overflow=menuOpen?'hidden':'';
   };
   const open=()=>{
     const p=getPanel();
@@ -13,6 +15,7 @@
     p.classList.add('arya-visible');
     p.style.display='flex';
     document.body.classList.add('arya-open');
+    document.body.style.overflow='hidden';
     setTimeout(()=>document.getElementById('aryaInput')?.focus(),50);
   };
   window.aryaBackHome=()=>{close();window.scrollTo({top:0,behavior:'smooth'});};
