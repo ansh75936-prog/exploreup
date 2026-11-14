@@ -134,9 +134,9 @@ for (const file of districtDataFiles) {
     remoteDistrictImages.push({ district: district.name, image });
     continue;
   }
-  const resolvedImage = resolveLocalReference(file, image);
-  if (resolvedImage && !existsAsPageOrAsset(resolvedImage)) {
-    missingDistrictImages.push({ district: district.name, image, resolved: resolvedImage });
+  const imagePath = image.split(/[?#]/)[0].replace(/^\.\//, "").replace(/^\//, "");
+  if (imagePath && !existsAsPageOrAsset(imagePath)) {
+    missingDistrictImages.push({ district: district.name, image, resolved: imagePath });
   }
 }
 assert.equal(districtDataFiles.length, 75, "Exactly 75 district data files must be present.");
