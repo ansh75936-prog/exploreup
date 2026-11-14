@@ -130,6 +130,17 @@ async function main() {
     await reveal.click();
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75, null, { timeout: 20000 });
     assert.equal(await page.locator("#cityGrid .city").count(), 75, "View All must render all 75 districts");
+    // A failed district photo must reveal the branded fallback instead of a blank card.
+    const firstDistrictCard = page.locator("#cityGrid .city").first();
+    await firstDistrictCard.locator(".city-photo").evaluate(img => { img.src = "data:image/png;base64,invalid-image-data"; });
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#cityGrid .city");
+      const image = card?.querySelector(".city-photo");
+      const fallback = card?.querySelector(".city-photo-fallback");
+      return image && fallback && getComputedStyle(image).display === "none" && getComputedStyle(fallback).display !== "none";
+    }, null, { timeout: 5000 });
+    assert.ok(await firstDistrictCard.locator(".city-photo-fallback").isVisible(), "Broken district photos must show the branded fallback");
+
     assert.equal(await reveal.getAttribute("aria-expanded"), "true", "View All must expose its expanded state");
     await reveal.click();
     await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
