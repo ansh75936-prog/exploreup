@@ -106,6 +106,12 @@ async function main() {
   try {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
+    const brokenHashLinks = await page.locator('a[href^="#"]').evaluateAll(links =>
+      [...new Set(links.map(link => link.getAttribute("href")).filter(href =>
+        href && href.length > 1 && !document.querySelector(href)
+      ))]
+    );
+    assert.deepEqual(brokenHashLinks, [], "Every in-page navigation link must point to an existing section");
     const skipLink = page.locator(".eu-skip-link");
     assert.equal(await skipLink.getAttribute("href"), "#mainContent", "Skip link must target the main content");
     await skipLink.focus();
