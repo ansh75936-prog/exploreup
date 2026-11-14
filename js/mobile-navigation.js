@@ -76,7 +76,7 @@
       btn.style.left=open?'auto':'';
       btn.style.zIndex=open?'10001':'';
       backdrop.classList.toggle('show',open);
-      document.body.style.overflow=open?'hidden':'';
+      document.body.style.overflow=(open||document.body.classList.contains('arya-open'))?'hidden':'';
     }
 
     btn.addEventListener('click',function(){
