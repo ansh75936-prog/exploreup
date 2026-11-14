@@ -286,6 +286,17 @@ async function main() {
     await page.locator("#mobileDarkItem").click();
     assert.equal(await page.locator("body.dark").count(), 0, "Dark-mode control should restore the light theme");
 
+    // Both desktop and drawer About navigation must land on a real section.
+    assert.equal(await page.locator('.navlinks a[href="#about"]').count(), 1, "Desktop About navigation must exist");
+    assert.equal(await page.locator("#about").count(), 1, "About navigation target must exist");
+    await page.locator("#mobileMenuBtn").click();
+    await page.waitForFunction(() => document.activeElement?.id === "mobileBackItem");
+    await page.locator("#mobileAboutItem").click();
+    await page.waitForFunction(() => {
+      const target = document.getElementById("about");
+      return target && target.getBoundingClientRect().top >= -4 && target.getBoundingClientRect().top < window.innerHeight;
+    }, null, { timeout: 5000 });
+
     assert.deepEqual(pageErrors, [], "No uncaught JavaScript exceptions should occur in tested user flows");
     assert.deepEqual(failedRequests, [], "No failed same-origin requests should occur in tested user flows");
 
