@@ -64,7 +64,7 @@
   hero.appendChild(stack);
   const caption=document.createElement("div");caption.className="eu-hero-location";caption.setAttribute("aria-live","polite");caption.innerHTML='<span class="eu-live-dot"></span><span class="eu-hero-city"></span><span class="eu-hero-subtitle"></span>';hero.appendChild(caption);
   const toggle=document.createElement("button");toggle.type="button";toggle.className="eu-slideshow-toggle";toggle.setAttribute("aria-pressed","false");toggle.setAttribute("aria-label","Ⅱ Pause slides — featured destination slideshow");toggle.textContent="Ⅱ Pause slides";hero.appendChild(toggle);
-  let current=0,paused=!!reduced,timer=null;
+  let current=0,paused=!!reduced,timer=null,heroVisible=true;
   function show(i){
    current=i%slides.length;const s=slides[current],layer=layers[current];
    if(s.image){layer.style.backgroundImage='url("'+s.image.replace(/"/g,"")+'")';}
@@ -75,7 +75,16 @@
    if(s.image){const im=new Image();im.src=s.image;}
   }
   function stop(){if(timer){window.clearInterval(timer);timer=null;}}
-  function start(){stop();if(!paused&&!document.hidden)timer=window.setInterval(()=>show((current+1)%slides.length),6500);}
+  function start(){stop();if(!paused&&!document.hidden&&heroVisible)timer=window.setInterval(()=>show((current+1)%slides.length),6500);}
+  // Pause the decorative slideshow while the hero is off-screen to avoid
+  // background image swaps and timer work while users read lower sections.
+  if('IntersectionObserver' in window){
+   const heroVisibility=new IntersectionObserver(entries=>{
+    heroVisible=!!entries[0]&&entries[0].isIntersecting;
+    if(heroVisible)start();else stop();
+   },{threshold:0.01});
+   heroVisibility.observe(hero);
+  }
   toggle.hidden=!!reduced;
   toggle.addEventListener("click",()=>{paused=!paused;toggle.setAttribute("aria-pressed",String(paused));toggle.textContent=paused?"▶ Play slides":"Ⅱ Pause slides";toggle.setAttribute("aria-label",paused?"▶ Play slides — featured destination slideshow":"Pause featured destination slideshow");if(paused)stop();else start();});
   document.addEventListener("visibilitychange",()=>{if(document.hidden)stop();else start();});

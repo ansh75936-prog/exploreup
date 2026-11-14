@@ -107,6 +107,15 @@ async function main() {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
 
+    // Verify natural vertical scrolling and narrow-screen layout boundaries.
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(150);
+    assert.ok(await page.evaluate(() => window.scrollY > 0), "Homepage must scroll vertically");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.setViewportSize({ width: 360, height: 800 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "360px viewport must not introduce horizontal page overflow");
+    await page.setViewportSize({ width: 390, height: 844 });
+
     // District directory: reveal/hide, all 75 records, search, region filtering and map.
     const reveal = page.locator("#euViewAll");
     await reveal.click();

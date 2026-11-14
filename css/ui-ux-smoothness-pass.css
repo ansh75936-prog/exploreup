@@ -11,7 +11,7 @@ button:disabled{cursor:not-allowed!important}
 .sectionhead h2{text-wrap:balance}
 .sectionhead p{max-width:72ch;text-wrap:pretty}
 .region-filters{scrollbar-width:thin;overscroll-behavior-x:contain}
-#cityGrid .city{contain:layout paint}
+#cityGrid .city{contain:layout}
 #cityGrid .city img{display:block}
 @media(hover:none) and (pointer:coarse){
   .city,.eu-featured-card,#cityGrid .city{will-change:auto!important;transform:none!important;transition:box-shadow .18s ease!important}
