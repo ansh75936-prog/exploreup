@@ -216,6 +216,23 @@ async function main() {
     await page.locator(".arya-close[aria-label='Close Arya']").click();
     assert.equal(await page.locator("#aryaPanel").evaluate(el => el.hidden), true, "Arya should close cleanly");
 
+    // Mobile login modal: accessible open state, keyboard trap, Escape and focus restore.
+    await page.locator("#mobileMenuBtn").click();
+    await page.locator("#mobileLoginItem").click();
+    await page.waitForFunction(() => document.getElementById("mobileAuthModal")?.classList.contains("show"));
+    const authModal = page.locator("#mobileAuthModal");
+    assert.equal(await authModal.getAttribute("aria-hidden"), "false", "Open auth modal must be exposed to assistive technology");
+    await page.waitForFunction(() => document.activeElement?.id === "mobileAuthEmail");
+    await page.locator(".mobile-auth-close").focus();
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileAuthSwitch", "Shift+Tab from first control must wrap to last control");
+    await page.keyboard.press("Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.classList.contains("mobile-auth-close")), true, "Tab from last control must wrap to first control");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.getElementById("mobileAuthModal")?.classList.contains("show"));
+    assert.equal(await authModal.getAttribute("aria-hidden"), "true", "Closed auth modal must be hidden from assistive technology");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileLoginItem", "Closing auth modal must restore focus to its trigger");
+
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
     assert.ok(await page.locator("#mobileMenu.show").count(), "Mobile menu should open");
