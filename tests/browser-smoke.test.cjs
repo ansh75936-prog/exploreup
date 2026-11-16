@@ -231,7 +231,7 @@ async function main() {
     await page.keyboard.press("Escape");
     await page.waitForFunction(() => !document.getElementById("mobileAuthModal")?.classList.contains("show"));
     assert.equal(await authModal.getAttribute("aria-hidden"), "true", "Closed auth modal must be hidden from assistive technology");
-    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileLoginItem", "Closing auth modal must restore focus to its trigger");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing auth modal must restore focus to the visible menu trigger");
 
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
