@@ -147,7 +147,8 @@ function toggleAllDistricts(){
  }
  grid.hidden=!willOpen;
  grid.setAttribute('aria-hidden',String(!willOpen));
- grid.style.display=willOpen?'block':'none';
+ // Let the .cities stylesheet control its grid layout; the hidden attribute controls visibility.
+ grid.style.removeProperty('display');
  const buttons=[...document.querySelectorAll('#euViewAll,#euViewAllFeatured')];
  buttons.forEach(btn=>{
   btn.setAttribute('aria-expanded',String(willOpen));
