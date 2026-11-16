@@ -9,12 +9,9 @@
   if(!context)return;
 
   const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
-  if(reducedMotion&&reducedMotion.matches)return;
-
-  const mobile=window.matchMedia&&window.matchMedia('(max-width: 767px)').matches;
-  // The CSS gradient, grid and floating orbs stay animated on mobile; skip only the
-  // decorative canvas particles to keep the initial mobile render lightweight.
-  if(mobile)return;
+  const mobileQuery=window.matchMedia&&window.matchMedia('(max-width: 767px)');
+  // Keep the CSS background active on mobile; only the decorative canvas particles
+  // are paused there. Media-query changes are handled so orientation/resize works.
 
   const palette=['#ff9933','#ffffff','#138808','#ffcc70','#4fc3f7'];
   const count=32;
@@ -26,6 +23,11 @@
   function resize(){
     width=window.innerWidth;
     height=window.innerHeight;
+    if(mobileQuery&&mobileQuery.matches){
+      canvas.width=0;
+      canvas.height=0;
+      return;
+    }
     canvas.width=Math.round(width*pixelRatio);
     canvas.height=Math.round(height*pixelRatio);
     context.setTransform(pixelRatio,0,0,pixelRatio,0,0);
@@ -48,7 +50,7 @@
 
   function draw(){
     raf=0;
-    if(document.hidden||(reducedMotion&&reducedMotion.matches)){
+    if(document.hidden||(mobileQuery&&mobileQuery.matches)||(reducedMotion&&reducedMotion.matches)){
       stop();
       return;
     }
@@ -96,7 +98,7 @@
   }
 
   function start(){
-    if(!raf&&!document.hidden&&!(reducedMotion&&reducedMotion.matches)){
+    if(!raf&&!document.hidden&&!(mobileQuery&&mobileQuery.matches)&&!(reducedMotion&&reducedMotion.matches)){
       raf=window.requestAnimationFrame(draw);
     }
   }
@@ -112,28 +114,36 @@
     }
   }
 
+  function syncLifecycle(){
+    if(document.hidden||(mobileQuery&&mobileQuery.matches)||(reducedMotion&&reducedMotion.matches)){
+      stop();
+      if(mobileQuery&&mobileQuery.matches){canvas.width=0;canvas.height=0;}
+      return;
+    }
+    resize();
+    start();
+  }
+
   function scheduleStart(){
+    const run=syncLifecycle;
     if('requestIdleCallback' in window){
-      window.requestIdleCallback(start,{timeout:1600});
+      window.requestIdleCallback(run,{timeout:1600});
     }else{
-      window.setTimeout(start,900);
+      window.setTimeout(run,900);
     }
   }
 
-  window.addEventListener('resize',resize,{passive:true});
-  document.addEventListener('visibilitychange',function(){
-    if(document.hidden)stop();
-    else start();
-  });
+  window.addEventListener('resize',syncLifecycle,{passive:true});
+  if(mobileQuery&&mobileQuery.addEventListener){
+    mobileQuery.addEventListener('change',syncLifecycle);
+  }
+  document.addEventListener('visibilitychange',syncLifecycle);
 
   if(reducedMotion&&reducedMotion.addEventListener){
-    reducedMotion.addEventListener('change',function(event){
-      if(event.matches)stop();
-      else start();
-    });
+    reducedMotion.addEventListener('change',syncLifecycle);
   }
 
-  resize();
+  syncLifecycle();
   if(document.readyState==='complete')scheduleStart();
   else window.addEventListener('load',scheduleStart,{once:true});
 })();

@@ -25,6 +25,55 @@ async function syncDistrictCatalog(){
   }catch(e){ console.warn('District catalog sync failed',e); }
 }
 
+
+/* District modal lifecycle: centralize scroll locking and the close/back actions. */
+let exploreUpModalPreviousOverflow = null;
+let exploreUpModalScrollY = 0;
+function prepareDistrictModal(modal){
+ if(!modal)return;
+ if(modal.getAttribute('aria-hidden')!=='false'){
+  exploreUpModalPreviousOverflow=document.body.style.overflow;
+  exploreUpModalScrollY=window.scrollY||window.pageYOffset||0;
+ }
+ modal.style.display='block';
+ modal.setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';
+}
+function closeModal(options={}){
+ const modal=document.getElementById('modal');
+ if(!modal)return false;
+ const wasOpen=modal.getAttribute('aria-hidden')!=='true' && modal.style.display!=='none';
+ modal.style.display='none';
+ modal.setAttribute('aria-hidden','true');
+ const video=document.getElementById('districtHeroVideo');
+ if(video){try{video.pause();}catch(e){}}
+ if(wasOpen){
+  document.body.style.overflow=exploreUpModalPreviousOverflow==null?'':exploreUpModalPreviousOverflow;
+  const restoreY=exploreUpModalScrollY;
+  exploreUpModalPreviousOverflow=null;
+  requestAnimationFrame(()=>window.scrollTo(0,restoreY));
+ }
+ currentExploreCity='';
+ document.title='ExploreUP — Explore Uttar Pradesh | Cities, Places, Food & Travel';
+ const canonical=document.getElementById('canonicalLink');
+ if(canonical)canonical.href='https://exploreup-five.vercel.app/';
+ const ogUrl=document.querySelector('meta[property="og:url"]');
+ if(ogUrl)ogUrl.setAttribute('content','https://exploreup-five.vercel.app/');
+ if(!options.fromHistory){
+  if(history.state&&history.state.exploreupCity)history.back();
+  else if(location.search||location.hash)history.replaceState({},'',location.pathname);
+ }
+ return true;
+}
+function goBackNavigation(){
+ const modal=document.getElementById('modal');
+ if(!modal||modal.getAttribute('aria-hidden')==='true')return false;
+ if(history.state&&history.state.exploreupCity){history.back();return true;}
+ return closeModal({fromHistory:true});
+}
+window.closeModal=closeModal;
+window.goBackNavigation=goBackNavigation;
+
 function safeOpenCityByIndex(index){
  try{
   const i=Number(index);
@@ -40,7 +89,7 @@ function safeOpenCity(name){
   const city=cities.find(c=>normalizeCityQuery(c.name)===normalizeCityQuery(value)) || cities.find(c=>normalizeCityQuery(c.name).includes(normalizeCityQuery(value)) || normalizeCityQuery(value).includes(normalizeCityQuery(c.name)));
   if(!city){console.warn('ExploreUP destination not found:',value);return false;}
   const modal=document.getElementById('modal');
-  if(modal){modal.style.display='block';modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+  if(modal)prepareDistrictModal(modal);
   const title=document.getElementById('modalTitle');
   if(title)title.textContent=city.name;
   const state=document.getElementById('modalState');
@@ -98,7 +147,8 @@ function toggleAllDistricts(){
  }
  grid.hidden=!willOpen;
  grid.setAttribute('aria-hidden',String(!willOpen));
- grid.style.display=willOpen?'block':'none';
+ // Let the .cities stylesheet control its grid layout; the hidden attribute controls visibility.
+ grid.style.removeProperty('display');
  const buttons=[...document.querySelectorAll('#euViewAll,#euViewAllFeatured')];
  buttons.forEach(btn=>{
   btn.setAttribute('aria-expanded',String(willOpen));
@@ -195,9 +245,7 @@ async function openCity(name, options={}){
  const modal=document.getElementById('modal');
  if(!modal){console.warn('ExploreUP modal container is missing.');return;}
  const setModalText=(id,value)=>{const node=document.getElementById(id);if(node)node.textContent=value==null?'':String(value);};
- modal.style.display='block';
- document.body.style.overflow='hidden';
- modal.setAttribute('aria-hidden','false');
+ prepareDistrictModal(modal);
  try{trackDistrict(c.name)}catch(e){console.warn('ExploreUP district analytics skipped:',e)}
  setModalText('modalState','WELCOME TO');
  setModalText('modalTitle',c.name);

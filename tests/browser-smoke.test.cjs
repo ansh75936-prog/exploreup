@@ -107,6 +107,15 @@ async function main() {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
 
+    // Decorative canvas particles must pause on mobile and resume after breakpoint changes.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForFunction(() => (document.getElementById("lbCanvas")?.width || 0) > 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForFunction(() => document.getElementById("lbCanvas")?.width === 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForFunction(() => (document.getElementById("lbCanvas")?.width || 0) > 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 390, height: 844 });
+
     // District directory: reveal/hide, all 75 records, search, region filtering and map.
     const reveal = page.locator("#euViewAll");
     await reveal.click();
@@ -116,13 +125,28 @@ async function main() {
     await reveal.click();
     await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
     assert.equal(await reveal.getAttribute("aria-expanded"), "false", "View All must hide the district grid on the second click");
+
+    // Search/region filtering must reopen the directory after a manual collapse.
+    const districtSearch = page.locator("#searchInput");
+    await districtSearch.fill("Agra");
+    await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === false);
+    assert.equal(await page.locator("#cityGrid").getAttribute("aria-hidden"), "false", "Auto-revealed district grid must be exposed to assistive technology");
+    assert.notEqual(await page.locator("#cityGrid").evaluate(el => getComputedStyle(el).display), "none", "Auto-revealed district grid must not retain display:none");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    await districtSearch.fill("");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 75);
+    await reveal.click();
+    await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
     await reveal.click();
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75);
 
-    const districtSearch = page.locator("#searchInput");
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
-    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 2, "Agra search should also match Prayagraj by substring");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 1, "Exact Agra search must not return Prayagraj as a false positive");
+    assert.equal((await page.locator("#cityGrid .city:not(.is-hidden) .citytext h3").first().textContent()).trim(), "Agra");
+    await districtSearch.fill("Prayag");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    assert.equal((await page.locator("#cityGrid .city:not(.is-hidden) .citytext h3").first().textContent()).trim(), "Prayagraj", "Prefix search must still find Prayagraj");
 
     await districtSearch.fill("");
     const braj = page.locator('.region-btn[data-region="braj"]');
@@ -140,7 +164,7 @@ async function main() {
     }
 
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
     const agraCard = page.locator("#cityGrid .city").filter({ has: page.locator(".citytext h3", { hasText: /^Agra$/ }) });
     await agraCard.click();
     await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
@@ -152,6 +176,16 @@ async function main() {
     await page.locator("#saveCityBtn").click();
     const saved = await page.evaluate(() => window.ExploreUPFavorites?.all?.() || []);
     assert.ok(saved.some(item => item.name === "Agra"), "Save destination should persist a favorite");
+
+    // District modal must close through its button and Escape, restoring page scrolling.
+    await page.locator("#modal .close").click();
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "true");
+    assert.notEqual(await page.evaluate(() => document.body.style.overflow), "hidden", "Closing a district guide must release the body scroll lock");
+    await agraCard.click();
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "true", null, { timeout: 5000 });
+    assert.notEqual(await page.evaluate(() => document.body.style.overflow), "hidden", "Escape must close the district guide and restore scrolling");
 
     await page.goto(baseUrl + "/favorites.html", { waitUntil: "domcontentloaded", timeout: 45000 });
     await page.waitForSelector("#list", { timeout: 10000 });
@@ -216,6 +250,23 @@ async function main() {
     await page.locator(".arya-close[aria-label='Close Arya']").click();
     assert.equal(await page.locator("#aryaPanel").evaluate(el => el.hidden), true, "Arya should close cleanly");
 
+    // Mobile login modal: accessible open state, keyboard trap, Escape and focus restore.
+    await page.locator("#mobileMenuBtn").click();
+    await page.locator("#mobileLoginItem").click();
+    await page.waitForFunction(() => document.getElementById("mobileAuthModal")?.classList.contains("show"));
+    const authModal = page.locator("#mobileAuthModal");
+    assert.equal(await authModal.getAttribute("aria-hidden"), "false", "Open auth modal must be exposed to assistive technology");
+    await page.waitForFunction(() => document.activeElement?.id === "mobileAuthEmail");
+    await page.locator(".mobile-auth-close").focus();
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileAuthSwitch", "Shift+Tab from first control must wrap to last control");
+    await page.keyboard.press("Tab");
+    assert.equal(await page.evaluate(() => document.activeElement?.classList.contains("mobile-auth-close")), true, "Tab from last control must wrap to first control");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.getElementById("mobileAuthModal")?.classList.contains("show"));
+    assert.equal(await authModal.getAttribute("aria-hidden"), "true", "Closed auth modal must be hidden from assistive technology");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mobileMenuBtn", "Closing auth modal must restore focus to the visible menu trigger");
+
     // Mobile menu, language and dark-mode controls.
     await page.locator("#mobileMenuBtn").click();
     assert.ok(await page.locator("#mobileMenu.show").count(), "Mobile menu should open");
@@ -231,7 +282,8 @@ async function main() {
     assert.deepEqual(pageErrors, [], "No uncaught JavaScript exceptions should occur in tested user flows");
     assert.deepEqual(failedRequests, [], "No failed same-origin requests should occur in tested user flows");
 
-    console.log("PASS: 75-district reveal/hide, district search, region filter and map marker.");
+    console.log("PASS: responsive background animation lifecycle across mobile/desktop breakpoints.");
+    console.log("PASS: 75-district reveal/hide, exact-ranked district search, region filter and map marker.");
     console.log("PASS: district guide, food tab and saved destination/favorites page.");
     console.log("PASS: Powerful Search, nearby permission-denied recovery and secondary page routes.");
     console.log("PASS: trip planner budget calculator, Arya response/open-close, mobile menu, language and dark mode.");

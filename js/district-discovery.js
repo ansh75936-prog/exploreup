@@ -14,13 +14,24 @@
  function getList(){return (window.__exploreUpDistrictCities&&window.__exploreUpDistrictCities.length===75)?window.__exploreUpDistrictCities:(window.cities||[]).slice(0,75)}
  function regionOf(name){return regionByName[norm(name)]||'purvanchal'}
  function open(name){if(typeof safeOpenCity==='function')safeOpenCity(name);else if(typeof openCity==='function')openCity(name)}
+ function matchRank(name,q){
+   const n=norm(name),needle=norm(q);
+   if(!needle)return 1;
+   if(n===needle)return 4;
+   if(n.startsWith(needle))return 3;
+   if(n.split(' ').some(part=>part.startsWith(needle)))return 2;
+   return n.includes(needle)?1:0;
+ }
  function filter(){
-   const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
+   const q=(document.getElementById('searchInput')?.value||'').trim();
    const active=document.querySelector('.region-btn.active')?.dataset.region||'all';
    const grid=document.getElementById('cityGrid');
    if(grid&&!grid.children.length&&typeof renderCities==='function')renderCities();
    if(grid&&(q||active!=='all')&&grid.hidden){
      grid.hidden=false;
+     grid.setAttribute('aria-hidden','false');
+     // Clear the inline display:none left by older toggle logic so CSS grid can render.
+     grid.style.removeProperty('display');
      [document.getElementById('euViewAll'),document.getElementById('euViewAllFeatured')].filter(Boolean).forEach(btn=>{
        btn.setAttribute('aria-expanded','true');
        btn.setAttribute('aria-controls','cityGrid');
@@ -28,13 +39,19 @@
      });
    }
    const cards=[...document.querySelectorAll('#cityGrid .city')];let shown=0;
-   cards.forEach(card=>{const name=card.querySelector('.citytext h3')?.textContent?.trim()||'';const ok=(!q||name.toLowerCase().includes(q))&&(active==='all'||regionOf(name)===active);card.classList.toggle('is-hidden',!ok);if(ok)shown++});
+   const ranked=cards.map(card=>({card,name:card.querySelector('.citytext h3')?.textContent?.trim()||'',rank:matchRank(card.querySelector('.citytext h3')?.textContent||'',q)}));
+   const inRegion=ranked.filter(({name})=>active==='all'||regionOf(name)===active);
+   const bestRank=q?Math.max(0,...inRegion.map(item=>item.rank)):1;
+   ranked.forEach(({card,name,rank})=>{const ok=(!q||rank>0&&(bestRank===1||rank===bestRank))&&(active==='all'||regionOf(name)===active);card.classList.toggle('is-hidden',!ok);if(ok)shown++});
    const status=document.getElementById('districtFilterStatus');if(status)status.textContent=shown===0?'No districts match. Clear the search or choose All to see districts.':(shown===75&&!q&&active==='all')?'Showing all 75 districts':'Showing '+shown+' of 75 districts'+(active!=='all'?' · '+active.charAt(0).toUpperCase()+active.slice(1):'')+(q?' · matching “'+q+'”':'');
    buildMap(active,q);
  }
  function buildMap(active,q){
    const host=document.getElementById('upMapWrap');if(!host)return;const list=getList();
-   const shown=list.filter(c=>(active==='all'||regionOf(c.name)===active)&&(!q||c.name.toLowerCase().includes(q)));
+   const ranked=list.map(c=>({city:c,rank:matchRank(c.name,q)}));
+   const inRegion=ranked.filter(({city})=>active==='all'||regionOf(city.name)===active);
+   const bestRank=q?Math.max(0,...inRegion.map(item=>item.rank)):1;
+   const shown=inRegion.filter(({rank})=>!q||rank>0&&(bestRank===1||rank===bestRank)).map(item=>item.city);
    const visibleNames=new Set(shown.map(c=>c.name));
    const nodes=list.map((c,i)=>{const col=i%10,row=Math.floor(i/10),x=55+col*70+(row%2)*10,y=50+row*50,r=regionOf(c.name),vis=visibleNames.has(c.name);const label=String(c.name).replace(/&/g,'&amp;').replace(/</g,'&lt;');return '<g class="map-node '+r+'" tabindex="'+(vis?'0':'-1')+'" aria-hidden="'+(vis?'false':'true')+'" pointer-events="'+(vis?'auto':'none')+'" opacity="'+(vis?'1':'.18')+'" data-name="'+label+'" data-index="'+i+'" role="button" aria-label="Open '+label+'"><circle cx="'+x+'" cy="'+y+'" r="8"></circle><text x="'+x+'" y="'+(y-12)+'" text-anchor="middle">'+label.slice(0,12)+'</text></g>'}).join('');
    host.innerHTML='<svg class="up-map-svg" viewBox="0 0 760 430" role="group" aria-label="Interactive schematic map of Uttar Pradesh districts"><path class="up-map-base" d="M65 105 L120 45 L230 35 L330 55 L430 35 L535 70 L670 95 L715 170 L690 245 L720 315 L640 375 L520 360 L430 400 L320 375 L225 395 L130 350 L70 280 L90 210 Z"></path><path class="map-region" d="M90 105 L250 50 L330 90 L300 190 L150 205 Z"></path><path class="map-region" d="M300 70 L520 55 L610 120 L500 205 L300 190 Z"></path><path class="map-region" d="M500 205 L700 155 L700 300 L570 340 L470 290 Z"></path><path class="map-region" d="M130 205 L300 190 L470 290 L430 380 L210 370 L90 280 Z"></path>'+nodes+'</svg>';
