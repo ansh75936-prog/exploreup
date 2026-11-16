@@ -29,6 +29,9 @@
    if(grid&&!grid.children.length&&typeof renderCities==='function')renderCities();
    if(grid&&(q||active!=='all')&&grid.hidden){
      grid.hidden=false;
+     grid.setAttribute('aria-hidden','false');
+     // Clear the inline display:none left by older toggle logic so CSS grid can render.
+     grid.style.removeProperty('display');
      [document.getElementById('euViewAll'),document.getElementById('euViewAllFeatured')].filter(Boolean).forEach(btn=>{
        btn.setAttribute('aria-expanded','true');
        btn.setAttribute('aria-controls','cityGrid');
