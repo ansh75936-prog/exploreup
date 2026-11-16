@@ -91,6 +91,17 @@
       else window.scrollTo({top:0,behavior:'smooth'});
     });
 
+    let authReturnFocus=null;
+    function closeAuthModal(){
+      const modal=document.getElementById('mobileAuthModal');
+      if(!modal)return;
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+      const target=authReturnFocus;
+      authReturnFocus=null;
+      if(target&&target.isConnected&&typeof target.focus==='function')target.focus();
+    }
+
     function openAuth(mode){
       let modal=document.getElementById('mobileAuthModal');
       if(!modal){
@@ -98,7 +109,7 @@
         modal.id='mobileAuthModal';
         modal.className='mobile-auth-modal';
         modal.innerHTML=`
-          <div class="mobile-auth-card" role="dialog" aria-modal="true" aria-labelledby="mobileAuthTitle">
+          <div class="mobile-auth-card" role="dialog" aria-modal="true" aria-labelledby="mobileAuthTitle" tabindex="-1">
             <div class="mobile-auth-head"><h3 id="mobileAuthTitle">Log In</h3><button class="mobile-auth-close" type="button" aria-label="Close">×</button></div>
             <input id="mobileAuthName" type="text" placeholder="Your name" autocomplete="name" style="display:none">
             <input id="mobileAuthEmail" type="email" placeholder="Email address" autocomplete="email">
@@ -107,9 +118,25 @@
             <button id="mobileAuthSwitch" class="mobile-auth-switch" type="button">Create a new account</button>
             <div id="mobileAuthStatus" class="mobile-auth-status"></div>
           </div>`;
+        modal.setAttribute('aria-hidden','true');
         document.body.appendChild(modal);
-        modal.querySelector('.mobile-auth-close').addEventListener('click',()=>modal.classList.remove('show'));
-        modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+        modal.querySelector('.mobile-auth-close').addEventListener('click',closeAuthModal);
+        modal.addEventListener('click',e=>{if(e.target===modal)closeAuthModal()});
+        modal.addEventListener('keydown',e=>{
+          if(!modal.classList.contains('show'))return;
+          if(e.key==='Escape'){
+            e.preventDefault();
+            closeAuthModal();
+            return;
+          }
+          if(e.key!=='Tab')return;
+          const focusable=Array.from(modal.querySelectorAll('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])'))
+            .filter(el=>!el.hidden&&el.getAttribute('aria-hidden')!=='true'&&el.getClientRects().length);
+          if(!focusable.length){e.preventDefault();modal.querySelector('.mobile-auth-card')?.focus();return;}
+          const first=focusable[0],last=focusable[focusable.length-1];
+          if(e.shiftKey&&(document.activeElement===first||!modal.contains(document.activeElement))){e.preventDefault();last.focus();}
+          else if(!e.shiftKey&&(document.activeElement===last||!modal.contains(document.activeElement))){e.preventDefault();first.focus();}
+        });
         modal.querySelector('#mobileAuthSwitch').addEventListener('click',()=>{
           openAuth(modal.dataset.mode==='login'?'signup':'login');
         });
@@ -132,7 +159,7 @@
               if(result.error)throw result.error;
               if(result.data?.session){
                 status.style.color='#18794e'; status.textContent='Account created and logged in.';
-                modal.classList.remove('show');
+                closeAuthModal();
               }else{
                 status.style.color='#8a5a00'; status.textContent='Account created. Check your email if confirmation is required, then log in.';
               }
@@ -140,7 +167,7 @@
               result=await client.auth.signInWithPassword({email,password});
               if(result.error)throw result.error;
               status.style.color='#18794e'; status.textContent='Login successful.';
-              modal.classList.remove('show');
+              closeAuthModal();
             }
             updateMobileAuthState();
           }catch(err){status.textContent=err?.message||'Authentication failed.'}
@@ -155,6 +182,8 @@
       modal.querySelector('#mobileAuthSubmit').textContent=isSignup?'Create Account':'Log In';
       modal.querySelector('#mobileAuthSwitch').textContent=isSignup?'Already have an account? Log In':'Create a new account';
       modal.querySelector('#mobileAuthStatus').textContent='';
+      authReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+      modal.setAttribute('aria-hidden','false');
       modal.classList.add('show');
       setTimeout(()=>modal.querySelector(isSignup?'#mobileAuthName':'#mobileAuthEmail')?.focus(),50);
     }
