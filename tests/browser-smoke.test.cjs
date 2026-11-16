@@ -121,8 +121,12 @@ async function main() {
 
     const districtSearch = page.locator("#searchInput");
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
-    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 2, "Agra search should also match Prayagraj by substring");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 1, "Exact Agra search must not return Prayagraj as a false positive");
+    assert.equal((await page.locator("#cityGrid .city:not(.is-hidden) .citytext h3").first().textContent()).trim(), "Agra");
+    await districtSearch.fill("Prayag");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    assert.equal((await page.locator("#cityGrid .city:not(.is-hidden) .citytext h3").first().textContent()).trim(), "Prayagraj", "Prefix search must still find Prayagraj");
 
     await districtSearch.fill("");
     const braj = page.locator('.region-btn[data-region="braj"]');
@@ -140,7 +144,7 @@ async function main() {
     }
 
     await districtSearch.fill("Agra");
-    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 2);
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
     const agraCard = page.locator("#cityGrid .city").filter({ has: page.locator(".citytext h3", { hasText: /^Agra$/ }) });
     await agraCard.click();
     await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
