@@ -107,6 +107,15 @@ async function main() {
     ({ context, page } = await openPage(browser));
     await page.waitForSelector("#euViewAll", { timeout: 20000 });
 
+    // Decorative canvas particles must pause on mobile and resume after breakpoint changes.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForFunction(() => (document.getElementById("lbCanvas")?.width || 0) > 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForFunction(() => document.getElementById("lbCanvas")?.width === 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.waitForFunction(() => (document.getElementById("lbCanvas")?.width || 0) > 0, null, { timeout: 5000 });
+    await page.setViewportSize({ width: 390, height: 844 });
+
     // District directory: reveal/hide, all 75 records, search, region filtering and map.
     const reveal = page.locator("#euViewAll");
     await reveal.click();
@@ -252,7 +261,8 @@ async function main() {
     assert.deepEqual(pageErrors, [], "No uncaught JavaScript exceptions should occur in tested user flows");
     assert.deepEqual(failedRequests, [], "No failed same-origin requests should occur in tested user flows");
 
-    console.log("PASS: 75-district reveal/hide, district search, region filter and map marker.");
+    console.log("PASS: responsive background animation lifecycle across mobile/desktop breakpoints.");
+    console.log("PASS: 75-district reveal/hide, exact-ranked district search, region filter and map marker.");
     console.log("PASS: district guide, food tab and saved destination/favorites page.");
     console.log("PASS: Powerful Search, nearby permission-denied recovery and secondary page routes.");
     console.log("PASS: trip planner budget calculator, Arya response/open-close, mobile menu, language and dark mode.");
