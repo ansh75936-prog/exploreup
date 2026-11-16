@@ -125,10 +125,21 @@ async function main() {
     await reveal.click();
     await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
     assert.equal(await reveal.getAttribute("aria-expanded"), "false", "View All must hide the district grid on the second click");
+
+    // Search/region filtering must reopen the directory after a manual collapse.
+    const districtSearch = page.locator("#searchInput");
+    await districtSearch.fill("Agra");
+    await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === false);
+    assert.equal(await page.locator("#cityGrid").getAttribute("aria-hidden"), "false", "Auto-revealed district grid must be exposed to assistive technology");
+    assert.notEqual(await page.locator("#cityGrid").evaluate(el => getComputedStyle(el).display), "none", "Auto-revealed district grid must not retain display:none");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
+    await districtSearch.fill("");
+    await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 75);
+    await reveal.click();
+    await page.waitForFunction(() => document.getElementById("cityGrid")?.hidden === true);
     await reveal.click();
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city").length === 75);
 
-    const districtSearch = page.locator("#searchInput");
     await districtSearch.fill("Agra");
     await page.waitForFunction(() => document.querySelectorAll("#cityGrid .city:not(.is-hidden)").length === 1);
     assert.equal(await page.locator("#cityGrid .city:not(.is-hidden)").count(), 1, "Exact Agra search must not return Prayagraj as a false positive");
