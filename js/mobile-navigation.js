@@ -182,7 +182,9 @@
       modal.querySelector('#mobileAuthSubmit').textContent=isSignup?'Create Account':'Log In';
       modal.querySelector('#mobileAuthSwitch').textContent=isSignup?'Already have an account? Log In':'Create a new account';
       modal.querySelector('#mobileAuthStatus').textContent='';
-      authReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+      if(!modal.classList.contains('show')){
+        authReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+      }
       modal.setAttribute('aria-hidden','false');
       modal.classList.add('show');
       setTimeout(()=>modal.querySelector(isSignup?'#mobileAuthName':'#mobileAuthEmail')?.focus(),50);
