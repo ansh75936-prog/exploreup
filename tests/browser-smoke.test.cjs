@@ -166,6 +166,16 @@ async function main() {
     const saved = await page.evaluate(() => window.ExploreUPFavorites?.all?.() || []);
     assert.ok(saved.some(item => item.name === "Agra"), "Save destination should persist a favorite");
 
+    // District modal must close through its button and Escape, restoring page scrolling.
+    await page.locator("#modal .close").click();
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "true");
+    assert.notEqual(await page.evaluate(() => document.body.style.overflow), "hidden", "Closing a district guide must release the body scroll lock");
+    await agraCard.click();
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "false");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.getElementById("modal")?.getAttribute("aria-hidden") === "true", null, { timeout: 5000 });
+    assert.notEqual(await page.evaluate(() => document.body.style.overflow), "hidden", "Escape must close the district guide and restore scrolling");
+
     await page.goto(baseUrl + "/favorites.html", { waitUntil: "domcontentloaded", timeout: 45000 });
     await page.waitForSelector("#list", { timeout: 10000 });
     await page.waitForFunction(() => document.getElementById("list")?.textContent.includes("Agra"), null, { timeout: 10000 });
