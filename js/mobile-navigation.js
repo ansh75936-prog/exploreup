@@ -183,7 +183,10 @@
       modal.querySelector('#mobileAuthSwitch').textContent=isSignup?'Already have an account? Log In':'Create a new account';
       modal.querySelector('#mobileAuthStatus').textContent='';
       if(!modal.classList.contains('show')){
-        authReturnFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+        const active=document.activeElement;
+        // The login/signup action lives inside the drawer, which is closed before
+        // this dialog opens. Return focus to the visible drawer trigger instead.
+        authReturnFocus=active&&active.closest&&active.closest('#mobileMenu')?btn:(active instanceof HTMLElement?active:null);
       }
       modal.setAttribute('aria-hidden','false');
       modal.classList.add('show');
